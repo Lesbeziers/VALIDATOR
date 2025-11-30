@@ -643,8 +643,8 @@
     }
 
     .preset-toggle {
-      background: #141414;
-      border: 1px solid #1e1e1e;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
       border-radius: 10px;
       color: #fff;
       padding: 7px 14px;
@@ -660,16 +660,21 @@
       height: 36px;
     }
 
+    .preset-toggle:hover {
+      background: #353535;
+      border-color: #454545;
+    }
+
     .preset-toggle.is-active {
       border-color: var(--brand);
-      background: #161616;
+      background: #353535;
     }
 
     .preset-search {
       flex: 1;
       height: 36px;
-      background: #141414;
-      border: 1px solid #1e1e1e;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
       border-radius: 10px;
       color: #fff;
       padding: 7px 12px;
@@ -680,11 +685,11 @@
     }
 
     .preset-search:focus {
-      border-color: #2a2a2a;
+      border-color: #505050;
     }
 
     .preset-search::placeholder {
-      color: #d0d0d0;
+      color: #aaa;
     }
     .preset-panel {
       margin-top: 10px;
@@ -701,11 +706,10 @@
       gap: 8px;
     }
 
-    .preset-cat-btn,
-    .preset-item {
+    .preset-cat-btn {
       width: 100%;
-      background: #111;
-      border: 1px solid #1e1e1e;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
       border-radius: 10px;
       color: #fff;
       padding: 10px 12px;
@@ -717,15 +721,34 @@
       transition: border-color .2s, background .2s;
     }
 
-    .preset-cat-btn:hover,
-    .preset-item:hover {
-      background: #161616;
-      border-color: #2a2a2a;
+    .preset-cat-btn:hover {
+      background: #353535;
+      border-color: #454545;
     }
 
     .preset-cat-btn.is-active {
       border-color: var(--brand);
-      background: #161616;
+      background: #353535;
+    }
+
+    .preset-item {
+      width: 100%;
+      background: #3a3a3a;
+      border: 1px solid #4a4a4a;
+      border-radius: 10px;
+      color: #fff;
+      padding: 10px 12px;
+      font-family: "Apercu Regular";
+      font-size: 12px;
+      letter-spacing: .3px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+
+    .preset-item:hover {
+      background: #454545;
+      border-color: #555555;
     }
 
     .preset-list {
@@ -1580,7 +1603,7 @@ const logoToggle = qs("logoToggle");
         );
 
         let isPresetPanelOpen = false;
-        let activeCategory = Object.keys(PRESET_CATEGORIES)[0] || "";
+        let activeCategory = "";
 
       /* ==========================================
          LOCALSTORAGE HELPERS
@@ -2510,8 +2533,13 @@ if (shouldShowLogoSwitch(key || "")) {
         function renderCategoryView() {
           presetCategories.style.display = "grid";
           renderPresetCategories();
-          const list = PRESET_CATEGORIES[activeCategory] || [];
-          renderPresetList(list);
+          // Solo mostrar lista si hay categoría activa
+          if (activeCategory) {
+            const list = PRESET_CATEGORIES[activeCategory] || [];
+            renderPresetList(list);
+          } else {
+            presetList.innerHTML = "";
+          }
         }
 
         function renderSearchResults(term) {
