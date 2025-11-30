@@ -962,9 +962,13 @@
       top: 0;
       left: 0;
       transform: none;
-      z-index: 24;
-      padding: 20px 0 12px;
+      z-index: 30;
+      padding: 20px 0 8px;
       width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
     }
 	  
     .modal .modal-header-img {
@@ -973,10 +977,13 @@
 
     .modal .modal-header-img .close {
       right: 32px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: auto;
     }
 
     .modal .modal-layout {
-      padding-top: 24px;
+      padding-top: 10px;
     }
 
     .modal .modal-header-img img {
