@@ -88,6 +88,8 @@
     }
 	  
     #drop-area {
+      --drop-stroke: #fff;
+      --drop-border: 12px;
       width: min(49vw, 294px);
       max-width: calc((100vw - 48px) * .7);
       max-height: calc((100vh - 220px) * .7);
@@ -99,17 +101,30 @@
       color: #fff;
       padding: clamp(16px, 5vw, 32px);
       background: #000;
-      border: 12px solid #fff;
+      border: var(--drop-border) solid var(--drop-stroke);
       border-radius: 0;
       cursor: pointer;
       text-align: center;
-      transition: border-color .2s ease;
+      transition: border-color .2s ease, color .2s ease;
       font-size: clamp(12px, 2vw, 16px);
+      position: relative;
+    }
+
+    #drop-area::after {
+      content: "";
+      position: absolute;
+      width: calc(var(--drop-border) * 1.5);
+      height: var(--drop-border);
+      background: var(--drop-stroke);
+      bottom: calc(var(--drop-border) * -.5);
+      right: calc(var(--drop-border) * -.5);
+      transition: background-color .2s ease;
     }
 
     #drop-area:hover,
     #drop-area.highlight {
-      border-color: var(--brand);
+      --drop-stroke: var(--brand);
+      border-color: var(--drop-stroke);
     }
 
     /* ===========================
