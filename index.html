@@ -1121,7 +1121,7 @@
       "DESTACADO_DOBLE1": "DESTACADO DOBLE 1",
       "DESTACADO_DOBLE1_SIL": "DESTACADO DOBLE 1 SIL",
       "DESTACADO_DOBLE2": "DESTACADO DOBLE 2",
-
+      "DESTACADO_DOBLE4": "DESTACADO DOBLE 4",
     };
 
 
@@ -1161,7 +1161,15 @@
       "DESTACADO_DOBLE1_SIL": { w: 1636, h: 630, mode: "exact", maxMB: 1 },
       "DESTACADO_DOBLE2": { w: 803, h: 548, mode: "exact", maxMB: 1 },
       "DESTACADO_DOBLE2_SIL": { w: 803, h: 630, mode: "exact", maxMB: 1 },
-
+      "DESTACADO_DOBLE4": {
+        options: [
+          { w: 386, h: 548 },
+          { w: 385, h: 548 }
+        ],
+        mode: "list",
+        maxMB: 1
+      },
+		  
     };
 
 
@@ -1203,7 +1211,9 @@
   { key: "DESTACADO_DOBLE1", aliases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
   { key: "DESTACADO_DOBLE1_SIL", aliases: ["DESTACADO_DOBLE1_SIL", "DESTACADO_DOBLE_SIL_1"] },
   { key: "DESTACADO_DOBLE2", aliases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
-  { key: "DESTACADO_DOBLE2_SIL", aliases: ["DESTACADO_DOBLE2_SIL", "DESTACADO_DOBLE_SIL_2", "DESTACADO2_DOBLE_SIL"] }
+  { key: "DESTACADO_DOBLE2_SIL", aliases: ["DESTACADO_DOBLE2_SIL", "DESTACADO_DOBLE_SIL_2", "DESTACADO2_DOBLE_SIL"] },
+  { key: "DESTACADO_DOBLE4", aliases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] }
+
 
 
 ];
@@ -1281,7 +1291,21 @@ function checkName(n) {
     const humanMB = b => (b / 1048576).toFixed(2);
 
     function checkDims(w, h, r) {
-      if (!r || r.w == null || r.h == null)
+      const hasList = r && Array.isArray(r.options) && r.options.length;
+
+      if (!r || (!hasList && (r.w == null || r.h == null)))
+        return { status: "warn", msg: `(${w}×${h})` };
+
+      if (hasList) {
+        const match = r.options.find(o => w === o.w && h === o.h);
+        const targetMsg = r.options.map(o => `${o.w}×${o.h}`).join(" / ");
+
+        return {
+          status: match ? "ok" : "err",
+          msg: match ? targetMsg : `${w}×${h} (req. ${targetMsg})`
+        };
+      }
+
         return { status: "warn", msg: `(${w}×${h})` };
 
       const ok = w === r.w && h === r.h;
@@ -1673,7 +1697,8 @@ function setLogoState(on) {
   k === "DESTACADO_DOBLE1" ||
   k === "DESTACADO_DOBLE1_SIL" ||
   k === "DESTACADO_DOBLE2" ||
-  k === "DESTACADO_DOBLE2_SIL"
+  k === "DESTACADO_DOBLE2_SIL" ||
+  k === "DESTACADO_DOBLE4"
 ) {
     txtText.textContent = "ZONA DE SEGURIDAD";
     return;
@@ -1943,7 +1968,8 @@ const shouldShowTxtSwitch = k => {
     ku === "DESTACADO_DOBLE1" ||
     ku === "DESTACADO_DOBLE1_SIL" ||
     ku === "DESTACADO_DOBLE2" ||
-    ku === "DESTACADO_DOBLE2_SIL"
+    ku === "DESTACADO_DOBLE2_SIL" ||
+    ku === "DESTACADO_DOBLE4"
   );
 };
 
@@ -2523,7 +2549,8 @@ if (shouldShowLogoSwitch(key || "")) {
         { title: "DESTACADO_DOBLE1", overlay: "MOD_DES_DOBLE_1_Checker.png" },
         { title: "DESTACADO_DOBLE1_SIL", overlay: "MOD_DES_DOBLE_SIL_1_Checker.png" },
         { title: "DESTACADO_DOBLE2", overlay: "MOD_DES_DOBLE_2_Checker.png" },
-        { title: "DESTACADO_DOBLE2_SIL", overlay: "MOD_DES_DOBLE_SIL_2_Checker.png" }
+        { title: "DESTACADO_DOBLE2_SIL", overlay: "MOD_DES_DOBLE_SIL_2_Checker.png" },
+        { title: "DESTACADO_DOBLE4", overlay: "MOD_DES_DOBLE_4_Checker.png" }
       ];
 
 
@@ -2549,7 +2576,8 @@ if (shouldShowLogoSwitch(key || "")) {
 		["SONY", "_SONY"],
 		["DESTACADO_DOBLE_SIL_1", "DESTACADO_DOBLE1_SIL"],
 		["DESTACADO_DOBLE_SIL_2", "DESTACADO_DOBLE2_SIL"],
-		["DESTACADO2_DOBLE_SIL", "DESTACADO_DOBLE2_SIL"]
+		["DESTACADO2_DOBLE_SIL", "DESTACADO_DOBLE2_SIL"],
+		["DESTACADO_DOBLE_4", "DESTACADO_DOBLE4"]
 	]);
 
 
@@ -3169,6 +3197,7 @@ const OFFSET_Y = 65;    // arriba/abajo
 
           return;
         }
+		  
 
         /* ==========================================
            CASO SMARTPHONE_MUX_FONDO
@@ -3763,6 +3792,56 @@ if (key === "DESTACADO_DOBLE1_SIL") {
 
   return;
 }
+
+/* ==========================================
+   CASO DESTACADO_DOBLE4 (checker simple con botón ZONA DE SEGURIDAD / TXT)
+========================================== */
+if (key === "DESTACADO_DOBLE4") {
+  const file = KEY_TO_OVERLAY.get("DESTACADO_DOBLE4");
+
+  // No usamos overlay base en este formato
+  baseOv.removeAttribute("src");
+  baseOv.style.display = "none";
+
+  if (file) {
+    const srcS = `${OVERLAY_BASE}/${file}`;
+
+    sibOv.onerror = () => {
+      lastFailSib = srcS;
+      sibOv.style.display = "none";
+    };
+
+    sibOv.onload = () => {
+      if (!isLive(mainImg)) return;
+      if (lastFailSib === srcS) lastFailSib = "";
+      // El checker cubre exactamente el arte DESTACADO_DOBLE4
+      fitOverlayFill(sibOv, mainImg);
+    };
+
+    if (sibOv.getAttribute("src") !== srcS)
+      sibOv.setAttribute("src", srcS);
+
+    // Primera colocación inmediata
+    fitOverlayFill(sibOv, mainImg);
+    sibOv.style.display = "";
+  } else {
+    sibOv.removeAttribute("src");
+    sibOv.style.display = "none";
+  }
+
+  // Observers solo para el checker
+  disconnectObservers();
+
+  roSib = new ResizeObserver(() =>
+    fitOverlayFill(sibOv, mainImg)
+  );
+
+  roSib.observe(mainImg);
+  roSib.observe(mainImg.parentElement);
+
+  return;
+}
+
 
 /* ==========================================
    CASO DESTACADO_DOBLE2 (checker simple con botón ZONA DE SEGURIDAD / TXT)
