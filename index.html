@@ -113,11 +113,12 @@
     #drop-area::after {
       content: "";
       position: absolute;
-      width: calc(var(--drop-border) * 1.5);
+      width: calc(var(--drop-border) * 3);
       height: var(--drop-border);
       background: var(--drop-stroke);
-      bottom: calc(var(--drop-border) * -.5);
-      right: calc(var(--drop-border) * -.5);
+      bottom: calc(var(--drop-border) * -1 + 40px);
+      right: calc(var(--drop-border) * -1.5 - var(--drop-border) + 6px);
+      transform: translateY(50%);
       transition: background-color .2s ease;
     }
 
