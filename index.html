@@ -643,7 +643,27 @@
       color: var(--brand);
     }
 
-    .preset-row {
+    .preset-toggle {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      color: #fff;
+      padding: 10px 14px;
+      font-family: "Apercu Bold";
+      font-size: 12px;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color .2s, background .2s;
+    }
+
+    .preset-toggle.is-active {
+      border-color: var(--brand);
+      background: #161616;
+    }
+
+    .preset-search {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -654,19 +674,64 @@
       flex: 1;
       background: #0d0d0d;
       border: 1px solid #1e1e1e;
-      border-radius: 8px;
+      border-radius: 10px;
       color: #fff;
-      padding: 8px 34px 8px 10px;
-      appearance: none;
+      padding: 10px 12px;
+      font-family: "Apercu Regular";
+      font-size: 13px;
       outline: none;
       background-image:
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7"><path d="M1 1l4 4 4-4" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
-      background-repeat: no-repeat;
-      background-position: right 10px center;
     }
 
-    .preset-select:focus {
+    .preset-search:focus {
       border-color: #2a2a2a;
+    }
+    .preset-panel {
+      margin-top: 10px;
+      background: #0d0d0d;
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      padding: 10px;
+      display: none;
+    }
+
+    .preset-categories {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .preset-cat-btn,
+    .preset-item {
+      width: 100%;
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      color: #fff;
+      padding: 10px 12px;
+      font-family: "Apercu Bold";
+      font-size: 12px;
+      letter-spacing: .3px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+
+    .preset-cat-btn:hover,
+    .preset-item:hover {
+      background: #161616;
+      border-color: #2a2a2a;
+    }
+
+    .preset-cat-btn.is-active {
+      border-color: var(--brand);
+      background: #161616;
+    }
+
+    .preset-list {
+      margin-top: 10px;
+      display: grid;
+      gap: 6px;
     }
 
     .preset-feedback {
@@ -916,21 +981,34 @@
           <div class="comments-block" id="commentsBlock">
             <div class="comments-title">COMENTARIOS</div>
 
-            <div class="preset-row">
-              <select
-                id="presetSelect"
-                class="preset-select"
-                title="Predefinidos"
-              >
-                <option value="" disabled selected>Predefinidos</option>
-              </select>
-            </div>
+              <div class="preset-row">
+                <button
+                  type="button"
+                  id="presetToggleBtn"
+                  class="preset-toggle"
+                >
+                  Predefinidos
+                </button>
 
-            <div
-              id="presetFeedback"
-              class="preset-feedback"
-              aria-live="polite"
-            ></div>
+                <input
+                  type="text"
+                  id="presetSearch"
+                  class="preset-search"
+                  placeholder="Búsqueda predefinidos"
+                  aria-label="Búsqueda predefinidos"
+                />
+              </div>
+
+              <div id="presetPanel" class="preset-panel">
+                <div id="presetCategories" class="preset-categories"></div>
+                <div id="presetList" class="preset-list"></div>
+              </div>
+
+              <div
+                id="presetFeedback"
+                class="preset-feedback"
+                aria-live="polite"
+              ></div>
 
             <textarea
               id="commentArea"
@@ -938,11 +1016,12 @@
               placeholder="Escribe aquí tus comentarios…"
             ></textarea>
 
-            <div class="comments-actions" id="commentsActions">
-              <button class="btn" id="btnViewAll">Ver todos</button>
-              <button class="btn" id="btnAttach" disabled>Adjuntar</button>
-              <button class="btn" id="btnExport">Exportar</button>
-            </div>
+              <div class="comments-actions" id="commentsActions">
+                <button class="btn" id="btnViewAll">Ver todos</button>
+                <button class="btn" id="btnAttach" disabled>Adjuntos</button>
+                <button class="btn" id="btnExport">Exportar</button>
+              </div>
+
 
             <input
               type="file"
@@ -1408,9 +1487,13 @@ const logoToggle = qs("logoToggle");
       const nivelSwitch = qs("nivelSwitch");
       const nivelToggle = qs("nivelToggle");
 
-      const commentArea = qs("commentArea");
-      const presetSelect = qs("presetSelect");
-      const presetFeedback = qs("presetFeedback");
+        const commentArea = qs("commentArea");
+        const presetToggleBtn = qs("presetToggleBtn");
+        const presetSearch = qs("presetSearch");
+        const presetPanel = qs("presetPanel");
+        const presetCategories = qs("presetCategories");
+        const presetList = qs("presetList");
+        const presetFeedback = qs("presetFeedback");
 
       const btnViewAll = qs("btnViewAll");
       const btnExport = qs("btnExport");
@@ -1443,33 +1526,61 @@ const logoToggle = qs("logoToggle");
       let firstThumbFile = null;
 	  let currentKey = "";
 
-      /* ==========================================
-         PRESETS
-      ========================================== */
-      const PRESETS = [
-        "Nomenclatura incorrecta.",
-        "Dimensiones incorrectas.",
-        "Peso excesivo.",
-        "Texto fuera del área segura.",
-        "Elementos tapados por la UI.",
-        "Tipografía no legible.",
-        "Colores fuera de guía.",
-        "Fondo demasiado oscuro.",
-        "Contraste insuficiente.",
-        "Reencuadrar / Recortar.",
-        "Reexportar con compresión 80%.",
-        "Logo incorrecto / desactualizado.",
-        "Revisar márgenes / alineación.",
-        "Sin incidencias."
-      ];
+        /* ==========================================
+           PRESETS
+        ========================================== */
+        const PRESET_CATEGORIES = {
+          ADJUNTOS: [
+            "Os adjuntamos un ejemplo.",
+            "Os sugerimos que lo hagáis como en el ejemplo que os mandamos."
+          ],
+          "TAMAÑO/PESO": [
+            "Supera el peso máximo.",
+            "Las dimensiones de la adaptación no son correctas."
+          ],
+          DISEÑO: [
+            "Está fuera de los márgenes de seguridad.",
+            "Falta la etiqueta de publicidad.",
+            "Falta información.",
+            "No sigue la misma coherencia visual que el resto de adaptaciones."
+          ],
+          TEXTOS: [
+            "El texto no cumple con el tamaño mínimo para que sea legible.",
+            "El texto no es legible.",
+            "Mux4_Fondo no puede llevar texto.",
+            "SmartphoneMux_Fondo no puede llevar texto.",
+            "Hay demasiada información.",
+            "El orden de los textos es diferente al resto de adaptaciones.",
+            "El texto se ve pixelado.",
+            "Poner el texto en una líneas.",
+            "Poner el texto en dos líneas.",
+            "Poner el texto en tres líneas.",
+            "Cambiar el color del texto.",
+            "Añadir un degradado para que el texto se lea bien."
+          ],
+          NOMENCLATURAS: [
+            "La adaptación no está bien nombrada."
+          ],
+          IMAGEN: [
+            "La imagen se ve pixelada.",
+            "La imagen no tienen suficiente calidad.",
+            "La sombra es demasiado fuerte.",
+            "La imagen está cortada.",
+            "Mejorar el recorte de la imagen.",
+            "Rellenar la imagen con imagen generativa.",
+            "Hay un filete en el lado derecho.",
+            "Hay un filete en el lado izquierdo.",
+            "Hay un filete en el lado arriba.",
+            "Hay un filete en el lado abajo."
+          ]
+        };
 
-      function fillPresetSelect() {
-        presetSelect.innerHTML =
-          `<option value="" disabled selected>Predefinidos</option>` +
-          PRESETS.map(p => `<option>${p}</option>`).join("");
-      }
+        const PRESET_ENTRIES = Object.entries(PRESET_CATEGORIES).flatMap(
+          ([cat, items]) => items.map(text => ({ cat, text }))
+        );
 
-      fillPresetSelect();
+        let isPresetPanelOpen = false;
+        let activeCategory = Object.keys(PRESET_CATEGORIES)[0] || "";
 
       /* ==========================================
          LOCALSTORAGE HELPERS
@@ -2328,55 +2439,147 @@ if (shouldShowLogoSwitch(key || "")) {
         saveCommentsFor(fname, commentArea.value);
       });
 
-      /* ==========================================
-         PRESETS
-      ========================================== */
-      let fbTimer = null;
+        /* ==========================================
+           PRESETS
+        ========================================== */
+        let fbTimer = null;
+        let searchTerm = "";
 
-      function showPresetFeedback(msg) {
-        presetFeedback.textContent = msg || "";
-        clearTimeout(fbTimer);
+        function showPresetFeedback(msg) {
+          presetFeedback.textContent = msg || "";
+          clearTimeout(fbTimer);
 
-        if (msg) {
-          fbTimer = setTimeout(() => {
-            presetFeedback.textContent = "";
-          }, 2000);
+          if (msg) {
+            fbTimer = setTimeout(() => {
+              presetFeedback.textContent = "";
+            }, 2000);
+          }
         }
-      }
-
-      function lineAlreadyExists(text, line) {
-        const lines = (text || "")
-          .split(/\r?\n/)
-          .map(s => s.trim())
-          .filter(Boolean);
-        return lines.includes(line.trim());
-      }
-
-      presetSelect.addEventListener("change", () => {
-        const v = presetSelect.value || "";
-        if (!v) return;
-
-        const toInsert = v.startsWith("- ") ? v : "- " + v;
-        let txt = commentArea.value || "";
-        if (lineAlreadyExists(txt, toInsert)) {
-          showPresetFeedback("Comentario ya registrado anteriormente.");
-          presetSelect.selectedIndex = 0;
-          return;
+        function lineAlreadyExists(text, line) {
+          const lines = (text || "")
+            .split(/\r?\n/)
+            .map(s => s.trim())
+            .filter(Boolean);
+          return lines.includes(line.trim());
         }
 
-        txt = txt
-          ? txt.trimEnd() + "\n" + toInsert + "\n"
-          : toInsert + "\n";
+        function setPresetPanelVisibility(show) {
+          isPresetPanelOpen = show;
+          presetPanel.style.display = show ? "block" : "none";
+          presetToggleBtn.classList.toggle("is-active", show);
+          recalcCommentsLayout();
+        }
 
-        commentArea.value = txt;
+        function renderPresetCategories() {
+          presetCategories.innerHTML = "";
+          Object.keys(PRESET_CATEGORIES).forEach(cat => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className =
+              "preset-cat-btn" + (cat === activeCategory ? " is-active" : "");
+            btn.textContent = cat;
+            btn.addEventListener("click", () => {
+              activeCategory = cat;
+              renderCategoryView();
+            });
+            presetCategories.appendChild(btn);
+          });
 
-        const fname = getCurrentFileName();
-        if (fname) saveCommentsFor(fname, txt);
+        function renderPresetList(items) {
+          presetList.innerHTML = "";
 
-        presetSelect.selectedIndex = 0;
-        showPresetFeedback("");
-        recalcCommentsLayout();
-      });
+          if (!items.length) {
+            const empty = document.createElement("div");
+            empty.className = "preset-feedback";
+            empty.textContent = "Sin resultados";
+            presetList.appendChild(empty);
+            return;
+          }
+
+          items.forEach(text => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "preset-item";
+            btn.dataset.text = text;
+            btn.textContent = text;
+            presetList.appendChild(btn);
+          });
+        }
+
+        function renderCategoryView() {
+          presetCategories.style.display = "grid";
+          renderPresetCategories();
+          const list = PRESET_CATEGORIES[activeCategory] || [];
+          renderPresetList(list);
+        }
+
+        function renderSearchResults(term) {
+          presetCategories.style.display = "none";
+          const filtered = PRESET_ENTRIES
+            .filter(o => o.text.toLowerCase().includes(term))
+            .map(o => o.text);
+          renderPresetList(filtered);
+        }
+
+        function handlePresetSelection(text) {
+          if (!text) return;
+
+          let txt = commentArea.value || "";
+          if (lineAlreadyExists(txt, text)) {
+            showPresetFeedback("Comentario ya registrado anteriormente.");
+            return;
+          }
+
+          txt = txt ? txt.trimEnd() + "\n" + text : text;
+
+          commentArea.value = txt;
+
+          const fname = getCurrentFileName();
+          if (fname) saveCommentsFor(fname, txt);
+
+          showPresetFeedback("");
+          recalcCommentsLayout();
+        }
+
+        presetToggleBtn.addEventListener("click", () => {
+          if (isPresetPanelOpen) {
+            setPresetPanelVisibility(false);
+            return;
+          }
+
+          setPresetPanelVisibility(true);
+          if (presetSearch.value.trim()) {
+            renderSearchResults(presetSearch.value.trim().toLowerCase());
+          } else {
+            renderCategoryView();
+          }
+        });
+
+        presetSearch.addEventListener("input", e => {
+          const raw = e.target.value;
+          searchTerm = raw.trim().toLowerCase();
+
+          if (raw.length) {
+            if (!isPresetPanelOpen) setPresetPanelVisibility(true);
+            renderSearchResults(searchTerm);
+          } else {
+            if (isPresetPanelOpen) {
+              renderCategoryView();
+            } else {
+              setPresetPanelVisibility(false);
+            }
+          }
+        });
+
+        presetPanel.addEventListener("click", e => {
+          const btn = e.target.closest(".preset-item");
+          if (!btn) return;
+
+          const text = btn.dataset.text || btn.textContent || "";
+          handlePresetSelection(text);
+        });
+
+        renderCategoryView();
 
       /* ==========================================
          ADJUNTAR IMÁGENES
