@@ -135,7 +135,7 @@
     ============================ */
     .modal-layout {
       position: relative;
-      padding: var(--padTop) var(--pad) var(--pad);
+      padding: var(--layoutPadTop, var(--padTop)) var(--pad) var(--pad);
       display: grid;
       grid-template-columns: var(--sidebarW) 1fr;
       gap: var(--gap);
@@ -584,7 +584,7 @@
     ============================ */
     .collapsed-handle {
       position: absolute;
-      top: calc(var(--padTop) + (var(--headerH) - var(--handleH)) / 2);
+      top: calc(var(--layoutPadTop, var(--padTop)) + (var(--headerH) - var(--handleH)) / 2);
       left: var(--edgePadHandle);
       z-index: 22;
       display: none;
@@ -984,7 +984,8 @@
     }
 
     .modal .modal-layout {
-      padding-top: 4px;
+      --layoutPadTop: 4px;
+      padding-top: var(--layoutPadTop);
     }
 
     .modal .modal-header-img img {
