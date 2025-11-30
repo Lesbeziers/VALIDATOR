@@ -1103,6 +1103,7 @@
       "MOD_DESTACADOS3_SIL": "MOD DES. 3 SIL",
       "MOD_DESTACADOS4": "MOD DES. 4",
       "MOD_DESTACADOS4_SIL": "MOD DES. 4 SIL",
+      "MOD_N": "MOD N",
       "MUX4_FONDO": "MUX 4 FONDO",
       "MUX4_TXT": "MUX TXT",
       "SMARTPHONE_MUX_FONDO": "SPH. MUX FONDO",
@@ -1140,6 +1141,14 @@
       "MOD_DESTACADOS2_SIL": { w: 863, h: 400, mode: "exact", maxMB: 1 },
       "MOD_DESTACADOS3": { w: 526, h: 296, mode: "exact", maxMB: 1 },
       "MOD_DESTACADOS3_SIL": { w: 584, h: 400, mode: "exact", maxMB: 1 },
+      "MOD_N": {
+        options: [
+          { w: 386, h: 217 },
+          { w: 385, h: 217 }
+        ],
+        mode: "list",
+        maxMB: 0.6
+      },
       "MUX4_FONDO": { w: 1920, h: 1080, mode: "exact", maxMB: 1.5 },
       "MUX4_TXT": { w: 784, h: 318, mode: "exact", maxMB: 0.6 },
       "SMARTPHONE_MUX_FONDO": { w: 1440, h: 2986, mode: "exact", maxMB: 1.5 },
@@ -1194,6 +1203,7 @@
   { key: "MOD_DESTACADOS2", aliases: ["MOD_DESTACADOS2", "MOD_DESTACADO2"] },
   { key: "MOD_DESTACADOS3", aliases: ["MOD_DESTACADOS3", "MOD_DESTACADO3"] },
   { key: "MOD_DESTACADOS4", aliases: ["MOD_DESTACADOS4", "MOD_DESTACADO4"] },
+  { key: "MOD_N", aliases: ["MOD_N"] },
 
   { key: "APPLETV", aliases: ["APPLETV"] },
   { key: "199", aliases: ["199"] },
@@ -1662,6 +1672,11 @@ function setLogoState(on) {
        /* Cambio dinámico MOCKUP ↔ ZONAS DE SEGURIDAD */
       function updateMockupLabel(key) {
         const ku = (key || "").toUpperCase();
+		  
+        if (ku === "MOD_N") {
+          mockupText.textContent = "ZONA DE SEGURIDAD";
+          return;
+        }
 
         // Formatos que SÍ deben llamarse MOCKUP
         const mockupFormats = new Set([
@@ -2539,6 +2554,7 @@ if (shouldShowLogoSwitch(key || "")) {
         { title: "MOD_DESTACADOS2_SIL", overlay: "MOD_DESTACADO2_SIL_Check.png" },
         { title: "MOD_DESTACADOS3", overlay: "MOD_DESTACADO3_Check.png" },
         { title: "MOD_DESTACADOS3_SIL", overlay: "MOD_DESTACADO3_SIL_Check.png" },
+        { title: "MOD_N", overlay: "MOD_N_Checker.png" },
         { title: "MUX4_FONDO", overlay: "MUX4_FONDO_TXT_PUBLI.png" },
         { title: "MUX4_TXT", overlay: "MUX4_TXT_Check.png" },
         { title: "SMARTPHONE_MUX_FONDO", overlay: "SMARTPHONE_MUX_FONDO_TXT_Check.png"},
