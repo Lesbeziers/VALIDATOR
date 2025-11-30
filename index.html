@@ -2492,6 +2492,27 @@ if (shouldShowLogoSwitch(key || "")) {
           recalcCommentsLayout();
         }
 
+        function resetPresetPanel() {
+          // Ocultar panel
+          isPresetPanelOpen = false;
+          presetPanel.style.display = "none";
+          presetToggleBtn.classList.remove("is-active");
+          
+          // Resetear categoría activa
+          activeCategory = "";
+          
+          // Limpiar buscador
+          presetSearch.value = "";
+          
+          // Limpiar lista de mensajes
+          presetList.innerHTML = "";
+          
+          // Re-renderizar categorías sin ninguna activa
+          renderPresetCategories();
+          
+          recalcCommentsLayout();
+        }
+
         function renderPresetCategories() {
           presetCategories.innerHTML = "";
           Object.keys(PRESET_CATEGORIES).forEach(cat => {
@@ -2571,12 +2592,15 @@ if (shouldShowLogoSwitch(key || "")) {
           if (fname) saveCommentsFor(fname, txt);
 
           showPresetFeedback("");
-          recalcCommentsLayout();
+          
+          // Resetear todo el panel de presets al estado inicial
+          resetPresetPanel();
         }
 
         presetToggleBtn.addEventListener("click", () => {
           if (isPresetPanelOpen) {
-            setPresetPanelVisibility(false);
+            // Si está abierto, resetear todo al estado inicial
+            resetPresetPanel();
             return;
           }
 
