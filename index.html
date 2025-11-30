@@ -105,10 +105,11 @@
       z-index: 10;
       display: none;
       overflow: hidden;
+      flex-direction: column;
     }
 
     .modal.open {
-      display: block;
+      display: flex;
     }
 
     .close {
@@ -132,14 +133,14 @@
        LAYOUT MODAL
     ============================ */
     .modal-layout {
-      position: absolute;
-      inset: 0;
+      position: relative;
       padding: var(--padTop) var(--pad) var(--pad);
       display: grid;
       grid-template-columns: var(--sidebarW) 1fr;
       gap: var(--gap);
       min-height: 0;
-      height: 100%;
+      height: auto;
+      flex: 1;
       transition:
         grid-template-columns var(--swapDur) var(--swapEase),
         padding var(--swapDur) var(--swapEase),
@@ -938,11 +939,15 @@
        CABECERA SITE
     ============================ */
     .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 24;
       width: 100%;
       display: flex;
       justify-content: center;
-      padding: 20px 0;
+      padding: 20px 0 12px;
       background: #000;
+      margin-bottom: 12px;
     }
 
     .site-header img {
@@ -952,19 +957,17 @@
     }
 
     .modal .modal-header-img {
-      position: absolute;
+      position: sticky;
       top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      padding: 12px 0;
-      width: auto;
+      left: 0;
+      transform: none;
+      z-index: 24;
+      padding: 20px 0 12px;
+      width: 100%;
     }
 
     .modal .modal-header-img img {
-      width: 500px !important;
-      max-width: 500px !important;
-      height: auto;
+      max-width: 700px;
     }
   </style>
 </head>
