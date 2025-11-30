@@ -113,9 +113,10 @@
     }
 
     .close {
-      position: fixed;
-      top: 20px;
-      right: 30px;
+      position: absolute;
+      top: 50%;
+      right: 24px;
+      transform: translateY(-50%);
       font-size: 32px;
       font-weight: 800;
       cursor: pointer;
@@ -945,7 +946,7 @@
       width: 100%;
       display: flex;
       justify-content: center;
-      padding: 20px 0 12px;
+      padding: 20px 0 20px;
       background: #000;
       margin-bottom: 12px;
     }
@@ -964,6 +965,18 @@
       z-index: 24;
       padding: 20px 0 12px;
       width: 100%;
+    }
+	  
+    .modal .modal-header-img {
+      padding-right: 68px;
+    }
+
+    .modal .modal-header-img .close {
+      right: 32px;
+    }
+
+    .modal .modal-layout {
+      padding-top: 24px;
     }
 
     .modal .modal-header-img img {
@@ -992,8 +1005,8 @@
   <div id="myModal" class="modal" aria-hidden="true">
     <header class="site-header modal-header-img">
       <img src="img/Cabecera_Negra.jpg" alt="Cabecera" />
+      <span class="close" id="closeBtn" aria-label="Cerrar">×</span>
     </header>
-    <span class="close" id="closeBtn" aria-label="Cerrar">×</span>
 
     <div class="modal-layout" id="layout">
       <button
