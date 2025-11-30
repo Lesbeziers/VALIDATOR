@@ -1121,6 +1121,7 @@
       "DESTACADO_DOBLE1": "DESTACADO DOBLE 1",
       "DESTACADO_DOBLE1_SIL": "DESTACADO DOBLE 1 SIL",
       "DESTACADO_DOBLE2": "DESTACADO DOBLE 2",
+      "DESTACADO_DOBLE4_SIL": "DESTACADO DOBLE 4 SIL",
       "DESTACADO_DOBLE4": "DESTACADO DOBLE 4",
     };
 
@@ -1161,6 +1162,14 @@
       "DESTACADO_DOBLE1_SIL": { w: 1636, h: 630, mode: "exact", maxMB: 1 },
       "DESTACADO_DOBLE2": { w: 803, h: 548, mode: "exact", maxMB: 1 },
       "DESTACADO_DOBLE2_SIL": { w: 803, h: 630, mode: "exact", maxMB: 1 },
+      "DESTACADO_DOBLE4_SIL": {
+        options: [
+          { w: 386, h: 630 },
+          { w: 385, h: 630 }
+        ],
+        mode: "list",
+        maxMB: 1
+      },
       "DESTACADO_DOBLE4": {
         options: [
           { w: 386, h: 548 },
@@ -1212,6 +1221,7 @@
   { key: "DESTACADO_DOBLE1_SIL", aliases: ["DESTACADO_DOBLE1_SIL", "DESTACADO_DOBLE_SIL_1"] },
   { key: "DESTACADO_DOBLE2", aliases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
   { key: "DESTACADO_DOBLE2_SIL", aliases: ["DESTACADO_DOBLE2_SIL", "DESTACADO_DOBLE_SIL_2", "DESTACADO2_DOBLE_SIL"] },
+  { key: "DESTACADO_DOBLE4_SIL", aliases: ["DESTACADO_DOBLE4_SIL", "DESTACADO_DOBLE_SIL_4"] },
   { key: "DESTACADO_DOBLE4", aliases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] }
 
 
@@ -1236,7 +1246,8 @@ function checkName(n) {
   { key: "MOD_DESTACADOS3_SIL", bases: ["MOD_DESTACADOS3", "MOD_DESTACADO3"] },
   { key: "MOD_DESTACADOS4_SIL", bases: ["MOD_DESTACADOS4", "MOD_DESTACADO4"] },
   { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
-  { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] }
+  { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
+  { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] }	
 ];
 
 
@@ -1698,7 +1709,8 @@ function setLogoState(on) {
   k === "DESTACADO_DOBLE1_SIL" ||
   k === "DESTACADO_DOBLE2" ||
   k === "DESTACADO_DOBLE2_SIL" ||
-  k === "DESTACADO_DOBLE4"
+  k === "DESTACADO_DOBLE4" ||
+  k === "DESTACADO_DOBLE4_SIL"
 ) {
     txtText.textContent = "ZONA DE SEGURIDAD";
     return;
@@ -1969,7 +1981,8 @@ const shouldShowTxtSwitch = k => {
     ku === "DESTACADO_DOBLE1_SIL" ||
     ku === "DESTACADO_DOBLE2" ||
     ku === "DESTACADO_DOBLE2_SIL" ||
-    ku === "DESTACADO_DOBLE4"
+    ku === "DESTACADO_DOBLE4" ||
+    ku === "DESTACADO_DOBLE4_SIL"
   );
 };
 
@@ -2550,7 +2563,8 @@ if (shouldShowLogoSwitch(key || "")) {
         { title: "DESTACADO_DOBLE1_SIL", overlay: "MOD_DES_DOBLE_SIL_1_Checker.png" },
         { title: "DESTACADO_DOBLE2", overlay: "MOD_DES_DOBLE_2_Checker.png" },
         { title: "DESTACADO_DOBLE2_SIL", overlay: "MOD_DES_DOBLE_SIL_2_Checker.png" },
-        { title: "DESTACADO_DOBLE4", overlay: "MOD_DES_DOBLE_4_Checker.png" }
+        { title: "DESTACADO_DOBLE4", overlay: "MOD_DES_DOBLE_4_Checker.png" },
+        { title: "DESTACADO_DOBLE4_SIL", overlay: "MOD_DES_DOBLE_SIL_4_Checker.png" }
       ];
 
 
@@ -2574,11 +2588,12 @@ if (shouldShowLogoSwitch(key || "")) {
 		["CC_H", "CARTEL_COM_H"],
 		["CC_V", "CARTEL_COM_V"],
 		["SONY", "_SONY"],
-		["DESTACADO_DOBLE_SIL_1", "DESTACADO_DOBLE1_SIL"],
-		["DESTACADO_DOBLE_SIL_2", "DESTACADO_DOBLE2_SIL"],
-		["DESTACADO2_DOBLE_SIL", "DESTACADO_DOBLE2_SIL"],
-		["DESTACADO_DOBLE_4", "DESTACADO_DOBLE4"]
-	]);
+                ["DESTACADO_DOBLE_SIL_1", "DESTACADO_DOBLE1_SIL"],
+                ["DESTACADO_DOBLE_SIL_2", "DESTACADO_DOBLE2_SIL"],
+                ["DESTACADO2_DOBLE_SIL", "DESTACADO_DOBLE2_SIL"],
+                ["DESTACADO_DOBLE_4", "DESTACADO_DOBLE4"],
+                ["DESTACADO_DOBLE_SIL_4", "DESTACADO_DOBLE4_SIL"]
+        ]);
 
 
       const TITLE_ALIASES = new Map([
@@ -2675,7 +2690,8 @@ if (shouldShowLogoSwitch(key || "")) {
   { key: "MOD_DESTACADOS3_SIL", bases: ["MOD_DESTACADOS3", "MOD_DESTACADO3"] },
   { key: "MOD_DESTACADOS4_SIL", bases: ["MOD_DESTACADOS4", "MOD_DESTACADO4"] },
   { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
-  { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] }
+  { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
+  { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] }
 ];
 
 
@@ -3766,6 +3782,55 @@ if (key === "DESTACADO_DOBLE1_SIL") {
       if (!isLive(mainImg)) return;
       if (lastFailSib === srcS) lastFailSib = "";
       // El checker cubre exactamente el arte DESTACADO_DOBLE1_SIL
+      fitOverlayFill(sibOv, mainImg);
+    };
+
+    if (sibOv.getAttribute("src") !== srcS)
+      sibOv.setAttribute("src", srcS);
+
+    // Primera colocación inmediata
+    fitOverlayFill(sibOv, mainImg);
+    sibOv.style.display = "";
+  } else {
+    sibOv.removeAttribute("src");
+    sibOv.style.display = "none";
+  }
+
+  // Observers solo para el checker
+  disconnectObservers();
+
+  roSib = new ResizeObserver(() =>
+    fitOverlayFill(sibOv, mainImg)
+  );
+
+  roSib.observe(mainImg);
+  roSib.observe(mainImg.parentElement);
+
+  return;
+}
+		  
+/* ==========================================
+   CASO DESTACADO_DOBLE4_SIL (checker simple con botón ZONA DE SEGURIDAD / TXT)
+========================================== */
+if (key === "DESTACADO_DOBLE4_SIL") {
+  const file = KEY_TO_OVERLAY.get("DESTACADO_DOBLE4_SIL");
+
+  // No usamos overlay base en este formato
+  baseOv.removeAttribute("src");
+  baseOv.style.display = "none";
+
+  if (file) {
+    const srcS = `${OVERLAY_BASE}/${file}`;
+
+    sibOv.onerror = () => {
+      lastFailSib = srcS;
+      sibOv.style.display = "none";
+    };
+
+    sibOv.onload = () => {
+      if (!isLive(mainImg)) return;
+      if (lastFailSib === srcS) lastFailSib = "";
+      // El checker cubre exactamente el arte DESTACADO_DOBLE4_SIL
       fitOverlayFill(sibOv, mainImg);
     };
 
