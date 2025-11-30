@@ -70,7 +70,7 @@
       background: #000;
       color: #fff;
       font-family: "Apercu Regular", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    }      min-height: 100vh;
+    } min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
@@ -83,13 +83,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px 48px;
+      padding: 32px 16px 48px;
+      min-height: calc(100vh - (var(--headerH) + 40px));
     }
 	  
     #drop-area {
-      border: 10px solid #fff;
-      width: min(70vw, 420px);
-      max-width: calc(100vw - 48px);
+      width: min(49vw, 294px);
+      max-width: calc((100vw - 48px) * .7);
+      max-height: calc((100vh - 220px) * .7);
       max-height: calc(100vh - 220px);
       aspect-ratio: 1 / 1;
       display: flex;
@@ -100,6 +101,7 @@
       cursor: pointer;
       text-align: center;
       transition: border-color .2s ease;
+      font-size: clamp(12px, 2vw, 16px);
     }
 
     #drop-area:hover,
