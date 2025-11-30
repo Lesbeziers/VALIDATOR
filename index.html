@@ -933,10 +933,47 @@
         font-size: 9px;
       }
     }
+
+    /* ===========================
+       CABECERA SITE
+    ============================ */
+    .site-header {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      background: #000;
+    }
+
+    .site-header img {
+      max-width: 400px;
+      height: auto;
+      display: block;
+    }
+
+    .modal-header-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      padding: 10px 0;
+    }
+
+    .modal-header-img img {
+      max-width: 300px;
+    }
   </style>
 </head>
 
 <body>
+
+  <!-- ===========================
+       CABECERA
+  ============================ -->
+  <header class="site-header">
+    <img src="img/Cabecera_Negra.jpg" alt="Cabecera" />
+  </header>
 
   <!-- ===========================
        DROPZONE
@@ -947,6 +984,9 @@
        MODAL PRINCIPAL
   ============================ -->
   <div id="myModal" class="modal" aria-hidden="true">
+    <header class="site-header modal-header-img">
+      <img src="img/Cabecera_Negra.jpg" alt="Cabecera" />
+    </header>
     <span class="close" id="closeBtn" aria-label="Cerrar">×</span>
 
     <div class="modal-layout" id="layout">
