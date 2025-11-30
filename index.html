@@ -1103,6 +1103,7 @@
       "MOD_DESTACADOS3_SIL": "MOD DES. 3 SIL",
       "MOD_DESTACADOS4": "MOD DES. 4",
       "MOD_DESTACADOS4_SIL": "MOD DES. 4 SIL",
+      "MOD_N_SIL": "MOD N SIL",
       "MOD_N": "MOD N",
       "MUX4_FONDO": "MUX 4 FONDO",
       "MUX4_TXT": "MUX TXT",
@@ -1149,6 +1150,7 @@
         mode: "list",
         maxMB: 0.6
       },
+      "MOD_N_SIL": { w: 449, h: 300, mode: "exact", maxMB: 0.6 },
       "MUX4_FONDO": { w: 1920, h: 1080, mode: "exact", maxMB: 1.5 },
       "MUX4_TXT": { w: 784, h: 318, mode: "exact", maxMB: 0.6 },
       "SMARTPHONE_MUX_FONDO": { w: 1440, h: 2986, mode: "exact", maxMB: 1.5 },
@@ -1197,6 +1199,7 @@
   { key: "MOD_DESTACADOS2_SIL", aliases: ["MOD_DESTACADOS2_SIL"] },
   { key: "MOD_DESTACADOS3_SIL", aliases: ["MOD_DESTACADOS3_SIL"] },
   { key: "MOD_DESTACADOS4_SIL", aliases: ["MOD_DESTACADOS4_SIL"] },
+  { key: "MOD_N_SIL", aliases: ["MOD_N_SIL"] },
 
   // Variantes sin "S": MOD_DESTACADO1/2/3/4
   { key: "MOD_DESTACADOS1", aliases: ["MOD_DESTACADOS1", "MOD_DESTACADO1"] },
@@ -1245,11 +1248,22 @@
 
     /* Caracteres permitidos alrededor del patrón */
     const AB = new Set(["", "_", "-", " ", "."]);
-function checkName(n) {
+ 
+    const endsWithSil = s => {
+      const idx = s.lastIndexOf("_SIL");
+      if (idx === -1) return false;
+
+      const tail = s.slice(idx + 4);
+      return /^(\.[A-Z0-9]+)?(?:[?#].*)?$/i.test(tail);
+    };
+    
+    function checkName(n) {
   const u = String(n || "").toUpperCase();
 
   // 1) Caso especial *_SIL*
   if (u.includes("_SIL")) {
+    if (!endsWithSil(u)) return null;
+
     const BASES = [
   { key: "MOD_DESTACADOS1_SIL", bases: ["MOD_DESTACADOS1", "MOD_DESTACADO1"] },
   { key: "MOD_DESTACADOS2_SIL", bases: ["MOD_DESTACADOS2", "MOD_DESTACADO2"] },
@@ -1257,7 +1271,8 @@ function checkName(n) {
   { key: "MOD_DESTACADOS4_SIL", bases: ["MOD_DESTACADOS4", "MOD_DESTACADO4"] },
   { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
   { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
-  { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] }	
+  { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] },
+  { key: "MOD_N_SIL", bases: ["MOD_N"] }
 ];
 
 
@@ -1673,7 +1688,7 @@ function setLogoState(on) {
       function updateMockupLabel(key) {
         const ku = (key || "").toUpperCase();
 		  
-        if (ku === "MOD_N") {
+        if (ku === "MOD_N" || ku === "MOD_N_SIL") {
           mockupText.textContent = "ZONA DE SEGURIDAD";
           return;
         }
@@ -2554,6 +2569,7 @@ if (shouldShowLogoSwitch(key || "")) {
         { title: "MOD_DESTACADOS2_SIL", overlay: "MOD_DESTACADO2_SIL_Check.png" },
         { title: "MOD_DESTACADOS3", overlay: "MOD_DESTACADO3_Check.png" },
         { title: "MOD_DESTACADOS3_SIL", overlay: "MOD_DESTACADO3_SIL_Check.png" },
+        { title: "MOD_N_SIL", overlay: "MOD_N_SIL_Checker.png" },
         { title: "MOD_N", overlay: "MOD_N_Checker.png" },
         { title: "MUX4_FONDO", overlay: "MUX4_FONDO_TXT_PUBLI.png" },
         { title: "MUX4_TXT", overlay: "MUX4_TXT_Check.png" },
@@ -2687,7 +2703,8 @@ if (shouldShowLogoSwitch(key || "")) {
         if (img?.alt) parts.push(img.alt);
         if (img?.src) parts.push(img.src);
 
-        const H = parts.join(" | ").toUpperCase();
+        const partsUp = parts.map(p => String(p || "").toUpperCase());
+        const H = partsUp.join(" | ");
 
         // 0) PERFIL: si aparece _PERFIL en cualquier parte del nombre,
         //    forzamos siempre este formato (igual que hace checkName)
@@ -2697,7 +2714,10 @@ if (shouldShowLogoSwitch(key || "")) {
 
         // 1) CASO ESPECIAL _SIL CON BASURA EN MEDIO
         //    Ej.: MOD_DESTACADOS1_V1_IZQ_SIL, _MOD_DESTACADO3_PRE_SIL, etc.
-               if (H.includes("_SIL")) {
+               const silSource = partsUp.find(p => p.includes("_SIL"));
+               if (silSource) {
+          if (!endsWithSil(silSource)) return null;
+
           const SIL_BASES = [
   { key: "MOD_DESTACADOS1_SIL", bases: ["MOD_DESTACADOS1", "MOD_DESTACADO1"] },
   { key: "MOD_DESTACADOS2_SIL", bases: ["MOD_DESTACADOS2", "MOD_DESTACADO2"] },
