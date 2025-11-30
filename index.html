@@ -2539,10 +2539,6 @@ if (shouldShowLogoSwitch(key || "")) {
           const end = commentArea.value.length;
           commentArea.setSelectionRange(end, end);
 
-          commentArea.focus();
-          const end = commentArea.value.length;
-          commentArea.setSelectionRange(end, end);
-
           const fname = getCurrentFileName();
           if (fname) saveCommentsFor(fname, txt);
 
