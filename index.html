@@ -635,12 +635,19 @@
       color: var(--brand);
     }
 
+    .preset-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
     .preset-toggle {
-      background: #111;
+      background: #141414;
       border: 1px solid #1e1e1e;
       border-radius: 10px;
       color: #fff;
-      padding: 10px 14px;
+      padding: 7px 14px;
       font-family: "Apercu Bold";
       font-size: 12px;
       letter-spacing: .4px;
@@ -648,6 +655,9 @@
       cursor: pointer;
       white-space: nowrap;
       transition: border-color .2s, background .2s;
+      display: inline-flex;
+      align-items: center;
+      height: 36px;
     }
 
     .preset-toggle.is-active {
@@ -656,27 +666,25 @@
     }
 
     .preset-search {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .preset-select {
       flex: 1;
-      background: #0d0d0d;
+      height: 36px;
+      background: #141414;
       border: 1px solid #1e1e1e;
       border-radius: 10px;
       color: #fff;
-      padding: 10px 12px;
+      padding: 7px 12px;
       font-family: "Apercu Regular";
       font-size: 13px;
+      font-weight: 400;
       outline: none;
-      background-image:
     }
 
     .preset-search:focus {
       border-color: #2a2a2a;
+    }
+
+    .preset-search::placeholder {
+      color: #d0d0d0;
     }
     .preset-panel {
       margin-top: 10px;
@@ -986,8 +994,8 @@
                   type="text"
                   id="presetSearch"
                   class="preset-search"
-                  placeholder="Búsqueda predefinidos"
-                  aria-label="Búsqueda predefinidos"
+                  placeholder="Búsqueda"
+                  aria-label="Búsqueda"
                 />
               </div>
 
@@ -2435,7 +2443,6 @@ if (shouldShowLogoSwitch(key || "")) {
            PRESETS
         ========================================== */
         let fbTimer = null;
-        let searchTerm = "";
 
         function showPresetFeedback(msg) {
           presetFeedback.textContent = msg || "";
@@ -2476,6 +2483,8 @@ if (shouldShowLogoSwitch(key || "")) {
             });
             presetCategories.appendChild(btn);
           });
+
+        }
 
         function renderPresetList(items) {
           presetList.innerHTML = "";
@@ -2526,6 +2535,14 @@ if (shouldShowLogoSwitch(key || "")) {
 
           commentArea.value = txt;
 
+          commentArea.focus();
+          const end = commentArea.value.length;
+          commentArea.setSelectionRange(end, end);
+
+          commentArea.focus();
+          const end = commentArea.value.length;
+          commentArea.setSelectionRange(end, end);
+
           const fname = getCurrentFileName();
           if (fname) saveCommentsFor(fname, txt);
 
@@ -2549,11 +2566,11 @@ if (shouldShowLogoSwitch(key || "")) {
 
         presetSearch.addEventListener("input", e => {
           const raw = e.target.value;
-          searchTerm = raw.trim().toLowerCase();
+          const term = raw.trim().toLowerCase();
 
           if (raw.length) {
             if (!isPresetPanelOpen) setPresetPanelVisibility(true);
-            renderSearchResults(searchTerm);
+            renderSearchResults(term);
           } else {
             if (isPresetPanelOpen) {
               renderCategoryView();
