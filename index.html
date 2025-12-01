@@ -1930,7 +1930,12 @@ function setLogoState(on) {
        /* Cambio dinámico MOCKUP ↔ ZONAS DE SEGURIDAD */
       function updateMockupLabel(key) {
         const ku = (key || "").toUpperCase();
-		  
+
+        if (ku === "AD_PAUSE") {
+          mockupText.textContent = "FONDO";
+          return;
+        }
+  
         if (ku === "MOD_N" || ku === "MOD_N_SIL") {
           mockupText.textContent = "ZONA DE SEGURIDAD";
           return;
@@ -1943,8 +1948,7 @@ function setLogoState(on) {
           "FANART_MOVIL",
           "MUX4_FONDO",
           "SMARTPHONE_MUX_FONDO",
-          "AMAZON_BG",
-          "AD_PAUSE"
+          "AMAZON_BG"
         ]);
 
         mockupText.textContent = mockupFormats.has(ku)
@@ -3190,6 +3194,55 @@ if (shouldShowLogoSwitch(key || "")) {
         ov.style.height = ir.height + "px";
       }
 
+      function fitAdPause(mainImg, baseOv) {
+        if (!isLive(mainImg) || !isLive(baseOv)) return;
+
+        const parent = mainImg.parentElement;
+        if (!isLive(parent)) return;
+
+        const pr = parent.getBoundingClientRect();
+        const bgW = baseOv.naturalWidth || 0;
+        const bgH = baseOv.naturalHeight || 0;
+
+        if (pr.width <= 0 || pr.height <= 0 || !bgW || !bgH) return;
+
+        const factor = Math.min(pr.width / bgW, pr.height / bgH);
+
+        const scaledBgW = bgW * factor;
+        const scaledBgH = bgH * factor;
+        const leftBg = (pr.width - scaledBgW) / 2;
+        const topBg = (pr.height - scaledBgH) / 2;
+
+        Object.assign(baseOv.style, {
+          width: `${scaledBgW}px`,
+          height: `${scaledBgH}px`,
+          left: `${leftBg}px`,
+          top: `${topBg}px`,
+          objectFit: "fill",
+          objectPosition: "center"
+        });
+
+        const cw = mainImg.naturalWidth || 0;
+        const ch = mainImg.naturalHeight || 0;
+
+        if (!cw || !ch) return;
+
+        const scaledCW = cw * factor;
+        const scaledCH = ch * factor;
+        const leftC = (pr.width - scaledCW) / 2;
+        const topC = (pr.height - scaledCH) / 2;
+
+        Object.assign(mainImg.style, {
+          position: "absolute",
+          width: `${scaledCW}px`,
+          height: `${scaledCH}px`,
+          left: `${leftC}px`,
+          top: `${topC}px`,
+          objectFit: "fill",
+          zIndex: "2"
+        });
+      }
+
 // FANART_MOVIL – overlay más alto que la imagen (1440x3117 sobre 1440x2986)
 function fitOverlayFanartMovil(ov, img) {
   if (!isLive(ov) || !isLive(img) || !isLive(img.parentElement)) return;
@@ -3523,6 +3576,11 @@ const OFFSET_Y = 65;    // arriba/abajo
         baseOv.style.objectFit = "fill";
         mainImg.style.position = "";
         mainImg.style.zIndex = "";
+        mainImg.style.left = "";
+        mainImg.style.top = "";
+        mainImg.style.width = "";
+        mainImg.style.height = "";
+        mainImg.style.objectFit = "";
 
         if (!key) {
           disconnectObservers();
@@ -3549,13 +3607,13 @@ const OFFSET_Y = 65;    // arriba/abajo
             baseOv.onload = () => {
               if (!isLive(mainImg)) return;
               if (lastFailBase === srcB) lastFailBase = "";
-              fitOverlayFill(baseOv, mainImg);
+              fitAdPause(mainImg, baseOv);
             };
 
             if (baseOv.getAttribute("src") !== srcB)
               baseOv.setAttribute("src", srcB);
 
-            fitOverlayFill(baseOv, mainImg);
+            fitAdPause(mainImg, baseOv);
             baseOv.style.display = "";
           } else {
             baseOv.removeAttribute("src");
@@ -3566,18 +3624,19 @@ const OFFSET_Y = 65;    // arriba/abajo
           sibOv.style.display = "none";
 
           Object.assign(mainImg.style, {
-            position: "relative",
+            position: "absolute",
             zIndex: "2"
           });
 
           disconnectObservers();
 
           roBase = new ResizeObserver(() =>
-            fitOverlayFill(baseOv, mainImg)
+            fitAdPause(mainImg, baseOv)
           );
 
-          roBase.observe(mainImg);
           roBase.observe(mainImg.parentElement);
+			
+          if (baseOv) roBase.observe(baseOv);
 
           return;
         }
