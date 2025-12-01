@@ -474,14 +474,14 @@
       padding: var(--viewerPad);
     }
 
-#preview {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;         /* ← NUEVO: referencia para los absolutos */
-}
+      #preview {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative; /* ← NUEVO: referencia para los absolutos */
+      }
 
     /* Modo especial AMAZON_BG: imagen pegada arriba */
     .viewer-inner.amazon-mode {
@@ -1181,17 +1181,16 @@
           </div>
         </div>
 
-          <div class="viewer-inner" id="viewerInner">
-            <div id="preview"></div>
-          </div>
+        <div class="viewer-inner" id="viewerInner">
+          <div id="preview"></div>
+        </div>
 
 <!-- Mensaje solo para AMAZON_LOGO -->
         <div id="amazonLogoNote" class="amazon-logo-note" style="display:none;">
-          El contenido debe estar alienado a la esquina superior izquierda.
+          El contenido debe estar alineado a la esquina superior izquierda.
         </div>
 
-
-                <div class="viewer-footer">
+        <div class="viewer-footer">
 
           <div id="switchGroup" class="switch-group">
             <!-- MOCKUP -->
