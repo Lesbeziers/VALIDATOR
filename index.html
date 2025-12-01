@@ -1942,7 +1942,8 @@ function setLogoState(on) {
           "FANART_MOVIL",
           "MUX4_FONDO",
           "SMARTPHONE_MUX_FONDO",
-          "AMAZON_BG"
+          "AMAZON_BG",
+          "AD_PAUSE"
         ]);
 
         mockupText.textContent = mockupFormats.has(ku)
@@ -2946,6 +2947,7 @@ if (shouldShowLogoSwitch(key || "")) {
         { title: "TITULO_FICHA", overlay: "TITULO_FICHA_Checker.png" },
         { title: "CARTEL_COM_H", overlay: "CC_H_Checker.png" },
         { title: "CARTEL_COM_V", overlay: "CC_V_Checker.png" },
+        { title: "AD_PAUSE", overlay: "fondo_ad.jpg" },
         { title: "CARATULA_V", overlay: "MARCA_CARATULA_V.png" },
         { title: "CARATULA_V_TXT", overlay: "CARATULA_V_Checker.png" },
         { title: "CARATULA_H", overlay: "MARCA_CARATULA_H.png" },
@@ -3516,11 +3518,68 @@ const OFFSET_Y = 65;    // arriba/abajo
         baseOv.style.display = "none";
         sibOv.style.display = "none";
 
+        baseOv.style.zIndex = "3";
+        baseOv.style.objectFit = "fill";
+        mainImg.style.position = "";
+        mainImg.style.zIndex = "";
+
         if (!key) {
           disconnectObservers();
           return;
         }
 
+        /* ==========================================
+           CASO AD_PAUSE (mockup de fondo)
+        ========================================== */
+        if (key === "AD_PAUSE") {
+          const baseFile = KEY_TO_OVERLAY.get("AD_PAUSE");
+
+          baseOv.style.zIndex = "1";
+          baseOv.style.objectFit = "contain";
+
+          if (baseFile) {
+            const srcB = `${OVERLAY_BASE}/${baseFile}`;
+
+            baseOv.onerror = () => {
+              lastFailBase = srcB;
+              baseOv.style.display = "none";
+            };
+
+            baseOv.onload = () => {
+              if (!isLive(mainImg)) return;
+              if (lastFailBase === srcB) lastFailBase = "";
+              fitOverlayFill(baseOv, mainImg);
+            };
+
+            if (baseOv.getAttribute("src") !== srcB)
+              baseOv.setAttribute("src", srcB);
+
+            fitOverlayFill(baseOv, mainImg);
+            baseOv.style.display = "";
+          } else {
+            baseOv.removeAttribute("src");
+            baseOv.style.display = "none";
+          }
+
+          sibOv.removeAttribute("src");
+          sibOv.style.display = "none";
+
+          Object.assign(mainImg.style, {
+            position: "relative",
+            zIndex: "2"
+          });
+
+          disconnectObservers();
+
+          roBase = new ResizeObserver(() =>
+            fitOverlayFill(baseOv, mainImg)
+          );
+
+          roBase.observe(mainImg);
+          roBase.observe(mainImg.parentElement);
+
+          return;
+        }
         /* ==========================================
            CASO MUX4_FONDO
         ========================================== */
