@@ -3235,10 +3235,12 @@ if (shouldShowLogoSwitch(key || "")) {
 
         if (!cw || !ch) return;
 
-        const scaledCW = cw * factor;
-        const scaledCH = ch * factor;
-        const leftC = (pr.width - scaledCW) / 2;
-        const topC = (pr.height - scaledCH) / 2;
+        const offsetX = 320 * factor;
+        const offsetY = 98 * factor;
+        const scaledCW = 1280 * factor;
+        const scaledCH = 720 * factor;
+        const leftC = leftBg + offsetX;
+        const topC = topBg + offsetY;
 
         Object.assign(mainImg.style, {
           position: "absolute",
