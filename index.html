@@ -474,14 +474,14 @@
       padding: var(--viewerPad);
     }
 
-      #preview {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative; /* ← NUEVO: referencia para los absolutos */
-      }
+#preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;         /* ← NUEVO: referencia para los absolutos */
+}
 
     /* Modo especial AMAZON_BG: imagen pegada arriba */
     .viewer-inner.amazon-mode {
@@ -1181,18 +1181,32 @@
           </div>
         </div>
 
-        <div class="viewer-inner" id="viewerInner">
-          <div id="preview"></div>
-        </div>
+          <div class="viewer-inner" id="viewerInner">
+            <div id="preview"></div>
+          </div>
 
 <!-- Mensaje solo para AMAZON_LOGO -->
         <div id="amazonLogoNote" class="amazon-logo-note" style="display:none;">
-          El contenido debe estar alineado a la esquina superior izquierda.
+          El contenido debe estar alienado a la esquina superior izquierda.
         </div>
 
-        <div class="viewer-footer">
+
+                <div class="viewer-footer">
 
           <div id="switchGroup" class="switch-group">
+            <!-- ZONA DE SEGURIDAD (solo AD_PAUSE) -->
+            <label
+              id="adPauseCheckerSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="adPauseCheckerToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="adPauseCheckerText">ZONA DE SEGURIDAD</span>
+            </label>
+
             <!-- MOCKUP -->
             <label
               id="mockupSwitch"
@@ -1204,6 +1218,19 @@
               <input type="checkbox" id="mockupToggle" checked />
               <span class="track"><span class="knob"></span></span>
               <span id="mockupText">MOCKUP</span>
+            </label>
+
+            <!-- PASTILLA PUBLI (solo AD_PAUSE) -->
+            <label
+              id="pastillaPubliSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="pastillaPubliToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="pastillaPubliText">PASTILLA PUBLI</span>
             </label>
 
             <!-- NIVEL (solo FANART) -->
@@ -1605,6 +1632,12 @@
       const mockupSwitch = qs("mockupSwitch");
       const mockupToggle = qs("mockupToggle");
 
+      const adPauseCheckerSwitch = qs("adPauseCheckerSwitch");
+      const adPauseCheckerToggle = qs("adPauseCheckerToggle");
+
+      const pastillaPubliSwitch = qs("pastillaPubliSwitch");
+      const pastillaPubliToggle = qs("pastillaPubliToggle");
+
       const txtSwitch = qs("txtSwitch");
       const txtToggle = qs("txtToggle");
 
@@ -1647,6 +1680,8 @@ const logoToggle = qs("logoToggle");
 
 
       window.focoOn = false;
+      window.adPauseCheckerOn = true;
+      window.pastillaPubliOn = true;
       window.LOADED_ITEMS = [];
 
       let totalToLoad = 0;
@@ -1959,11 +1994,6 @@ function setLogoState(on) {
       function updateTxtLabel(key) {
         const k = (key || "").toUpperCase();
 
-        if (k === "AD_PAUSE") {
-          txtText.textContent = "ZONA DE SEGURIDAD";
-          return;
-        }
-
         // MUX4_FONDO / SMARTPHONE_MUX_FONDO → TXT
         if (k === "MUX4_FONDO" || k === "SMARTPHONE_MUX_FONDO") {
           txtText.textContent = "TXT";
@@ -2235,6 +2265,36 @@ logoToggle.addEventListener("change", e =>
         document.dispatchEvent(new CustomEvent("v19-refresh"));
       });
 
+      // AD_PAUSE – switch ZONA DE SEGURIDAD
+      adPauseCheckerSwitch.addEventListener("click", () => {
+        const on = !adPauseCheckerToggle.checked;
+        setSwitchState(adPauseCheckerSwitch, adPauseCheckerToggle, on);
+        window.adPauseCheckerOn = on;
+        document.dispatchEvent(new CustomEvent("v19-refresh"));
+      });
+
+      adPauseCheckerToggle.addEventListener("change", e => {
+        const on = !!e.target.checked;
+        setSwitchState(adPauseCheckerSwitch, adPauseCheckerToggle, on);
+        window.adPauseCheckerOn = on;
+        document.dispatchEvent(new CustomEvent("v19-refresh"));
+      });
+
+      // AD_PAUSE – switch PASTILLA PUBLI
+      pastillaPubliSwitch.addEventListener("click", () => {
+        const on = !pastillaPubliToggle.checked;
+        setSwitchState(pastillaPubliSwitch, pastillaPubliToggle, on);
+        window.pastillaPubliOn = on;
+        document.dispatchEvent(new CustomEvent("v19-refresh"));
+      });
+
+      pastillaPubliToggle.addEventListener("change", e => {
+        const on = !!e.target.checked;
+        setSwitchState(pastillaPubliSwitch, pastillaPubliToggle, on);
+        window.pastillaPubliOn = on;
+        document.dispatchEvent(new CustomEvent("v19-refresh"));
+      });
+
       new MutationObserver(() => refreshSwitchVisibility()).observe(
         document.getElementById("preview"),
         {
@@ -2250,7 +2310,6 @@ logoToggle.addEventListener("change", e =>
 const shouldShowTxtSwitch = k => {
   const ku = (k || "").toUpperCase();
   return (
-    ku === "AD_PAUSE" ||	  
     ku === "MUX4_FONDO" ||
     ku === "SMARTPHONE_MUX_FONDO" ||
     ku === "CARATULA_V" ||
@@ -2266,6 +2325,10 @@ const shouldShowTxtSwitch = k => {
     ku === "DESTACADO_DOBLE4_SIL"
   );
 };
+
+const shouldShowAdPauseCheckerSwitch = k => (k || "").toUpperCase() === "AD_PAUSE";
+
+const shouldShowPastillaPubliSwitch = k => (k || "").toUpperCase() === "AD_PAUSE";
 
 
 
@@ -2369,6 +2432,20 @@ if ((key || "").toUpperCase() === "AMAZON_BG") {
 }
 
 setTxtState(true);
+
+// AD_PAUSE – switch ZONA DE SEGURIDAD
+setSwitchVisible(adPauseCheckerSwitch, shouldShowAdPauseCheckerSwitch(key || ""));
+if (shouldShowAdPauseCheckerSwitch(key || "")) {
+  setSwitchState(adPauseCheckerSwitch, adPauseCheckerToggle, true);
+  window.adPauseCheckerOn = true;
+}
+
+// AD_PAUSE – switch PASTILLA PUBLI
+setSwitchVisible(pastillaPubliSwitch, shouldShowPastillaPubliSwitch(key || ""));
+if (shouldShowPastillaPubliSwitch(key || "")) {
+  setSwitchState(pastillaPubliSwitch, pastillaPubliToggle, true);
+  window.pastillaPubliOn = true;
+}
 
         setSwitchVisible(focoSwitch, shouldShowFocoSwitch(key || ""));
         setSwitchState(focoSwitch, focoToggle, false);
@@ -3020,14 +3097,6 @@ if (shouldShowLogoSwitch(key || "")) {
         ["_MUX4_TXT", "MUX4_TXT"]
       ]);
 
-      const PLACE_AD_PAUSE = {
-        // Referencia del mockup fondo_ad.jpg (1920x1080). Ajusta offset.x/offset.y
-        // para mover la creatividad cargada dentro del mockup (en px relativos al
-        // archivo base).
-        ref: { w: 1920, h: 1080 },
-        offset: { x: 0, y: 0 }
-      };
-
       const PLACE_MUX4 = {
         OFF: {
           ref: { w: 1920, h: 1080 },
@@ -3207,7 +3276,7 @@ if (shouldShowLogoSwitch(key || "")) {
         ov.style.height = ir.height + "px";
       }
 
-      function fitAdPause(mainImg, baseOv, safetyOv) {
+      function fitAdPause(mainImg, baseOv) {
         if (!isLive(mainImg) || !isLive(baseOv)) return;
 
         const parent = mainImg.parentElement;
@@ -3235,22 +3304,26 @@ if (shouldShowLogoSwitch(key || "")) {
           objectPosition: "center"
         });
 
-        const cw = mainImg.naturalWidth || 0;
-        const ch = mainImg.naturalHeight || 0;
+        // Posición del rectángulo naranja dentro del fondo (1920x1080)
+        const orangeX = 322;  // px desde la izquierda
+        const orangeY = 98;   // px desde arriba
+        const orangeW = 1280; // ancho del área (imagen del coche)
+        const orangeH = 720;  // alto del área (imagen del coche)
 
-        if (!cw || !ch) return;
+        // Escalar posición y tamaño al factor actual
+        const scaledOrangeX = orangeX * factor;
+        const scaledOrangeY = orangeY * factor;
+        const scaledOrangeW = orangeW * factor;
+        const scaledOrangeH = orangeH * factor;
 
-        const offsetX = 320 * factor;
-        const offsetY = 98 * factor;
-        const scaledCW = 1280 * factor;
-        const scaledCH = 720 * factor;
-        const leftC = leftBg + offsetX + (1 * factor);
-        const topC = topBg + offsetY;
+        // Posicionar la imagen del coche sobre el rectángulo naranja
+        const leftC = leftBg + scaledOrangeX;
+        const topC = topBg + scaledOrangeY;
 
         Object.assign(mainImg.style, {
           position: "absolute",
-          width: `${scaledCW}px`,
-          height: `${scaledCH}px`,
+          width: `${scaledOrangeW}px`,
+          height: `${scaledOrangeH}px`,
           left: `${leftC}px`,
           top: `${topC}px`,
           objectFit: "fill",
@@ -3258,17 +3331,103 @@ if (shouldShowLogoSwitch(key || "")) {
         });
       }
 
-        if (isLive(safetyOv)) {
-          Object.assign(safetyOv.style, {
+      // AD_PAUSE Checker – overlay que se posiciona exactamente igual que la imagen del coche
+      function fitAdPauseChecker(checkerOv, mainImg, baseOv) {
+        if (!isLive(checkerOv) || !isLive(mainImg) || !isLive(baseOv)) return;
+
+        const parent = mainImg.parentElement;
+        if (!isLive(parent)) return;
+
+        const pr = parent.getBoundingClientRect();
+        const bgW = baseOv.naturalWidth || 0;
+        const bgH = baseOv.naturalHeight || 0;
+
+        if (pr.width <= 0 || pr.height <= 0 || !bgW || !bgH) return;
+
+        const factor = Math.min(pr.width / bgW, pr.height / bgH);
+
+        const scaledBgW = bgW * factor;
+        const scaledBgH = bgH * factor;
+        const leftBg = (pr.width - scaledBgW) / 2;
+        const topBg = (pr.height - scaledBgH) / 2;
+
+        // Posición del rectángulo naranja dentro del fondo (1920x1080)
+        const orangeX = 322;  // px desde la izquierda
+        const orangeY = 98;   // px desde arriba
+        const orangeW = 1280; // ancho del área
+        const orangeH = 720;  // alto del área
+
+        // Escalar posición y tamaño al factor actual
+        const scaledOrangeX = orangeX * factor;
+        const scaledOrangeY = orangeY * factor;
+        const scaledOrangeW = orangeW * factor;
+        const scaledOrangeH = orangeH * factor;
+
+        // Posicionar el checker exactamente igual que la imagen del coche
+        const leftC = leftBg + scaledOrangeX;
+        const topC = topBg + scaledOrangeY;
+
+        Object.assign(checkerOv.style, {
+          position: "absolute",
+          width: `${scaledOrangeW}px`,
+          height: `${scaledOrangeH}px`,
+          left: `${leftC}px`,
+          top: `${topC}px`,
+          objectFit: "fill"
+        });
+      }
+
+      // AD_PAUSE Pastilla Publi – overlay posicionado a 875px, 77px del fondo 1920x1080
+      function fitAdPausePastilla(pastillaOv, mainImg, baseOv) {
+        if (!isLive(pastillaOv) || !isLive(mainImg) || !isLive(baseOv)) return;
+
+        const parent = mainImg.parentElement;
+        if (!isLive(parent)) return;
+
+        const pr = parent.getBoundingClientRect();
+        const bgW = baseOv.naturalWidth || 1920;
+        const bgH = baseOv.naturalHeight || 1080;
+
+        if (pr.width <= 0 || pr.height <= 0) return;
+
+        const factor = Math.min(pr.width / bgW, pr.height / bgH);
+
+        const scaledBgW = bgW * factor;
+        const scaledBgH = bgH * factor;
+        const leftBg = (pr.width - scaledBgW) / 2;
+        const topBg = (pr.height - scaledBgH) / 2;
+
+        // Posición de la pastilla dentro del fondo (1920x1080)
+        const pastillaX = 875;  // px desde la izquierda
+        const pastillaY = 77;   // px desde arriba
+
+        // Escalar posición al factor actual
+        const scaledPastillaX = pastillaX * factor;
+        const scaledPastillaY = pastillaY * factor;
+
+        // Posicionar la pastilla
+        const leftP = leftBg + scaledPastillaX;
+        const topP = topBg + scaledPastillaY;
+
+        // Obtener dimensiones naturales de la pastilla y escalarlas
+        const pastillaW = pastillaOv.naturalWidth || 0;
+        const pastillaH = pastillaOv.naturalHeight || 0;
+
+        if (pastillaW && pastillaH) {
+          const scaledPastillaW = pastillaW * factor;
+          const scaledPastillaH = pastillaH * factor;
+
+          Object.assign(pastillaOv.style, {
             position: "absolute",
-            width: `${scaledCW}px`,
-            height: `${scaledCH}px`,
-            left: `${leftC}px`,
-            top: `${topC}px`,
-            objectFit: "fill",
-            objectPosition: "center"
+            width: `${scaledPastillaW}px`,
+            height: `${scaledPastillaH}px`,
+            left: `${leftP}px`,
+            top: `${topP}px`,
+            objectFit: "fill"
           });
         }
+      }
+
 // FANART_MOVIL – overlay más alto que la imagen (1440x3117 sobre 1440x2986)
 function fitOverlayFanartMovil(ov, img) {
   if (!isLive(ov) || !isLive(img) || !isLive(img.parentElement)) return;
@@ -3618,12 +3777,9 @@ const OFFSET_Y = 65;    // arriba/abajo
         ========================================== */
         if (key === "AD_PAUSE") {
           const baseFile = KEY_TO_OVERLAY.get("AD_PAUSE");
-          const safetyFile = "AD_PAUSE_Checker.png";
 
           baseOv.style.zIndex = "1";
           baseOv.style.objectFit = "contain";
-          sibOv.style.zIndex = "3";
-          sibOv.style.objectFit = "contain";
 
           if (baseFile) {
             const srcB = `${OVERLAY_BASE}/${baseFile}`;
@@ -3636,42 +3792,61 @@ const OFFSET_Y = 65;    // arriba/abajo
             baseOv.onload = () => {
               if (!isLive(mainImg)) return;
               if (lastFailBase === srcB) lastFailBase = "";
-              fitAdPause(mainImg, baseOv, sibOv);
+              fitAdPause(mainImg, baseOv);
             };
 
             if (baseOv.getAttribute("src") !== srcB)
               baseOv.setAttribute("src", srcB);
 
-            fitAdPause(mainImg, baseOv, sibOv);
+            fitAdPause(mainImg, baseOv);
             baseOv.style.display = "";
           } else {
             baseOv.removeAttribute("src");
             baseOv.style.display = "none";
           }
 
-          if (safetyFile) {
-            const srcS = `${OVERLAY_BASE}/${safetyFile}`;
+          // Checker overlay (ZONA DE SEGURIDAD)
+          const checkerFile = "AD_PAUSE_Checker.png";
+          const srcChecker = `${OVERLAY_BASE}/${checkerFile}`;
 
-            sibOv.onerror = () => {
-              lastFailSib = srcS;
-              sibOv.style.display = "none";
-            };
-
-            sibOv.onload = () => {
-              if (!isLive(mainImg)) return;
-              if (lastFailSib === srcS) lastFailSib = "";
-              fitAdPause(mainImg, baseOv, sibOv);
-            };
-
-            if (sibOv.getAttribute("src") !== srcS)
-              sibOv.setAttribute("src", srcS);
-
-            fitAdPause(mainImg, baseOv, sibOv);
-            sibOv.style.display = "";
-          } else {
-            sibOv.removeAttribute("src");
+          sibOv.onerror = () => {
+            lastFailSib = srcChecker;
             sibOv.style.display = "none";
-          }
+          };
+
+          sibOv.onload = () => {
+            if (!isLive(mainImg)) return;
+            if (lastFailSib === srcChecker) lastFailSib = "";
+            fitAdPauseChecker(sibOv, mainImg, baseOv);
+          };
+
+          if (sibOv.getAttribute("src") !== srcChecker)
+            sibOv.setAttribute("src", srcChecker);
+
+          fitAdPauseChecker(sibOv, mainImg, baseOv);
+          sibOv.style.zIndex = "3";
+          sibOv.style.display = window.adPauseCheckerOn ? "" : "none";
+
+          // Pastilla Publi overlay
+          const pastillaOv = ensureOverlayRole(mainImg, "pastilla");
+          const pastillaFile = "pasti_publi.png";
+          const srcPastilla = `${OVERLAY_BASE}/${pastillaFile}`;
+
+          pastillaOv.onerror = () => {
+            pastillaOv.style.display = "none";
+          };
+
+          pastillaOv.onload = () => {
+            if (!isLive(mainImg)) return;
+            fitAdPausePastilla(pastillaOv, mainImg, baseOv);
+          };
+
+          if (pastillaOv.getAttribute("src") !== srcPastilla)
+            pastillaOv.setAttribute("src", srcPastilla);
+
+          fitAdPausePastilla(pastillaOv, mainImg, baseOv);
+          pastillaOv.style.zIndex = "4";
+          pastillaOv.style.display = window.pastillaPubliOn ? "" : "none";
 
           Object.assign(mainImg.style, {
             position: "absolute",
@@ -3680,11 +3855,14 @@ const OFFSET_Y = 65;    // arriba/abajo
 
           disconnectObservers();
 
-          roBase = new ResizeObserver(() =>
-            fitAdPause(mainImg, baseOv, sibOv)
-          );
+          roBase = new ResizeObserver(() => {
+            fitAdPause(mainImg, baseOv);
+            fitAdPauseChecker(sibOv, mainImg, baseOv);
+            fitAdPausePastilla(pastillaOv, mainImg, baseOv);
+          });
 
           roBase.observe(mainImg.parentElement);
+			
           if (baseOv) roBase.observe(baseOv);
 
           return;
