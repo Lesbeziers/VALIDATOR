@@ -1960,6 +1960,11 @@ function setLogoState(on) {
       function updateTxtLabel(key) {
         const k = (key || "").toUpperCase();
 
+        if (k === "AD_PAUSE") {
+          txtText.textContent = "ZONA DE SEGURIDAD";
+          return;
+        }
+
         // MUX4_FONDO / SMARTPHONE_MUX_FONDO → TXT
         if (k === "MUX4_FONDO" || k === "SMARTPHONE_MUX_FONDO") {
           txtText.textContent = "TXT";
@@ -2246,6 +2251,7 @@ logoToggle.addEventListener("change", e =>
 const shouldShowTxtSwitch = k => {
   const ku = (k || "").toUpperCase();
   return (
+    ku === "AD_PAUSE" ||	  
     ku === "MUX4_FONDO" ||
     ku === "SMARTPHONE_MUX_FONDO" ||
     ku === "CARATULA_V" ||
@@ -3202,7 +3208,7 @@ if (shouldShowLogoSwitch(key || "")) {
         ov.style.height = ir.height + "px";
       }
 
-      function fitAdPause(mainImg, baseOv) {
+      function fitAdPause(mainImg, baseOv, safetyOv) {
         if (!isLive(mainImg) || !isLive(baseOv)) return;
 
         const parent = mainImg.parentElement;
@@ -3253,6 +3259,17 @@ if (shouldShowLogoSwitch(key || "")) {
         });
       }
 
+        if (isLive(safetyOv)) {
+          Object.assign(safetyOv.style, {
+            position: "absolute",
+            width: `${scaledCW}px`,
+            height: `${scaledCH}px`,
+            left: `${leftC}px`,
+            top: `${topC}px`,
+            objectFit: "fill",
+            objectPosition: "center"
+          });
+        }
 // FANART_MOVIL – overlay más alto que la imagen (1440x3117 sobre 1440x2986)
 function fitOverlayFanartMovil(ov, img) {
   if (!isLive(ov) || !isLive(img) || !isLive(img.parentElement)) return;
@@ -3602,9 +3619,12 @@ const OFFSET_Y = 65;    // arriba/abajo
         ========================================== */
         if (key === "AD_PAUSE") {
           const baseFile = KEY_TO_OVERLAY.get("AD_PAUSE");
+          const safetyFile = "AD_PAUSE_Checker.png";
 
           baseOv.style.zIndex = "1";
           baseOv.style.objectFit = "contain";
+          sibOv.style.zIndex = "3";
+          sibOv.style.objectFit = "contain";
 
           if (baseFile) {
             const srcB = `${OVERLAY_BASE}/${baseFile}`;
@@ -3617,21 +3637,42 @@ const OFFSET_Y = 65;    // arriba/abajo
             baseOv.onload = () => {
               if (!isLive(mainImg)) return;
               if (lastFailBase === srcB) lastFailBase = "";
-              fitAdPause(mainImg, baseOv);
+              fitAdPause(mainImg, baseOv, sibOv);
             };
 
             if (baseOv.getAttribute("src") !== srcB)
               baseOv.setAttribute("src", srcB);
 
-            fitAdPause(mainImg, baseOv);
+            fitAdPause(mainImg, baseOv, sibOv);
             baseOv.style.display = "";
           } else {
             baseOv.removeAttribute("src");
             baseOv.style.display = "none";
           }
 
-          sibOv.removeAttribute("src");
-          sibOv.style.display = "none";
+          if (safetyFile) {
+            const srcS = `${OVERLAY_BASE}/${safetyFile}`;
+
+            sibOv.onerror = () => {
+              lastFailSib = srcS;
+              sibOv.style.display = "none";
+            };
+
+            sibOv.onload = () => {
+              if (!isLive(mainImg)) return;
+              if (lastFailSib === srcS) lastFailSib = "";
+              fitAdPause(mainImg, baseOv, sibOv);
+            };
+
+            if (sibOv.getAttribute("src") !== srcS)
+              sibOv.setAttribute("src", srcS);
+
+            fitAdPause(mainImg, baseOv, sibOv);
+            sibOv.style.display = "";
+          } else {
+            sibOv.removeAttribute("src");
+            sibOv.style.display = "none";
+          }
 
           Object.assign(mainImg.style, {
             position: "absolute",
@@ -3641,11 +3682,10 @@ const OFFSET_Y = 65;    // arriba/abajo
           disconnectObservers();
 
           roBase = new ResizeObserver(() =>
-            fitAdPause(mainImg, baseOv)
+            fitAdPause(mainImg, baseOv, sibOv)
           );
 
           roBase.observe(mainImg.parentElement);
-			
           if (baseOv) roBase.observe(baseOv);
 
           return;
