@@ -3015,6 +3015,14 @@ if (shouldShowLogoSwitch(key || "")) {
         ["_MUX4_TXT", "MUX4_TXT"]
       ]);
 
+      const PLACE_AD_PAUSE = {
+        // Referencia del mockup fondo_ad.jpg (1920x1080). Ajusta offset.x/offset.y
+        // para mover la creatividad cargada dentro del mockup (en px relativos al
+        // archivo base).
+        ref: { w: 1920, h: 1080 },
+        offset: { x: 0, y: -50 }
+      };
+
       const PLACE_MUX4 = {
         OFF: {
           ref: { w: 1920, h: 1080 },
