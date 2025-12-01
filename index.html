@@ -54,6 +54,12 @@
       --headerH: 52px;
       --edgePadHandle: 10px;
       --spaceHandleToViewer: 10px;
+      
+      /* =============================================
+         LANDING: Distancia del dropzone al header
+         Ajustar este valor para mover la caja de drop
+      ============================================= */
+      --dropzone-top: 10px;
     }
 
     * {
@@ -81,9 +87,9 @@
     .landing {
       flex: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 32px 16px 48px;
+      padding: var(--dropzone-top) 16px 48px;
       min-height: calc(100vh - (var(--headerH) + 40px));
     }
 	  
@@ -607,6 +613,11 @@
 
     /* LOGO → depende de logo-off */
     #preview.logo-off .v19-overlay.role-logo {
+      display: none !important;
+    }
+
+    /* WEB MOCKUP → depende de web-mockup-off */
+    #preview.web-mockup-off .v19-overlay.role-web-mockup {
       display: none !important;
     }
 
@@ -1213,6 +1224,19 @@
               <span id="adPauseCheckerText">ZONA DE SEGURIDAD</span>
             </label>
 
+            <!-- MOCKUP WEB (solo formato WEB) -->
+            <label
+              id="webMockupSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="webMockupToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="webMockupText">MOCKUP</span>
+            </label>
+
             <!-- MOCKUP -->
             <label
               id="mockupSwitch"
@@ -1639,6 +1663,9 @@
       const mockupSwitch = qs("mockupSwitch");
       const mockupToggle = qs("mockupToggle");
 
+      const webMockupSwitch = qs("webMockupSwitch");
+      const webMockupToggle = qs("webMockupToggle");
+
       const adPauseCheckerSwitch = qs("adPauseCheckerSwitch");
       const adPauseCheckerToggle = qs("adPauseCheckerToggle");
 
@@ -1910,10 +1937,11 @@ const logoToggle = qs("logoToggle");
       const setOverlayTxtForced = on => {
   const keyUp = (currentKey || "").toUpperCase();
   const isCaratula = keyUp === "CARATULA_V" || keyUp === "CARATULA_H";
+  const isWeb = keyUp === "WEB";
 
-  if (isCaratula) {
-    // En CARATULA_V / CARATULA_H el botón DERECHO (MARCAS DINÁMICAS)
-    // controla el overlay de MARCAS (role-base → mockup-off)
+  if (isCaratula || isWeb) {
+    // En CARATULA y WEB el botón ZONA DE SEGURIDAD
+    // controla el overlay checker (role-base → mockup-off)
     preview.classList.toggle("mockup-off", !on);
   } else {
     // Resto de formatos: comportamiento normal (overlay sibling)
@@ -1936,6 +1964,11 @@ const logoToggle = qs("logoToggle");
 function setLogoState(on) {
   setSwitchState(logoSwitch, logoToggle, on);
   preview.classList.toggle("logo-off", !on);
+}
+
+function setWebMockupState(on) {
+  setSwitchState(webMockupSwitch, webMockupToggle, on);
+  preview.classList.toggle("web-mockup-off", !on);
 }
 
 
@@ -2077,6 +2110,10 @@ function setLogoState(on) {
 setLogoState(true);
 setSwitchVisible(logoSwitch, false);
 preview.classList.remove("logo-off");
+
+setWebMockupState(true);
+setSwitchVisible(webMockupSwitch, false);
+preview.classList.remove("web-mockup-off");
 
 
         // FANART – resetear NIVEL a 1 y ocultar el switch
@@ -2242,6 +2279,14 @@ logoSwitch.addEventListener("click", () =>
 
 logoToggle.addEventListener("change", e =>
   setLogoState(e.target.checked)
+);
+
+webMockupSwitch.addEventListener("click", () =>
+  setWebMockupState(!webMockupToggle.checked)
+);
+
+webMockupToggle.addEventListener("change", e =>
+  setWebMockupState(e.target.checked)
 );
 
 
@@ -3457,6 +3502,83 @@ function fitOverlayFanartMovil(ov, img) {
   ov.style.height = overlayH + "px";
   ov.style.objectFit = "fill";
   ov.style.display   = "";
+}
+
+/* ==========================================
+   WEB – Funciones de posicionamiento
+   
+   PARÁMETROS DE AJUSTE MANUAL:
+   Modificar estos valores para ajustar la posición de la imagen WEB
+========================================== */
+const WEB_OFFSET_X = 0;   // Ajuste horizontal en px (positivo = derecha)
+const WEB_OFFSET_Y = -67;   // Ajuste vertical en px (positivo = abajo)
+
+// Proporciones: mockup 1920x850, imagen WEB posicionada a 1868x434
+const WEB_WIDTH_RATIO = 1868 / 1920;    // 0.9729
+const WEB_HEIGHT_RATIO = 434 / 850;     // 0.5106 del alto del mockup
+const WEB_X_RATIO = (1920 - 1868) / 2 / 1920;  // centrado horizontal
+const WEB_Y_RATIO = 208 / 850;          // posición vertical
+
+function fitOverlayWebMockup(mockupOv, mainImg, baseOv) {
+  if (!isLive(mockupOv) || !isLive(mainImg) || !isLive(mainImg.parentElement)) return;
+
+  const parent = mainImg.parentElement;
+  const pr = parent.getBoundingClientRect();
+
+  // El mockup manda: calculamos su tamaño en contain
+  const mockupNatW = mockupOv.naturalWidth || 1920;
+  const mockupNatH = mockupOv.naturalHeight || 850;
+
+  const scale = Math.min(pr.width / mockupNatW, pr.height / mockupNatH);
+  const mockupW = mockupNatW * scale;
+  const mockupH = mockupNatH * scale;
+
+  // Centrar mockup
+  const mockupLeft = (pr.width - mockupW) / 2;
+  const mockupTop = (pr.height - mockupH) / 2;
+
+  // Posicionar mockup
+  Object.assign(mockupOv.style, {
+    position: "absolute",
+    left: mockupLeft + "px",
+    top: mockupTop + "px",
+    width: mockupW + "px",
+    height: mockupH + "px",
+    objectFit: "fill",
+    zIndex: "10"
+  });
+
+  // Calcular posición de la imagen WEB dentro del mockup
+  const webW = mockupW * WEB_WIDTH_RATIO;
+  const webH = mockupH * WEB_HEIGHT_RATIO;
+  const webLeft = mockupLeft + (mockupW * WEB_X_RATIO) + WEB_OFFSET_X;
+  const webTop = mockupTop + (mockupH * WEB_Y_RATIO) + WEB_OFFSET_Y;
+
+  // Posicionar imagen WEB
+  Object.assign(mainImg.style, {
+    position: "absolute",
+    left: webLeft + "px",
+    top: webTop + "px",
+    width: webW + "px",
+    height: webH + "px",
+    objectFit: "fill",
+    maxWidth: "none",
+    maxHeight: "none",
+    zIndex: "1"
+  });
+
+  // El checker va exactamente igual que la imagen WEB
+  if (isLive(baseOv)) {
+    Object.assign(baseOv.style, {
+      position: "absolute",
+      left: webLeft + "px",
+      top: webTop + "px",
+      width: webW + "px",
+      height: webH + "px",
+      objectFit: "fill",
+      zIndex: "5"
+    });
+  }
 }
 
 // AMAZON_BG – overlay 1920x1080 sobre imagen 1920x720 (alineado arriba)
@@ -4853,6 +4975,86 @@ if (key === "DESTACADO_DOBLE2_SIL") {
 
           roBase.observe(mainImg);
           roBase.observe(mainImg.parentElement);
+
+          return;
+        }
+
+        /* ==========================================
+           CASO WEB (mockup + imagen escalada + checker)
+        ========================================== */
+        if (key === "WEB") {
+          const checkerFile = KEY_TO_OVERLAY.get("WEB");
+          const mockupFile = "WEB_MOCKUP.png";
+
+          // Crear overlay para el mockup WEB
+          const webMockupOv = ensureOverlayRole(mainImg, "web-mockup");
+
+          // --- Cargar mockup WEB ---
+          const mockupSrc = `${OVERLAY_BASE}/${mockupFile}`;
+
+          webMockupOv.onerror = () => {
+            webMockupOv.style.display = "none";
+          };
+
+          webMockupOv.onload = () => {
+            if (!isLive(mainImg)) return;
+            fitOverlayWebMockup(webMockupOv, mainImg, baseOv);
+          };
+
+          if (webMockupOv.getAttribute("src") !== mockupSrc)
+            webMockupOv.setAttribute("src", mockupSrc);
+
+          webMockupOv.style.display = "";
+
+          // --- Cargar checker WEB (baseOv) ---
+          if (checkerFile) {
+            const checkerSrc = `${OVERLAY_BASE}/${checkerFile}`;
+
+            baseOv.onerror = () => {
+              lastFailBase = checkerSrc;
+              baseOv.style.display = "none";
+            };
+
+            baseOv.onload = () => {
+              if (!isLive(mainImg)) return;
+              if (lastFailBase === checkerSrc) lastFailBase = "";
+              fitOverlayWebMockup(webMockupOv, mainImg, baseOv);
+            };
+
+            if (baseOv.getAttribute("src") !== checkerSrc)
+              baseOv.setAttribute("src", checkerSrc);
+
+            baseOv.style.display = "";
+          }
+
+          // No usamos sibOv en WEB
+          sibOv.removeAttribute("src");
+          sibOv.style.display = "none";
+
+          // Primera colocación
+          fitOverlayWebMockup(webMockupOv, mainImg, baseOv);
+
+          // Observers
+          disconnectObservers();
+
+          roBase = new ResizeObserver(() =>
+            fitOverlayWebMockup(webMockupOv, mainImg, baseOv)
+          );
+
+          roBase.observe(mainImg);
+          roBase.observe(mainImg.parentElement);
+
+          // Mostrar switches: MOCKUP (webMockupSwitch) y ZONA DE SEGURIDAD (mockupSwitch)
+          if (webMockupSwitch) {
+            webMockupSwitch.style.display = "inline-flex";
+          }
+          if (mockupSwitch) {
+            mockupSwitch.style.display = "inline-flex";
+            mockupText.textContent = "ZONA DE SEGURIDAD";
+          }
+          if (txtSwitch) {
+            txtSwitch.style.display = "none";
+          }
 
           return;
         }
