@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>VALIDATOR - V 1.27</title>
+  <title>VALIDATOR - V 1.28</title>
 
   <!-- ===========================
        FUENTES
@@ -618,6 +618,11 @@
 
     /* WEB MOCKUP → depende de web-mockup-off */
     #preview.web-mockup-off .v19-overlay.role-web-mockup {
+      display: none !important;
+    }
+
+    /* SPH ZONA DE SEGURIDAD → depende de sph-zona-off */
+    #preview.sph-zona-off .v19-overlay.role-sph-zona {
       display: none !important;
     }
 
@@ -1277,6 +1282,19 @@
               <span id="nivelLabelRight">NIVEL 2</span>
             </label>
 
+            <!-- ZONA DE SEGURIDAD (solo SMARTPHONE_MUX_FONDO) -->
+            <label
+              id="sphZonaSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="sphZonaToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="sphZonaText">ZONA DE SEGURIDAD</span>
+            </label>
+
             <!-- TXT -->
             <label
               id="txtSwitch"
@@ -1675,6 +1693,9 @@
       const txtSwitch = qs("txtSwitch");
       const txtToggle = qs("txtToggle");
 
+      const sphZonaSwitch = qs("sphZonaSwitch");
+      const sphZonaToggle = qs("sphZonaToggle");
+
 const logoSwitch = qs("logoSwitch");
 const logoToggle = qs("logoToggle");
 
@@ -1716,6 +1737,7 @@ const logoToggle = qs("logoToggle");
       window.focoOn = false;
       window.adPauseCheckerOn = true;
       window.pastillaPubliOn = true;
+      window.sphZonaOn = true;
       window.LOADED_ITEMS = [];
 
       let totalToLoad = 0;
@@ -1971,6 +1993,12 @@ function setWebMockupState(on) {
   preview.classList.toggle("web-mockup-off", !on);
 }
 
+function setSphZonaState(on) {
+  setSwitchState(sphZonaSwitch, sphZonaToggle, on);
+  window.sphZonaOn = on;
+  preview.classList.toggle("sph-zona-off", !on);
+}
+
 
       // FANART – cambiar nivel 1/2
       function setNivelState(on) {
@@ -2114,6 +2142,10 @@ preview.classList.remove("logo-off");
 setWebMockupState(true);
 setSwitchVisible(webMockupSwitch, false);
 preview.classList.remove("web-mockup-off");
+
+setSphZonaState(true);
+setSwitchVisible(sphZonaSwitch, false);
+preview.classList.remove("sph-zona-off");
 
 
         // FANART – resetear NIVEL a 1 y ocultar el switch
@@ -2271,6 +2303,14 @@ preview.classList.remove("web-mockup-off");
 
       txtSwitch.addEventListener("click", () =>
         setTxtState(!txtToggle.checked)
+      );
+
+      sphZonaSwitch.addEventListener("click", () =>
+        setSphZonaState(!sphZonaToggle.checked)
+      );
+
+      sphZonaToggle.addEventListener("change", e =>
+        setSphZonaState(e.target.checked)
       );
 
 logoSwitch.addEventListener("click", () =>
@@ -3886,6 +3926,17 @@ const OFFSET_Y = 65;    // arriba/abajo
         baseOv.style.display = "none";
         sibOv.style.display = "none";
 
+        // Limpiar overlay sph-zona si existe (solo usado en SMARTPHONE_MUX_FONDO)
+        const existingSphZona = mainImg.parentElement?.querySelector(".v19-overlay.role-sph-zona");
+        if (existingSphZona) {
+          existingSphZona.style.display = "none";
+        }
+
+        // Ocultar switch sphZona por defecto (se mostrará solo en SMARTPHONE_MUX_FONDO)
+        if (sphZonaSwitch) {
+          sphZonaSwitch.style.display = "none";
+        }
+
         baseOv.style.zIndex = "3";
         baseOv.style.objectFit = "fill";
         mainImg.style.position = "";
@@ -4096,6 +4147,42 @@ const OFFSET_Y = 65;    // arriba/abajo
            CASO SMARTPHONE_MUX_FONDO
         ========================================== */
         if (key === "SMARTPHONE_MUX_FONDO") {
+          // --- Overlay ZONA DE SEGURIDAD (nuevo, entre imagen y mockup) ---
+          const sphZonaOv = ensureOverlayRole(mainImg, "sph-zona");
+          const zonaFile = "SMARTPHONE_MUX_ZONA_Checker.png";
+          const srcZona = `${OVERLAY_BASE}/${zonaFile}`;
+
+          if (sphZonaOv) {
+            sphZonaOv.style.zIndex = "2"; // Debajo del mockup (base=3) y TXT (sib=4)
+
+            sphZonaOv.onerror = () => {
+              sphZonaOv.style.display = "none";
+            };
+
+            sphZonaOv.onload = () => {
+              if (!isLive(mainImg)) return;
+              fitOverlayRect(
+                sphZonaOv,
+                mainImg,
+                PLACE_SMARTPHONE.SMARTPHONE_MUX_FONDO,
+                "SMARTPHONE_MUX_TXT"
+              );
+            };
+
+            if (sphZonaOv.getAttribute("src") !== srcZona)
+              sphZonaOv.setAttribute("src", srcZona);
+
+            fitOverlayRect(
+              sphZonaOv,
+              mainImg,
+              PLACE_SMARTPHONE.SMARTPHONE_MUX_FONDO,
+              "SMARTPHONE_MUX_TXT"
+            );
+
+            sphZonaOv.style.display = "";
+          }
+
+          // --- Overlay MOCKUP (baseOv) ---
           const smBaseFile = KEY_TO_OVERLAY.get("SMARTPHONE_MUX_FONDO");
 
           if (smBaseFile) {
@@ -4119,6 +4206,7 @@ const OFFSET_Y = 65;    // arriba/abajo
             baseOv.style.display = "";
           }
 
+          // --- Overlay TXT (sibOv) ---
           const smSib = findSibling(
             "SMARTPHONE_MUX_FONDO",
             mainImg.alt || ""
@@ -4166,11 +4254,33 @@ const OFFSET_Y = 65;    // arriba/abajo
             sibOv.style.display = "";
           }
 
+          // --- Mostrar switches: MOCKUP, ZONA DE SEGURIDAD, TXT ---
+          if (mockupSwitch) {
+            mockupSwitch.style.display = "inline-flex";
+            mockupText.textContent = "MOCKUP";
+          }
+          if (sphZonaSwitch) {
+            sphZonaSwitch.style.display = "inline-flex";
+          }
+          if (txtSwitch) {
+            txtSwitch.style.display = "inline-flex";
+            txtText.textContent = "TXT";
+          }
+
+          // --- Observers ---
           disconnectObservers();
 
-          roBase = new ResizeObserver(() =>
-            fitOverlayFill(baseOv, mainImg)
-          );
+          roBase = new ResizeObserver(() => {
+            fitOverlayFill(baseOv, mainImg);
+            if (sphZonaOv) {
+              fitOverlayRect(
+                sphZonaOv,
+                mainImg,
+                PLACE_SMARTPHONE.SMARTPHONE_MUX_FONDO,
+                "SMARTPHONE_MUX_TXT"
+              );
+            }
+          });
 
           roSib = new ResizeObserver(() =>
             fitOverlayRect(
