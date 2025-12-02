@@ -4161,12 +4161,7 @@ const OFFSET_Y = 65;    // arriba/abajo
 
             sphZonaOv.onload = () => {
               if (!isLive(mainImg)) return;
-              fitOverlayRect(
-                sphZonaOv,
-                mainImg,
-                PLACE_SMARTPHONE.SMARTPHONE_MUX_FONDO,
-                "SMARTPHONE_MUX_TXT"
-              );
+              fitOverlayFill(sphZonaOv, mainImg);
             };
 
             if (sphZonaOv.getAttribute("src") !== srcZona)
@@ -4273,12 +4268,7 @@ const OFFSET_Y = 65;    // arriba/abajo
           roBase = new ResizeObserver(() => {
             fitOverlayFill(baseOv, mainImg);
             if (sphZonaOv) {
-              fitOverlayRect(
-                sphZonaOv,
-                mainImg,
-                PLACE_SMARTPHONE.SMARTPHONE_MUX_FONDO,
-                "SMARTPHONE_MUX_TXT"
-              );
+              fitOverlayFill(sphZonaOv, mainImg);
             }
           });
 
