@@ -3938,6 +3938,11 @@ const OFFSET_Y = 65;    // arriba/abajo
           sphZonaSwitch.style.display = "none";
         }
 
+        // Ocultar switch webMockup por defecto (se mostrará solo en WEB)
+        if (webMockupSwitch) {
+          webMockupSwitch.style.display = "none";
+        }
+
         baseOv.style.zIndex = "3";
         baseOv.style.objectFit = "fill";
         mainImg.style.position = "";
