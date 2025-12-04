@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>VALIDATOR - V 1.28</title>
+  <title>VALIDATOR 2.0</title>
 
   <!-- ===========================
        FUENTES
@@ -3541,7 +3541,7 @@ function fitOverlayFanartMovil(ov, img) {
   ov.style.width  = overlayW + "px";
   ov.style.height = overlayH + "px";
   ov.style.objectFit = "fill";
-  ov.style.display   = ""; 
+  ov.style.display   = "";
 }
 
 /* ==========================================
@@ -3552,7 +3552,7 @@ function fitOverlayFanartMovil(ov, img) {
    Los offsets son proporcionales al tamaño del mockup (0.01 = 1%)
 ========================================== */
 const WEB_OFFSET_X_RATIO = 0;       // Ajuste horizontal (positivo = derecha) - proporción del ancho del mockup
-const WEB_OFFSET_Y_RATIO = -0.11;  // Ajuste vertical (positivo = abajo) - proporción del alto del mockup
+const WEB_OFFSET_Y_RATIO = -0.079;  // Ajuste vertical (positivo = abajo) - proporción del alto del mockup
 
 // Proporciones: mockup 1920x850, imagen WEB posicionada a 1868x434
 const WEB_WIDTH_RATIO = 1868 / 1920;    // 0.9729
@@ -4154,7 +4154,7 @@ const OFFSET_Y = 65;    // arriba/abajo
           const srcZona = `${OVERLAY_BASE}/${zonaFile}`;
 
           if (sphZonaOv) {
-            sphZonaOv.style.zIndex = "2"; // Debajo del mockup (base=3) y TXT (sib=4)
+            sphZonaOv.style.zIndex = "5"; // Arriba del todo: mockup (base=3), TXT (sib=4)
 
             sphZonaOv.onerror = () => {
               sphZonaOv.style.display = "none";
