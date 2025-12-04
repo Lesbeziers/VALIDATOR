@@ -1947,7 +1947,7 @@ const logoToggle = qs("logoToggle");
   const isCaratula = keyUp === "CARATULA_V" || keyUp === "CARATULA_H";
 
   if (isCaratula) {
-    // En CARATULA_V / CARATULA_H el botón IZQUIERDO (ZONAS DE SEGURIDAD)
+    // En CARATULA_V / CARATULA_H el botón IZQUIERDO (ZONA DE SEGURIDAD)
     // controla el overlay del CHECKER (role-sib → txt-off)
     preview.classList.toggle("txt-off", !on);
   } else {
@@ -2029,7 +2029,7 @@ function setSphZonaState(on) {
         setSwitchVisible(mockupSwitch, h);
       }
 
-       /* Cambio dinámico MOCKUP ↔ ZONAS DE SEGURIDAD */
+       /* Cambio dinámico MOCKUP ↔ ZONA DE SEGURIDAD */
       function updateMockupLabel(key) {
         const ku = (key || "").toUpperCase();
 
@@ -2055,7 +2055,7 @@ function setSphZonaState(on) {
 
         mockupText.textContent = mockupFormats.has(ku)
           ? "MOCKUP"
-          : "ZONAS DE SEGURIDAD";
+          : "ZONA DE SEGURIDAD";
       }
 
 	  
@@ -3549,9 +3549,10 @@ function fitOverlayFanartMovil(ov, img) {
    
    PARÁMETROS DE AJUSTE MANUAL:
    Modificar estos valores para ajustar la posición de la imagen WEB
+   Los offsets son proporcionales al tamaño del mockup (0.01 = 1%)
 ========================================== */
-const WEB_OFFSET_X = 0;   // Ajuste horizontal en px (positivo = derecha)
-const WEB_OFFSET_Y = -67;   // Ajuste vertical en px (positivo = abajo)
+const WEB_OFFSET_X_RATIO = 0;       // Ajuste horizontal (positivo = derecha) - proporción del ancho del mockup
+const WEB_OFFSET_Y_RATIO = -0.079;  // Ajuste vertical (positivo = abajo) - proporción del alto del mockup
 
 // Proporciones: mockup 1920x850, imagen WEB posicionada a 1868x434
 const WEB_WIDTH_RATIO = 1868 / 1920;    // 0.9729
@@ -3591,8 +3592,8 @@ function fitOverlayWebMockup(mockupOv, mainImg, baseOv) {
   // Calcular posición de la imagen WEB dentro del mockup
   const webW = mockupW * WEB_WIDTH_RATIO;
   const webH = mockupH * WEB_HEIGHT_RATIO;
-  const webLeft = mockupLeft + (mockupW * WEB_X_RATIO) + WEB_OFFSET_X;
-  const webTop = mockupTop + (mockupH * WEB_Y_RATIO) + WEB_OFFSET_Y;
+  const webLeft = mockupLeft + (mockupW * WEB_X_RATIO) + (mockupW * WEB_OFFSET_X_RATIO);
+  const webTop = mockupTop + (mockupH * WEB_Y_RATIO) + (mockupH * WEB_OFFSET_Y_RATIO);
 
   // Posicionar imagen WEB
   Object.assign(mainImg.style, {
