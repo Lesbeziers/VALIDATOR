@@ -1412,6 +1412,21 @@
     };
 
 
+    /* =============================================
+       AJUSTES OVERLAY TXT (imagen cargada por el usuario)
+       Controla la posición y escala del overlay TXT
+       cuando se superpone sobre SMARTPHONE_MUX_FONDO
+    ============================================= */
+    const SMARTPHONE_MUX_TXT_OVERLAY = {
+      // POSICIÓN (en píxeles del arte original 1440x2986)
+      posX: 0,        // Desplazamiento horizontal (0 = izquierda)
+      posY: 1090,     // Desplazamiento vertical (desde arriba)
+      
+      // ESCALA uniforme (1 = 100%, 0.5 = 50%, 1.5 = 150%)
+      escala: 0.9
+    };
+
+
     /* Reglas de dimensiones/peso */
       const RU = {
       "AD_PAUSE": { w: 1280, h: 720, mode: "exact", maxMB: 0.1 },
@@ -3203,7 +3218,9 @@ if (shouldShowLogoSwitch(key || "")) {
       const PLACE_SMARTPHONE = {
         SMARTPHONE_MUX_FONDO: {
           ref: { w: 1440, h: 2986 },
-          pos: { x: 0, y: 1288 }
+          pos: { x: SMARTPHONE_MUX_TXT_OVERLAY.posX, y: SMARTPHONE_MUX_TXT_OVERLAY.posY },
+          escala: SMARTPHONE_MUX_TXT_OVERLAY.escala,
+          centrar: true  // Centrar horizontalmente el overlay
         }
       };
 	  
@@ -3635,7 +3652,7 @@ function fitOverlayRect(ov, img, placement, txtRuleKey) {
     return;
   }
 
-  const { ref, pos } = placement;
+  const { ref, pos, escala, centrar } = placement;
   if (!ref || !pos) {
     ov.style.display = "none";
     return;
@@ -3648,6 +3665,9 @@ function fitOverlayRect(ov, img, placement, txtRuleKey) {
   const sY = ir.height / ref.h;
   const s  = Math.min(sX, sY);
 
+  // Escala adicional del overlay (por defecto 1)
+  const extraEscala = escala ?? 1;
+
   const rule = typeof RU !== "undefined" && RU[txtRuleKey]
     ? RU[txtRuleKey]
     : null;
@@ -3655,15 +3675,28 @@ function fitOverlayRect(ov, img, placement, txtRuleKey) {
   const rW = rule?.w ?? 0;
   const rH = rule?.h ?? 0;
 
-  const ox = pos.x * s;
-  const oy = pos.y * s;
+  // Tamaño final del overlay
+  const finalW = rW * s * extraEscala;
+  const finalH = rH * s * extraEscala;
+
+  let ox, oy;
+
+  if (centrar) {
+    // Centrar horizontalmente: calcular offset para centrar el overlay en la imagen
+    const centroX = (ir.width - finalW) / 2;
+    ox = centroX + (pos.x * s);  // pos.x actúa como ajuste desde el centro
+  } else {
+    // Posición absoluta desde la izquierda
+    ox = pos.x * s;
+  }
+  oy = pos.y * s;
 
   ov.style.left = (ir.left - pr.left + ox) + "px";
   ov.style.top  = (ir.top  - pr.top  + oy) + "px";
 
   if (rW > 0 && rH > 0) {
-    ov.style.width  = (rW * s) + "px";
-    ov.style.height = (rH * s) + "px";
+    ov.style.width  = finalW + "px";
+    ov.style.height = finalH + "px";
   }
 
   ov.style.objectFit = "fill";
@@ -4159,7 +4192,7 @@ const OFFSET_Y = 65;    // arriba/abajo
           const srcZona = `${OVERLAY_BASE}/${zonaFile}`;
 
           if (sphZonaOv) {
-            sphZonaOv.style.zIndex = "5"; // Arriba del todo: mockup (base=3), TXT (sib=4)
+            sphZonaOv.style.zIndex = "4"; // mockup (base=3), ZONA (4), TXT (sib=5 arriba)
 
             sphZonaOv.onerror = () => {
               sphZonaOv.style.display = "none";
@@ -4253,6 +4286,7 @@ const OFFSET_Y = 65;    // arriba/abajo
             );
 
             sibOv.style.display = "";
+            sibOv.style.zIndex = "5"; // TXT arriba del todo
           }
 
           // --- Mostrar switches: MOCKUP, ZONA DE SEGURIDAD, TXT ---
