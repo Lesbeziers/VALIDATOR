@@ -1049,16 +1049,16 @@
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
+  background: transparent;
+  border: none;
   color: #fff;
   cursor: pointer;
   transition: background .2s, border-color .2s, color .2s, transform .15s;
 }
 
 .capture-btn:hover {
-  background: #252525;
-  border-color: var(--brand);
+  background: transparent;
+  border: none;
   color: var(--brand);
 }
 
