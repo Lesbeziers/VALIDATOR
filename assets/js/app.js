@@ -1525,6 +1525,57 @@ const EXPORT_CONFIG = {
               }
             }
           ]
+        },
+SMARTPHONE_MUX_FONDO: {
+          w: 1440,
+          h: 2986,
+          filenameTag: "COMPOSICION",
+          layers: [
+            /* Capa 0 – imagen principal (fondo) */
+            {
+              id: "main",
+              visible: () => true,
+              getSrc: () =>
+                window.__v19_getMainPreviewImg?.()?.src ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 1 – overlay MOCKUP (role-base) */
+            {
+              id: "base",
+              visible: () => !preview.classList.contains("mockup-off"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-base")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 2 – overlay TXT (role-sib) posicionado en 1440x2986 */
+            {
+              id: "sib",
+              visible: () => {
+                const el = preview.querySelector(".v19-overlay.role-sib");
+                return (
+                  !preview.classList.contains("txt-off") &&
+                  !!el &&
+                  el.style.display !== "none"
+                );
+              },
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-sib")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                // Tamaño natural del TXT escalado al canvas 1440x2986
+                const w = img.naturalWidth;
+                const h = img.naturalHeight;
+                const x = 0;        // posX = 0, centrado
+                const y = 1217;     // posY del SMARTPHONE_MUX_TXT_OVERLAY
+                ctx.drawImage(img, x, y, w, h);
+              }
+            }
+          ]
         }
         /* Añadir nuevos formatos aquí con la misma estructura */
       };
