@@ -1575,7 +1575,7 @@ SMARTPHONE_MUX_FONDO: {
                 ctx.drawImage(img, x, y, w, h);
               }
             },
-/* Capa 3 – zona de seguridad (role-sph-zona) */
+            /* Capa 3 – zona de seguridad (role-sph-zona) */
             {
               id: "sph-zona",
               visible: () => !preview.classList.contains("sph-zona-off"),
@@ -1584,6 +1584,45 @@ SMARTPHONE_MUX_FONDO: {
                   ?.getAttribute("src") ?? null,
               draw(ctx, img, cfg) {
                 ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            }
+          ]
+        },
+	WEB: {
+          w: 1920,
+          h: 850,
+          filenameTag: "COMPOSICION",
+          layers: [
+            /* Capa 0 – imagen WEB del usuario, dentro del marco */
+            {
+              id: "main",
+              visible: () => true,
+              getSrc: () =>
+                window.__v19_getMainPreviewImg?.()?.src ?? null,
+              draw(ctx, img) {
+                ctx.drawImage(img, 26, 115, 1868, 434);
+              }
+            },
+            /* Capa 1 – mockup WEB (role-web-mockup) encima */
+            {
+              id: "web-mockup",
+              visible: () => !preview.classList.contains("web-mockup-off"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-web-mockup")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 2 – checker zona de seguridad (role-base) */
+            {
+              id: "base",
+              visible: () => !preview.classList.contains("mockup-off"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-base")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img) {
+                ctx.drawImage(img, 26, 115, 1868, 434);
               }
             }
           ]
