@@ -1412,25 +1412,10 @@ if (shouldShowLogoSwitch(key || "")) {
       });
 
       /* Captura */
-      function playShutter() {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const buf = ctx.createBuffer(1, ctx.sampleRate * 0.12, ctx.sampleRate);
-        const data = buf.getChannelData(0);
-        for (let i = 0; i < data.length; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 4);
-        }
-        const src = ctx.createBufferSource();
-        src.buffer = buf;
-        const gain = ctx.createGain();
-        gain.gain.setValueAtTime(0.4, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-        src.connect(gain);
-        gain.connect(ctx.destination);
-        src.start();
-      }
-
+      const shutterSound = new Audio("assets/sonido/rafaga_camara.mp3");
       btnCapture?.addEventListener("click", () => {
-        playShutter();
+        shutterSound.currentTime = 0;
+        shutterSound.play();
         exportComposition();
       });
 		
