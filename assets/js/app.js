@@ -913,7 +913,6 @@ if (shouldShowLogoSwitch(key || "")) {
         commentArea.value = existing;
 
         if (!existing) injectValidationLinesIfNeeded(fname, res);
-        if (btnCapture) btnCapture.style.display = "none";
         applyHasCommentBadges();
         btnAttach.disabled = !fname;
 
