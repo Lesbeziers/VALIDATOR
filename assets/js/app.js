@@ -1626,6 +1626,60 @@ SMARTPHONE_MUX_FONDO: {
               }
             }
           ]
+        },
+AMAZON_BG: {
+          w: 1920,
+          h: 1080,
+          filenameTag: "COMPOSICION",
+          layers: [
+            /* Capa 0 – imagen principal pegada arriba, ancho completo */
+            {
+              id: "main",
+              visible: () => true,
+              getSrc: () =>
+                window.__v19_getMainPreviewImg?.()?.src ?? null,
+              draw(ctx, img, cfg) {
+                const h = Math.round(img.naturalHeight * cfg.w / img.naturalWidth);
+                ctx.drawImage(img, 0, 0, cfg.w, h);
+              }
+            },
+            /* Capa 1 – mockup (role-base) cubriendo 1920x1080 */
+            {
+              id: "base",
+              visible: () => !preview.classList.contains("mockup-off"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-base")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 2 – zona de seguridad (role-sib) cubriendo 1920x1080 */
+            {
+              id: "sib",
+              visible: () => !preview.classList.contains("txt-off"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-sib")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 3 – logo (role-logo) en posición 104, 65 */
+            {
+              id: "logo",
+              visible: () => !preview.classList.contains("logo-off"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-logo")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                const s = cfg.w / 1920;
+                const w = img.naturalWidth * s;
+                const h = img.naturalHeight * s;
+                ctx.drawImage(img, 104 * s, 65 * s, w, h);
+              }
+            }
+          ]
         }
         /* Añadir nuevos formatos aquí con la misma estructura */
       };
