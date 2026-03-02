@@ -1574,6 +1574,17 @@ SMARTPHONE_MUX_FONDO: {
                 const y = 1217;     // posY del SMARTPHONE_MUX_TXT_OVERLAY
                 ctx.drawImage(img, x, y, w, h);
               }
+            },
+/* Capa 3 – zona de seguridad (role-sph-zona) */
+            {
+              id: "sph-zona",
+              visible: () => !preview.classList.contains("sph-zona-off"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-sph-zona")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
             }
           ]
         }
