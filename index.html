@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>VALIDATOR 2.0</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+
+<body>
+
+  <!-- ===========================
+       CABECERA
+  ============================ -->
+  <header class="site-header">
+    <img src="assets/img/Cabecera_Negra.svg" alt="Cabecera" />
+  </header>
+
+  <!-- ===========================
+       DROPZONE
+  ============================ -->
+  <main class="landing">
+    <div id="drop-area">Arrastra aquí las imágenes o haz click para seleccionarlas</div>
+  </main>
+  <input type="file" id="fileElem" multiple accept="image/*" style="display:none" />
+  <!-- ===========================
+       MODAL PRINCIPAL
+  ============================ -->
+  <div id="myModal" class="modal" aria-hidden="true">
+    <header class="site-header modal-header-img">
+      <img src="assets/img/Cabecera_Negra.svg" alt="Cabecera" />
+      <span class="close" id="closeBtn" aria-label="Cerrar">×</span>
+    </header>
+
+    <div class="modal-layout" id="layout">
+      <button
+        type="button"
+        id="collapsedHandle"
+        class="collapsed-handle"
+        title="Desplegar panel"
+      >
+        <img src="assets/img/ic-back.svg" alt="Desplegar" />
+      </button>
+
+      <!-- ===========================
+           SIDEBAR
+      ============================ -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <button
+            type="button"
+            class="icon-btn"
+            id="btnTogglePanel"
+            title="Plegar panel"
+          >
+            <img src="assets/img/ic-back.svg" alt="Plegar" />
+          </button>
+
+          <!-- Grupo fijo: Cambiar lado + cambiar fondo -->
+          <div class="btn-cluster">
+            <button
+              type="button"
+              class="icon-btn"
+              id="btnSwapSide"
+              title="Cambiar de lado el panel"
+            >
+              <img src="assets/img/ic-side.svg" alt="Cambiar lado" />
+            </button>
+
+            <button
+              type="button"
+              class="icon-btn"
+              id="btnViewerBg"
+              title="Cambiar fondo del viewer"
+            >
+              <img src="assets/img/ic-B-N.svg" alt="Fondo viewer" />
+            </button>
+          </div>
+        </div>
+
+        <div class="thumbs-scroll" id="scrollCol">
+          <div class="thumbnails" id="thumbnails"></div>
+
+          <!-- ===========================
+               BLOQUE COMENTARIOS
+          ============================ -->
+          <div class="comments-block" id="commentsBlock">
+            <div class="comments-title">COMENTARIOS</div>
+
+              <div class="preset-row">
+                <button
+                  type="button"
+                  id="presetToggleBtn"
+                  class="preset-toggle"
+                >
+                  Predefinidos
+                </button>
+
+                <input
+                  type="text"
+                  id="presetSearch"
+                  class="preset-search"
+                  placeholder="Búsqueda"
+                  aria-label="Búsqueda"
+                />
+              </div>
+
+              <div id="presetPanel" class="preset-panel">
+                <div id="presetCategories" class="preset-categories"></div>
+                <div id="presetList" class="preset-list"></div>
+              </div>
+
+              <div
+                id="presetFeedback"
+                class="preset-feedback"
+                aria-live="polite"
+              ></div>
+
+            <textarea
+              id="commentArea"
+              class="comment-area"
+              placeholder="Escribe aquí tus comentarios…"
+            ></textarea>
+
+              <div class="comments-actions" id="commentsActions">
+                <button class="btn" id="btnViewAll">Ver todos</button>
+                <button class="btn" id="btnAttach" disabled>Adjuntos</button>
+                <button class="btn" id="btnExport">Exportar</button>
+              </div>
+
+            <input
+              type="file"
+              id="attachInput"
+              multiple
+              accept="image/*"
+              style="display:none;"
+            />
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===========================
+           VIEWER
+      ============================ -->
+      <section class="viewer" id="viewer">
+        <div class="viewer-header">
+          <div id="filename">Selecciona un thumbnail</div>
+
+          <div class="validations" id="validations">
+            ✔ Nomenclatura
+            <span class="sep"> | </span>
+            ✔ Dimensiones
+            <span class="sep"> | </span>
+            ✔ Peso
+          </div>
+        </div>
+
+          <div class="viewer-inner" id="viewerInner">
+            <div id="preview"></div>
+          </div>
+
+<!-- Mensaje solo para AMAZON_LOGO -->
+        <div id="amazonLogoNote" class="amazon-logo-note" style="display:none;">
+          El contenido debe estar alienado a la esquina superior izquierda.
+        </div>
+
+                <div class="viewer-footer">
+
+          <div id="switchGroup" class="switch-group">
+            <!-- ZONA DE SEGURIDAD (solo AD_PAUSE) -->
+            <label
+              id="adPauseCheckerSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="adPauseCheckerToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="adPauseCheckerText">ZONA DE SEGURIDAD</span>
+            </label>
+
+            <!-- MOCKUP WEB (solo formato WEB) -->
+            <label
+              id="webMockupSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="webMockupToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="webMockupText">MOCKUP</span>
+            </label>
+
+            <!-- MOCKUP -->
+            <label
+              id="mockupSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="mockupToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="mockupText">MOCKUP</span>
+            </label>
+
+            <!-- PASTILLA PUBLI (solo AD_PAUSE) -->
+            <label
+              id="pastillaPubliSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="pastillaPubliToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="pastillaPubliText">PASTILLA PUBLI</span>
+            </label>
+
+            <!-- NIVEL (solo FANART) -->
+            <label
+              id="nivelSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="false"
+              style="display:none"
+            >
+              <span id="nivelLabelLeft">NIVEL 1</span>
+              <input type="checkbox" id="nivelToggle" />
+              <span class="track"><span class="knob"></span></span>
+              <span id="nivelLabelRight">NIVEL 2</span>
+            </label>
+
+            <!-- ZONA DE SEGURIDAD (solo SMARTPHONE_MUX_FONDO) -->
+            <label
+              id="sphZonaSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="sphZonaToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="sphZonaText">ZONA DE SEGURIDAD</span>
+            </label>
+
+            <!-- TXT -->
+            <label
+              id="txtSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="txtToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="txtText">MARCAS DINÁMICAS</span>
+            </label>
+
+            <!-- LOGO (solo AMAZON_BG) -->
+            <label
+              id="logoSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="true"
+              style="display:none"
+            >
+              <input type="checkbox" id="logoToggle" checked />
+              <span class="track"><span class="knob"></span></span>
+              <span id="logoText">LOGO</span>
+            </label>
+
+            <!-- FOCO -->
+            <label
+              id="focoSwitch"
+              class="switch"
+              role="switch"
+              aria-checked="false"
+              style="display:none"
+            >
+              <input type="checkbox" id="focoToggle" />
+              <span class="track"><span class="knob"></span></span>
+              <span>FOCO</span>
+            </label>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+
+  <div id="thumbTooltip" role="tooltip" aria-hidden="true"></div>
+
+  <!-- ===========================
+       MODAL "RESUMEN DE COMENTARIOS"
+  ============================ -->
+  <div id="commentsModal" aria-hidden="true">
+    <div class="cm-backdrop"></div>
+
+    <div class="cm-panel" role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+      <div class="cm-header">
+        <div class="title" id="cmTitle">RESUMEN DE COMENTARIOS</div>
+        <button class="cm-close" id="cmClose" aria-label="Cerrar">×</button>
+      </div>
+
+      <div class="cm-body" id="cmBody"></div>
+    </div>
+  </div>
+
+  <!-- ===========================
+       LIBRERÍAS ZIP/TXT
+  ============================ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <!-- JS propio -->
+  <script src="assets/js/validation.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/overlays.js"></script>
+
+</body>
+</html>
