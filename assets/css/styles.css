@@ -1030,3 +1030,44 @@
     .modal .modal-header-img img {
       max-width: 700px;
     }
+
+/* ===========================
+   BOTÓN CAPTURA (cámara)
+============================ */
+.viewer-footer {
+  position: relative; /* necesario para posicionar el botón */
+}
+
+.capture-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s, transform .15s;
+}
+
+.capture-btn:hover {
+  background: #252525;
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.capture-btn:active {
+  transform: translateY(-50%) scale(.92);
+}
+
+.capture-btn.is-loading {
+  opacity: .5;
+  cursor: wait;
+  pointer-events: none;
+}
