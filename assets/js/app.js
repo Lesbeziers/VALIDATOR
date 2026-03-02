@@ -1427,7 +1427,7 @@ if (shouldShowLogoSwitch(key || "")) {
          Cada formato define dimensiones de salida y
          array de capas (de fondo a primer plano).
       ========================================== */
-      const EXPORT_CONFIG = {
+const EXPORT_CONFIG = {
         MUX4_FONDO: {
           w: 1920,
           h: 1080,
@@ -1469,10 +1469,59 @@ if (shouldShowLogoSwitch(key || "")) {
                 preview.querySelector(".v19-overlay.role-sib")
                   ?.getAttribute("src") ?? null,
               draw(ctx, img, cfg) {
-                // Posición del TXT en espacio 1920×1080
                 const x = window.focoOn ? 105 : 108;
                 const y = window.focoOn ? 456 : 185;
                 ctx.drawImage(img, x, y, 784, 318);
+              }
+            }
+          ]
+        },
+        AD_PAUSE: {
+          w: 1920,
+          h: 1080,
+          filenameTag: "COMPOSICION",
+          layers: [
+            /* Capa 0 – fondo fondo_ad.jpg (role-base) */
+            {
+              id: "base",
+              visible: () => true,
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-base")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 1 – imagen principal (el anuncio) en el rectángulo */
+            {
+              id: "main",
+              visible: () => true,
+              getSrc: () =>
+                window.__v19_getMainPreviewImg?.()?.src ?? null,
+              draw(ctx, img) {
+                ctx.drawImage(img, 322, 98, 1280, 720);
+              }
+            },
+            /* Capa 2 – checker ZONA DE SEGURIDAD (role-sib) */
+            {
+              id: "checker",
+              visible: () => window.adPauseCheckerOn !== false,
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-sib")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img) {
+                ctx.drawImage(img, 322, 98, 1280, 720);
+              }
+            },
+            /* Capa 3 – pastilla publi (role-pastilla) */
+            {
+              id: "pastilla",
+              visible: () => window.pastillaPubliOn !== false,
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-pastilla")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img) {
+                ctx.drawImage(img, 875, 77, img.naturalWidth, img.naturalHeight);
               }
             }
           ]
