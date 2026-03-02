@@ -77,7 +77,7 @@ const logoToggle = qs("logoToggle");
             const mockupText = qs("mockupText");
       const txtText = qs("txtText");
       const amazonLogoNote = qs("amazonLogoNote");
-
+      const btnCapture    = qs("btnCapture");
       window.focoOn = false;
       window.adPauseCheckerOn = true;
       window.pastillaPubliOn = true;
@@ -900,6 +900,11 @@ if (shouldShowLogoSwitch(key || "")) {
           window.fanartNivel = 1;
         }
 
+        /* Botón captura: visible solo en formatos con EXPORT_CONFIG */
+        if (btnCapture) {
+          btnCapture.style.display =
+            EXPORT_CONFIG[currentKey] ? "inline-flex" : "none";
+        }
         setTimeout(refreshSwitchVisibility, 0);
         document.dispatchEvent(new CustomEvent("v19-refresh"));
 
@@ -908,7 +913,7 @@ if (shouldShowLogoSwitch(key || "")) {
         commentArea.value = existing;
 
         if (!existing) injectValidationLinesIfNeeded(fname, res);
-
+        if (btnCapture) btnCapture.style.display = "none";
         applyHasCommentBadges();
         btnAttach.disabled = !fname;
 
@@ -1407,9 +1412,171 @@ if (shouldShowLogoSwitch(key || "")) {
         if (el.classList.contains("open")) centerCommentsModalPanel();
       });
 
+      /* Captura */
+      btnCapture?.addEventListener("click", () => exportComposition());
       /* ==========================================
          EXPONER acceso al preview principal
       ========================================== */
+/* ==========================================
+         EXPORT CONFIG
+         Escalable: añadir nuevos formatos aquí.
+         Cada formato define dimensiones de salida y
+         array de capas (de fondo a primer plano).
+      ========================================== */
+      const EXPORT_CONFIG = {
+        MUX4_FONDO: {
+          w: 1920,
+          h: 1080,
+          filenameTag: "COMPOSICION",
+          layers: [
+            /* Capa 0 – imagen principal (siempre visible) */
+            {
+              id: "main",
+              visible: () => true,
+              getSrc: () =>
+                window.__v19_getMainPreviewImg?.()?.src ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 1 – overlay MOCKUP (role-base) */
+            {
+              id: "base",
+              visible: () => !preview.classList.contains("mockup-off"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-base")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 2 – overlay TXT/MUX4_TXT (role-sib) */
+            {
+              id: "sib",
+              visible: () => {
+                const el = preview.querySelector(".v19-overlay.role-sib");
+                return (
+                  !preview.classList.contains("txt-off") &&
+                  !!el &&
+                  el.style.display !== "none"
+                );
+              },
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-sib")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                // Posición del TXT en espacio 1920×1080
+                const x = window.focoOn ? 105 : 108;
+                const y = window.focoOn ? 456 : 185;
+                ctx.drawImage(img, x, y, 784, 318);
+              }
+            }
+          ]
+        }
+        /* Añadir nuevos formatos aquí con la misma estructura */
+      };
+
+      /* ==========================================
+         RESOLVE TO DATA URL
+         Convierte cualquier src (ruta relativa o
+         data URL) a data URL para el canvas.
+         Usa caché para no repetir fetch.
+      ========================================== */
+      const _dataUrlCache = new Map();
+
+      async function resolveToDataURL(src) {
+        if (!src) return null;
+        if (src.startsWith("data:")) return src;
+        if (_dataUrlCache.has(src)) return _dataUrlCache.get(src);
+
+        try {
+          const resp = await fetch(src);
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const blob = await resp.blob();
+          return new Promise(resolve => {
+            const fr = new FileReader();
+            fr.onload  = () => { _dataUrlCache.set(src, fr.result); resolve(fr.result); };
+            fr.onerror = () => resolve(null);
+            fr.readAsDataURL(blob);
+          });
+        } catch (e) {
+          console.warn("[Capture] No se pudo resolver:", src, e);
+          return null;
+        }
+      }
+
+      /* ==========================================
+         LOAD IMAGE FROM DATA URL
+      ========================================== */
+      function loadImgFromDataURL(dataUrl) {
+        return new Promise((resolve, reject) => {
+          if (!dataUrl) return reject(new Error("src vacío"));
+          const img = new Image();
+          img.onload  = () => resolve(img);
+          img.onerror = () => reject(new Error("Error cargando imagen"));
+          img.src = dataUrl;
+        });
+      }
+
+      /* ==========================================
+         EXPORT COMPOSITION
+         Lee EXPORT_CONFIG[currentKey], compone el
+         canvas capa a capa y descarga como JPG.
+      ========================================== */
+      async function exportComposition() {
+        const cfg = EXPORT_CONFIG[currentKey];
+        if (!cfg) return;
+
+        btnCapture.classList.add("is-loading");
+
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width  = cfg.w;
+          canvas.height = cfg.h;
+          const ctx = canvas.getContext("2d");
+
+          for (const layer of cfg.layers) {
+            if (!layer.visible()) continue;
+
+            const dataUrl = await resolveToDataURL(layer.getSrc());
+            if (!dataUrl) {
+              console.warn("[Capture] Capa omitida (sin src o CORS):", layer.id);
+              continue;
+            }
+
+            try {
+              const img = await loadImgFromDataURL(dataUrl);
+              layer.draw(ctx, img, cfg);
+            } catch (e) {
+              console.warn("[Capture] Error dibujando capa:", layer.id, e);
+            }
+          }
+
+          const baseName = getCurrentFileName()
+            .replace(/\.[^.]+$/, "")
+            .replace(/[^\w\-]/g, "_");
+          const filename = `${baseName}_${cfg.filenameTag}.jpg`;
+
+          canvas.toBlob(
+            blob => {
+              if (blob) saveAs(blob, filename);
+              else console.error("[Capture] canvas.toBlob devolvió null");
+            },
+            "image/jpeg",
+            0.92
+          );
+
+        } catch (e) {
+          console.error("[Capture] Error en exportComposition:", e);
+          alert(
+            "No se pudo exportar la composición.\n\n" +
+            "Si usas file://, abre el proyecto desde un servidor local " +
+            "(ej. Live Server en VS Code).\n\nDetalle: " + e.message
+          );
+        } finally {
+          btnCapture.classList.remove("is-loading");
+        }
+      }
       window.__v19_getMainPreviewImg = function () {
         const imgs = [...preview.querySelectorAll("img")].filter(
           i => !i.classList.contains("v19-overlay")
