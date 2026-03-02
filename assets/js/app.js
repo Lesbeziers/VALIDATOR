@@ -902,8 +902,8 @@ if (shouldShowLogoSwitch(key || "")) {
 
         /* Botón captura: visible solo en formatos con EXPORT_CONFIG */
         if (btnCapture) {
-          btnCapture.style.display =
-            EXPORT_CONFIG[currentKey] ? "inline-flex" : "none";
+          btnCapture.style.display = currentKey ? "inline-flex" : "none";
+        }
         }
         setTimeout(refreshSwitchVisibility, 0);
         document.dispatchEvent(new CustomEvent("v19-refresh"));
@@ -1529,7 +1529,34 @@ if (shouldShowLogoSwitch(key || "")) {
          canvas capa a capa y descarga como JPG.
       ========================================== */
       async function exportComposition() {
-        const cfg = EXPORT_CONFIG[currentKey];
+      const cfg = EXPORT_CONFIG[currentKey] ?? {
+          w: window.__v19_getMainPreviewImg?.()?.naturalWidth  || 1920,
+          h: window.__v19_getMainPreviewImg?.()?.naturalHeight || 1080,
+          filenameTag: "COMPOSICION",
+          layers: [
+            {
+              id: "main",
+              visible: () => true,
+              getSrc: () => window.__v19_getMainPreviewImg?.()?.src ?? null,
+              draw(ctx, img, cfg) { ctx.drawImage(img, 0, 0, cfg.w, cfg.h); }
+            },
+            {
+              id: "base",
+              visible: () => !preview.classList.contains("mockup-off"),
+              getSrc: () => preview.querySelector(".v19-overlay.role-base")?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) { ctx.drawImage(img, 0, 0, cfg.w, cfg.h); }
+            },
+            {
+              id: "sib",
+              visible: () => {
+                const el = preview.querySelector(".v19-overlay.role-sib");
+                return !preview.classList.contains("txt-off") && !!el && el.style.display !== "none";
+              },
+              getSrc: () => preview.querySelector(".v19-overlay.role-sib")?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) { ctx.drawImage(img, 0, 0, cfg.w, cfg.h); }
+            }
+          ]
+        };
         if (!cfg) return;
 
         btnCapture.classList.add("is-loading");
