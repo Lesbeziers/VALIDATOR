@@ -904,7 +904,6 @@ if (shouldShowLogoSwitch(key || "")) {
         if (btnCapture) {
           btnCapture.style.display = currentKey ? "inline-flex" : "none";
         }
-        }
         setTimeout(refreshSwitchVisibility, 0);
         document.dispatchEvent(new CustomEvent("v19-refresh"));
 
