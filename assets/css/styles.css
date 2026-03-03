@@ -1032,38 +1032,53 @@
     }
 
 /* ===========================
-   BOTÓN CAPTURA (cámara)
+   GRUPO CAPTURA (separador + cámara + label)
 ============================ */
-.viewer-footer {
-  position: relative; /* necesario para posicionar el botón */
+.capture-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 30px;
+}
+
+.footer-sep {
+  color: #fff;
+  opacity: .4;
+  font-size: 18px;
+  line-height: 1;
+  user-select: none;
+}
+
+.capture-label {
+  font-family: "Apercu Bold";
+  font-size: 13px;
+  letter-spacing: .5px;
+  color: #fff;
+  user-select: none;
+  pointer-events: none;
 }
 
 .capture-btn {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   background: transparent;
   border: none;
   color: #fff;
   cursor: pointer;
-  transition: background .2s, border-color .2s, color .2s, transform .15s;
+  transition: color .2s, transform .15s;
+  padding: 0;
 }
 
 .capture-btn:hover {
-  background: transparent;
-  border: none;
   color: var(--brand);
 }
 
 .capture-btn:active {
-  transform: translateY(-50%) scale(.92);
+  transform: scale(.92);
 }
 
 .capture-btn.is-loading {
