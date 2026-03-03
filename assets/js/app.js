@@ -78,6 +78,7 @@ const logoToggle = qs("logoToggle");
       const txtText = qs("txtText");
       const amazonLogoNote = qs("amazonLogoNote");
       const btnCapture    = qs("btnCapture");
+      const captureGroup  = qs("captureGroup");
       window.focoOn = false;
       window.adPauseCheckerOn = true;
       window.pastillaPubliOn = true;
@@ -646,21 +647,21 @@ preview.classList.remove("sph-zona-off");
         setSphZonaState(e.target.checked)
       );
 
-logoSwitch.addEventListener("click", () =>
-  setLogoState(!logoToggle.checked)
-);
+      logoSwitch.addEventListener("click", () =>
+      setLogoState(!logoToggle.checked)
+      );
 
-logoToggle.addEventListener("change", e =>
-  setLogoState(e.target.checked)
-);
+      logoToggle.addEventListener("change", e =>
+      setLogoState(e.target.checked)
+      );
 
-webMockupSwitch.addEventListener("click", () =>
-  setWebMockupState(!webMockupToggle.checked)
-);
+      webMockupSwitch.addEventListener("click", () =>
+      setWebMockupState(!webMockupToggle.checked)
+      );
 
-webMockupToggle.addEventListener("change", e =>
-  setWebMockupState(e.target.checked)
-);
+      webMockupToggle.addEventListener("change", e =>
+      webMockupToggle.addEventListener("change", e =>setWebMockupState(e.target.checked)
+      );
 
       txtToggle.addEventListener("change", e =>
         setTxtState(e.target.checked)
@@ -902,7 +903,7 @@ if (shouldShowLogoSwitch(key || "")) {
 
         /* Botón captura: visible solo en formatos con EXPORT_CONFIG */
         if (btnCapture) {
-          btnCapture.style.display = currentKey ? "inline-flex" : "none";
+          captureGroup.style.display = currentKey ? "inline-flex" : "none";
         }
         setTimeout(refreshSwitchVisibility, 0);
         document.dispatchEvent(new CustomEvent("v19-refresh"));
