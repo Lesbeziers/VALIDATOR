@@ -491,6 +491,7 @@ preview.classList.remove("sph-zona-off");
         window.fanartNivel = 1;
 	currentKey = "";
         setSwitchVisible(focoSwitch, false);
+        captureGroup.style.display = "none";
 
         commentArea.value = "";
         applyHasCommentBadges();
