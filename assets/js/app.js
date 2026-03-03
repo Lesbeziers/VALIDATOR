@@ -661,7 +661,7 @@ preview.classList.remove("sph-zona-off");
       );
 
       webMockupToggle.addEventListener("change", e =>
-      webMockupToggle.addEventListener("change", e =>setWebMockupState(e.target.checked)
+        setWebMockupState(e.target.checked)
       );
 
       txtToggle.addEventListener("change", e =>
