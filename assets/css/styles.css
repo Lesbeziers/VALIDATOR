@@ -589,7 +589,9 @@
 
     /* LOGO: se oculta cuando el switch LOGO está OFF */
     /* BASE */
-    #preview.mockup-off .v19-overlay.role-base {
+    #preview.mockup-off .v19-overlay.role-base,
+    #preview.mockup-off .v19-overlay.role-fanart-mod-l,
+    #preview.mockup-off .v19-overlay.role-fanart-mod-r {
       display: none !important;
     }
 
