@@ -568,6 +568,58 @@ function fitOverlayRect(ov, img, placement, txtRuleKey) {
   ov.style.display   = "";
 }
 
+      /* ==========================================
+         FANART_DESTACADO — slots para inyectar MOD_DESTACADOS2 / _SIL
+         Coordenadas en píxeles del arte 1920x1080
+      ========================================== */
+      const FANART_DEST_SLOTS = {
+        L: { x: 144, y: 587, w: 803, h: 296 },
+        R: { x: 976, y: 587, w: 803, h: 296 }
+      };
+      // MOD_DESTACADOS2_SIL es 863x400 — se centra sobre el slot teórico 803x296
+      const MOD_DEST_SIL = { w: 863, h: 400 };
+
+      function fitFanartDestSlot(ov, mainImg, slot, useSil) {
+        if (!isLive(ov) || !isLive(mainImg) || !isLive(mainImg.parentElement)) return;
+        const pr = mainImg.parentElement.getBoundingClientRect();
+        const ir = mainImg.getBoundingClientRect();
+
+        let rx = slot.x, ry = slot.y, rw = slot.w, rh = slot.h;
+        if (useSil) {
+          rw = MOD_DEST_SIL.w;
+          rh = MOD_DEST_SIL.h;
+          // Horizontal: centrado sobre el slot (zona enmascarada centrada en el archivo)
+          rx = slot.x + slot.w / 2 - rw / 2;
+          // Vertical: la base del SIL coincide con la base del slot
+          // (los 104 px extra de altura desbordan SOLO hacia arriba)
+          ry = slot.y + slot.h - rh;
+        }
+
+        const sX = ir.width / 1920;
+        const sY = ir.height / 1080;
+
+        ov.style.position = "absolute";
+        ov.style.left = (ir.left - pr.left + rx * sX) + "px";
+        ov.style.top  = (ir.top  - pr.top  + ry * sY) + "px";
+        ov.style.width  = (rw * sX) + "px";
+        ov.style.height = (rh * sY) + "px";
+        ov.style.objectFit = "fill";
+        ov.style.zIndex = "5";
+        ov.style.display = "";
+      }
+
+      // Busca el primer item cargado cuyo checkName coincida con el formato pedido
+      function findLoadedByKey(targetKey) {
+        const items = window.LOADED_ITEMS || [];
+        for (const it of items) {
+          try {
+            if (typeof checkName === "function" && checkName(it.name) === targetKey)
+              return it;
+          } catch (e) { /* ignore */ }
+        }
+        return null;
+      }
+
       function findSibling(byNeedle, baseName) {
         const U = String(baseName || "").toUpperCase();
         const ix = U.indexOf(byNeedle);
@@ -824,6 +876,12 @@ const OFFSET_Y = 65;    // arriba/abajo
         if (existingSphZona) {
           existingSphZona.style.display = "none";
         }
+
+        // Limpiar overlays de módulos inyectados en FANART_DESTACADO
+        const existingFanartL = mainImg.parentElement?.querySelector(".v19-overlay.role-fanart-mod-l");
+        if (existingFanartL) existingFanartL.style.display = "none";
+        const existingFanartR = mainImg.parentElement?.querySelector(".v19-overlay.role-fanart-mod-r");
+        if (existingFanartR) existingFanartR.style.display = "none";
 
         // Ocultar switch sphZona por defecto (se mostrará solo en SMARTPHONE_MUX_FONDO)
         if (sphZonaSwitch) {
@@ -2048,6 +2106,95 @@ if (key === "DESTACADO_DOBLE2_SIL") {
           if (txtSwitch) {
             txtSwitch.style.display = "none";
           }
+
+          return;
+        }
+
+        /* ==========================================
+           CASO FANART_DESTACADO
+           - Overlay base = mockup (FANART_DESTACADO_PUBLI_Check.png)
+           - Si hay MOD_DESTACADOS2 (o _SIL) cargado, se inyecta esa imagen
+             en los dos huecos donde el mockup pinta Ralph y Peugeot.
+           - Switch SILUETA (en app.js) elige normal vs SIL.
+        ========================================== */
+        if (key === "FANART_DESTACADO") {
+          // Resolver qué módulo MOD_DESTACADOS2 inyectar (si lo hay)
+          const modNormal = findLoadedByKey("MOD_DESTACADOS2");
+          const modSil    = findLoadedByKey("MOD_DESTACADOS2_SIL");
+          const useSil    = !!modSil && (window.fanartDestSil || !modNormal);
+          const chosen    = useSil ? modSil : modNormal;
+
+          // Mockup base:
+          //   - Sin MOD_DESTACADOS2 ni SIL cargado → mockup con Ralph/Peugeot dibujados
+          //   - Con cualquiera de los dos cargado → mockup limpio (sin Ralph/Peugeot)
+          const baseFile = (modNormal || modSil)
+            ? "FANART_DESTACADO_PUBLI_2_Check.png"
+            : KEY_TO_OVERLAY.get("FANART_DESTACADO");
+
+          if (baseFile) {
+            const srcB = `${OVERLAY_BASE}/${baseFile}`;
+
+            baseOv.onerror = () => {
+              lastFailBase = srcB;
+              baseOv.style.display = "none";
+            };
+
+            baseOv.onload = () => {
+              if (!isLive(mainImg)) return;
+              if (lastFailBase === srcB) lastFailBase = "";
+              fitOverlayFill(baseOv, mainImg);
+            };
+
+            if (baseOv.getAttribute("src") !== srcB)
+              baseOv.setAttribute("src", srcB);
+
+            fitOverlayFill(baseOv, mainImg);
+            baseOv.style.display = "";
+          }
+
+          sibOv.removeAttribute("src");
+          sibOv.style.display = "none";
+
+          const modL_ov = ensureOverlayRole(mainImg, "fanart-mod-l");
+          const modR_ov = ensureOverlayRole(mainImg, "fanart-mod-r");
+
+          if (chosen && chosen.src && modL_ov && modR_ov) {
+            const apply = (ov, slot) => {
+              ov.onload  = () => { if (isLive(mainImg)) fitFanartDestSlot(ov, mainImg, slot, useSil); };
+              ov.onerror = () => { ov.style.display = "none"; };
+              if (ov.getAttribute("src") !== chosen.src)
+                ov.setAttribute("src", chosen.src);
+              fitFanartDestSlot(ov, mainImg, slot, useSil);
+            };
+            apply(modL_ov, FANART_DEST_SLOTS.L);
+            apply(modR_ov, FANART_DEST_SLOTS.R);
+          } else {
+            [modL_ov, modR_ov].forEach(ov => {
+              if (ov) {
+                ov.removeAttribute("src");
+                ov.style.display = "none";
+              }
+            });
+          }
+
+          // Mostrar el switch MOCKUP genérico
+          if (mockupSwitch) {
+            mockupSwitch.style.display = "inline-flex";
+            if (mockupText) mockupText.textContent = "MOCKUP";
+          }
+
+          disconnectObservers();
+
+          roBase = new ResizeObserver(() => {
+            fitOverlayFill(baseOv, mainImg);
+            if (chosen && chosen.src) {
+              fitFanartDestSlot(modL_ov, mainImg, FANART_DEST_SLOTS.L, useSil);
+              fitFanartDestSlot(modR_ov, mainImg, FANART_DEST_SLOTS.R, useSil);
+            }
+          });
+
+          roBase.observe(mainImg);
+          roBase.observe(mainImg.parentElement);
 
           return;
         }

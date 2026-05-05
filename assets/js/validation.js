@@ -60,7 +60,7 @@
       "APPLETV": { w: 908, h: 512, mode: "exact", maxMB: 1 },
       "199": { w: 1920, h: 636, mode: "exact", maxMB: 4 },
       "FANART_DESTACADO": { w: 1920, h: 1080, mode: "exact", maxMB: 1.5 },
-      "FANART": { w: 3840, h: 2160, mode: "exact", maxMB: 3 },
+      "FANART": { w: 1920, h: 1080, mode: "exact", maxMB: 3 },
       "FANART_MOVIL": { w: 1440, h: 2986, mode: "exact", maxMB: 3 },
       "IPLUS": { w: 1280, h: 620, mode: "exact", maxMB: 0.15 },
       "MOD_DESTACADOS1": { w: 1636, h: 296, mode: "exact", maxMB: 1 },
@@ -85,10 +85,10 @@
       "TITULO_FICHA": { w: 724, h: 100, mode: "exact", maxMB: 0.6 },
       "CARTEL_COM_H": { w: 3840, h: 2160, mode: "exact", maxMB: 100 },
       "CARTEL_COM_V": { w: 2160, h: 3240, mode: "exact", maxMB: 100 },
-      "CARATULA_V": { w: 1200, h: 1800, mode: "exact", maxMB: 5 },
-      "CARATULA_V_TXT": { w: 1200, h: 1800, mode: "exact", maxMB: 5 },
-      "CARATULA_H": { w: 1920, h: 1080, mode: "exact", maxMB: 5 },
-      "CARATULA_H_TXT": { w: 1920, h: 1080, mode: "exact", maxMB: 5 },
+      "CARATULA_V": { w: 1200, h: 1800, mode: "exact", maxMB: 10 },
+      "CARATULA_V_TXT": { w: 1200, h: 1800, mode: "exact", maxMB: 10 },
+      "CARATULA_H": { w: 1920, h: 1080, mode: "exact", maxMB: 10 },
+      "CARATULA_H_TXT": { w: 1920, h: 1080, mode: "exact", maxMB: 10 },
       "WEB": { w: 2000, h: 465, mode: "exact", maxMB: 1 },
       "WOW": { w: 1280, h: 258, mode: "exact", maxMB: 0.25 },
       "XIAOMI": { w: 1280, h: 360, mode: "exact", maxMB: 10},
@@ -132,7 +132,7 @@
   { key: "MOD_DESTACADOS2", aliases: ["MOD_DESTACADOS2", "MOD_DESTACADO2"] },
   { key: "MOD_DESTACADOS3", aliases: ["MOD_DESTACADOS3", "MOD_DESTACADO3"] },
   { key: "MOD_DESTACADOS4", aliases: ["MOD_DESTACADOS4", "MOD_DESTACADO4"] },
-  { key: "MOD_N", aliases: ["MOD_N"] },
+  { key: "MOD_N", aliases: ["MOD_N", "MODULO_N"] },
 
   { key: "APPLETV", aliases: ["APPLETV"] },
   { key: "199", aliases: ["199"] },
@@ -196,7 +196,7 @@
   { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
   { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
   { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] },
-  { key: "MOD_N_SIL", bases: ["MOD_N"] }
+  { key: "MOD_N_SIL", bases: ["MOD_N", "MODULO_N"] }
 ];
 
     for (const item of BASES) {

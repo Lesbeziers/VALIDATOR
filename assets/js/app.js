@@ -51,6 +51,10 @@ const logoToggle = qs("logoToggle");
       const nivelSwitch = qs("nivelSwitch");
       const nivelToggle = qs("nivelToggle");
 
+      // FANART_DESTACADO – switch SILUETA (alterna MOD_DESTACADOS2 ↔ MOD_DESTACADOS2_SIL)
+      const siluetaSwitch = qs("siluetaSwitch");
+      const siluetaToggle = qs("siluetaToggle");
+
         const commentArea = qs("commentArea");
         const presetToggleBtn = qs("presetToggleBtn");
         const presetSearch = qs("presetSearch");
@@ -84,6 +88,8 @@ const logoToggle = qs("logoToggle");
       window.pastillaPubliOn = true;
       window.sphZonaOn = true;
       window.LOADED_ITEMS = [];
+      // FANART_DESTACADO – si está activa la silueta (MOD_DESTACADOS2_SIL en lugar de MOD_DESTACADOS2)
+      window.fanartDestSil = false;
 
       let totalToLoad = 0;
       // FANART – nivel actual (1 o 2)
@@ -358,6 +364,14 @@ function setSphZonaState(on) {
         document.dispatchEvent(new CustomEvent("v19-refresh"));
       }
 
+      // FANART_DESTACADO – alternar entre MOD_DESTACADOS2 y MOD_DESTACADOS2_SIL en los huecos del mockup
+      function setSiluetaState(on) {
+        if (!siluetaSwitch || !siluetaToggle) return;
+        setSwitchState(siluetaSwitch, siluetaToggle, on);
+        window.fanartDestSil = !!on;
+        document.dispatchEvent(new CustomEvent("v19-refresh"));
+      }
+
       function getOverlayBase() {
         return document.querySelector(
           "#preview .v19-overlay.role-base"
@@ -485,6 +499,10 @@ preview.classList.remove("sph-zona-off");
         // FANART – resetear NIVEL a 1 y ocultar el switch
         setNivelState(false);
         setSwitchVisible(nivelSwitch, false);
+
+        // FANART_DESTACADO – resetear SILUETA a OFF y ocultar el switch
+        setSiluetaState(false);
+        setSwitchVisible(siluetaSwitch, false);
 
         setSwitchState(focoSwitch, focoToggle, false);
         window.focoOn = false;
@@ -675,6 +693,15 @@ preview.classList.remove("sph-zona-off");
 
       nivelToggle.addEventListener("change", e =>
         setNivelState(e.target.checked)
+      );
+
+      // FANART_DESTACADO – switch SILUETA
+      siluetaSwitch.addEventListener("click", () =>
+        setSiluetaState(!siluetaToggle.checked)
+      );
+
+      siluetaToggle.addEventListener("change", e =>
+        setSiluetaState(e.target.checked)
       );
 
       focoSwitch.addEventListener("click", () => {
@@ -900,6 +927,36 @@ if (shouldShowLogoSwitch(key || "")) {
 
           // Reset interno siempre a NIVEL 1
           window.fanartNivel = 1;
+        }
+
+        /* ===========================
+           FANART_DESTACADO – Gestión del switch SILUETA
+           Solo tiene sentido como interruptor cuando hay AMBOS módulos
+           (normal + SIL) cargados, para alternar entre ellos.
+           Si solo hay uno → se renderiza directamente sin switch.
+        ============================ */
+        if ((key || "").toUpperCase() === "FANART_DESTACADO") {
+          const items = window.LOADED_ITEMS || [];
+          const detect = (target) => items.some(it => {
+            try { return checkName(it.name) === target; } catch (e) { return false; }
+          });
+          const hasModSil = detect("MOD_DESTACADOS2_SIL");
+          const hasModNormal = detect("MOD_DESTACADOS2");
+
+          if (hasModSil && hasModNormal) {
+            // Los dos cargados → mostrar el switch, arrancar en OFF (normal)
+            setSwitchVisible(siluetaSwitch, true);
+            setSiluetaState(false);
+          } else {
+            // Solo uno (o ninguno) → ocultar el switch
+            setSwitchVisible(siluetaSwitch, false);
+            // Si solo hay SIL → forzar state ON para que se renderice SIL
+            // Si solo hay normal o nada → state OFF
+            setSiluetaState(hasModSil && !hasModNormal);
+          }
+        } else {
+          setSwitchVisible(siluetaSwitch, false);
+          window.fanartDestSil = false;
         }
 
         /* Botón captura: visible solo en formatos con EXPORT_CONFIG */
