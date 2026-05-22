@@ -402,6 +402,7 @@ function setSphZonaState(on) {
         const mockupFormats = new Set([
           "FANART_DESTACADO",
           "FANART",
+          "FANART_COLECCION",
           "FANART_MOVIL",
           "MUX4_FONDO",
           "SMARTPHONE_MUX_FONDO",

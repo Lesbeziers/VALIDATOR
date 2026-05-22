@@ -6,6 +6,7 @@
         { title: "199", overlay: "199_PUBLI_Check.png" },
         { title: "FANART_DESTACADO", overlay: "FANART_DESTACADO_PUBLI_Check.png" },
         { title: "FANART", overlay: "FANART_NIVEL1_Check.png" },
+        { title: "FANART_COLECCION", overlay: "FANART_COLECCION_Check.png" },
         { title: "FANART_MOVIL", overlay: "FANART_MOVIL_Check.png" },
         { title: "IPLUS", overlay: "IPLUS_PUBLI_Check.png" },
 
@@ -137,74 +138,18 @@
       }
 
        function keyFromFilename(img) {
+        // Delegamos en checkName (validation.js) como única fuente de verdad
+        // para la detección de formato por nombre.
+        if (typeof checkName !== "function") return null;
+
         const parts = [];
         if (img?.alt) parts.push(img.alt);
         if (img?.src) parts.push(img.src);
 
-        const partsUp = parts.map(p => String(p || "").toUpperCase());
-        const H = partsUp.join(" | ");
-
-        // 0) PERFIL: si aparece _PERFIL en cualquier parte del nombre,
-        //    forzamos siempre este formato (igual que hace checkName)
-        if (H.includes("_PERFIL")) {
-          return "_PERFIL";
+        for (const p of parts) {
+          const k = checkName(p);
+          if (k) return k;
         }
-
-        // 1) CASO ESPECIAL _SIL CON BASURA EN MEDIO
-        //    Ej.: MOD_DESTACADOS1_V1_IZQ_SIL, _MOD_DESTACADO3_PRE_SIL, etc.
-               const silSource = partsUp.find(p => p.includes("_SIL"));
-               if (silSource) {
-          if (!endsWithSil(silSource)) return null;
-
-          const SIL_BASES = [
-  { key: "MOD_DESTACADOS1_SIL", bases: ["MOD_DESTACADOS1", "MOD_DESTACADO1"] },
-  { key: "MOD_DESTACADOS2_SIL", bases: ["MOD_DESTACADOS2", "MOD_DESTACADO2"] },
-  { key: "MOD_DESTACADOS3_SIL", bases: ["MOD_DESTACADOS3", "MOD_DESTACADO3"] },
-  { key: "MOD_DESTACADOS4_SIL", bases: ["MOD_DESTACADOS4", "MOD_DESTACADO4"] },
-  { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
-  { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
-  { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] }
-];
-
-          for (const item of SIL_BASES) {
-            for (const b of item.bases) {
-              if (H.includes(b)) {
-                // Forzamos clave SIL para que use el overlay *_SIL_Check.png
-                return item.key;
-              }
-            }
-          }
-        }
-
-        // 2) LÓGICA GENERAL
-        const ALL_KEYS = TRUTH.map(it => it.title.toUpperCase());
-
-        const KEYS_FOR_FILENAME = [
-          "SMARTPHONE_MUX_FONDO",
-          "SMARTPHONE_MUX_TXT",
-          "MUX4_TXT",
-          "_MUX4_TXT",
-          "CC_H",
-          "CC_V",
-
-          // Variantes sin "S" que queremos reconocer en los filenames
-          "MOD_DESTACADO1",
-          "MOD_DESTACADO2",
-          "MOD_DESTACADO3",
-          "MOD_DESTACADO4",
-          // SONY sin guion bajo en el nombre de archivo
-          "SONY",
-
-          ...ALL_KEYS
-            .filter(k => !k.startsWith("SMARTPHONE_") && k !== "MUX4_TXT")
-            .sort((a, b) => b.length - a.length)
-        ];
-
-        for (const k of KEYS_FOR_FILENAME) {
-          if (boundaryMatch(H, k))
-            return KEY_ALIASES.get(k) || k;
-        }
-
         return null;
       }
 
