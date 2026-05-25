@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+._*
+
+# Backups locales
+*.zip
+
+# Config local de Claude
+.claude/

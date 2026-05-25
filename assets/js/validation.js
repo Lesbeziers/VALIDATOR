@@ -15,8 +15,6 @@
       "MOD_DESTACADOS2_SIL": "MOD DES. 2 SIL",
       "MOD_DESTACADOS3": "MOD DES. 3",
       "MOD_DESTACADOS3_SIL": "MOD DES. 3 SIL",
-      "MOD_DESTACADOS4": "MOD DES. 4",
-      "MOD_DESTACADOS4_SIL": "MOD DES. 4 SIL",
       "MOD_N_SIL": "MOD N SIL",
       "MOD_N": "MOD N",
       "MUX4_FONDO": "MUX 4 FONDO",
@@ -57,58 +55,60 @@
 
     /* Reglas de dimensiones/peso */
       const RU = {
-      "AD_PAUSE": { w: 1280, h: 720, mode: "exact", maxMB: 0.1 },
-      "APPLETV": { w: 908, h: 512, mode: "exact", maxMB: 1 },
-      "199": { w: 1920, h: 636, mode: "exact", maxMB: 4 },
-      "FANART_DESTACADO": { w: 1920, h: 1080, mode: "exact", maxMB: 1.5 },
-      "FANART": { w: 3840, h: 2160, mode: "exact", maxMB: 3 },
-      "FANART_COLECCION": { w: 1920, h: 1080, mode: "exact", maxMB: 10 },
-      "FANART_MOVIL": { w: 1440, h: 2986, mode: "exact", maxMB: 3 },
-      "IPLUS": { w: 1280, h: 620, mode: "exact", maxMB: 0.15 },
-      "MOD_DESTACADOS1": { w: 1636, h: 296, mode: "exact", maxMB: 1 },
-      "MOD_DESTACADOS1_SIL": { w: 1920, h: 400, mode: "exact", maxMB: 1 },
-      "MOD_DESTACADOS2": { w: 803, h: 296, mode: "exact", maxMB: 1 },
-      "MOD_DESTACADOS2_SIL": { w: 863, h: 400, mode: "exact", maxMB: 1 },
-      "MOD_DESTACADOS3": { w: 526, h: 296, mode: "exact", maxMB: 1 },
-      "MOD_DESTACADOS3_SIL": { w: 584, h: 400, mode: "exact", maxMB: 1 },
+      "AD_PAUSE": { w: 1280, h: 720, mode: "exact", maxMB: 0.1, ext: "jpg" },
+      "APPLETV": { w: 908, h: 512, mode: "exact", maxMB: 1, ext: "jpg" },
+      "199": { w: 1920, h: 636, mode: "exact", maxMB: 4, ext: "jpg" },
+      "FANART_DESTACADO": { w: 1920, h: 1080, mode: "exact", maxMB: 1.5, ext: "jpg" },
+      "FANART": { w: 3840, h: 2160, mode: "exact", maxMB: 3, ext: "jpg" },
+      "FANART_COLECCION": { w: 1920, h: 1080, mode: "exact", maxMB: 10, ext: "jpg" },
+      "FANART_MOVIL": { w: 1440, h: 2986, mode: "exact", maxMB: 3, ext: "jpg" },
+      "IPLUS": { w: 1280, h: 620, mode: "exact", maxMB: 0.15, ext: "jpg" },
+      "MOD_DESTACADOS1": { w: 1636, h: 296, mode: "exact", maxMB: 1, ext: "jpg" },
+      "MOD_DESTACADOS1_SIL": { w: 1920, h: 400, mode: "exact", maxMB: 1, ext: "png" },
+      "MOD_DESTACADOS2": { w: 803, h: 296, mode: "exact", maxMB: 1, ext: "jpg" },
+      "MOD_DESTACADOS2_SIL": { w: 863, h: 400, mode: "exact", maxMB: 1, ext: "png" },
+      "MOD_DESTACADOS3": { w: 526, h: 296, mode: "exact", maxMB: 1, ext: "jpg" },
+      "MOD_DESTACADOS3_SIL": { w: 584, h: 400, mode: "exact", maxMB: 1, ext: "png" },
       "MOD_N": {
         options: [
           { w: 386, h: 217 },
           { w: 385, h: 217 }
         ],
         mode: "list",
-        maxMB: 0.6
+        maxMB: 0.6,
+        ext: "png"
       },
-      "MOD_N_SIL": { w: 449, h: 300, mode: "exact", maxMB: 0.6 },
-      "MUX4_FONDO": { w: 1920, h: 1080, mode: "exact", maxMB: 1.5 },
-      "MUX4_TXT": { w: 784, h: 318, mode: "exact", maxMB: 0.6 },
-      "SMARTPHONE_MUX_FONDO": { w: 1440, h: 2986, mode: "exact", maxMB: 1.5 },
-      "SMARTPHONE_MUX_TXT": { w: 1440, h: 466, mode: "exact", maxMB: 0.6 },
-      "TITULO_FICHA": { w: 724, h: 100, mode: "exact", maxMB: 0.6 },
-      "CARTEL_COM_H": { w: 3840, h: 2160, mode: "exact", maxMB: 100 },
-      "CARTEL_COM_V": { w: 2160, h: 3240, mode: "exact", maxMB: 100 },
-      "CARATULA_V": { w: 1200, h: 1800, mode: "exact", maxMB: 10 },
-      "CARATULA_V_TXT": { w: 1200, h: 1800, mode: "exact", maxMB: 10 },
-      "CARATULA_H": { w: 1920, h: 1080, mode: "exact", maxMB: 10 },
-      "CARATULA_H_TXT": { w: 1920, h: 1080, mode: "exact", maxMB: 10 },
-      "WEB": { w: 2000, h: 465, mode: "exact", maxMB: 1 },
-      "WOW": { w: 1280, h: 258, mode: "exact", maxMB: 0.25 },
-      "XIAOMI": { w: 1280, h: 360, mode: "exact", maxMB: 10},
-      "AMAZON_BG": { w: 1920, h: 720, mode: "exact", maxMB: 0.45 },
-      "AMAZON_LOGO": { w: 640, h: 260, mode: "exact", maxMB: 0.45 },
-      "_PERFIL": { w: 425, h: 479, mode: "exact", maxMB: 10 },
-      "_SONY": { w: 204, h: 306, mode: "exact", maxMB: 10 },
-      "DESTACADO_DOBLE1": { w: 1636, h: 548, mode: "exact", maxMB: 0.60 },
-      "DESTACADO_DOBLE1_SIL": { w: 1636, h: 630, mode: "exact", maxMB: 1 },
-      "DESTACADO_DOBLE2": { w: 803, h: 548, mode: "exact", maxMB: 1 },
-      "DESTACADO_DOBLE2_SIL": { w: 803, h: 630, mode: "exact", maxMB: 1 },
+      "MOD_N_SIL": { w: 449, h: 300, mode: "exact", maxMB: 0.6, ext: "png" },
+      "MUX4_FONDO": { w: 1920, h: 1080, mode: "exact", maxMB: 1.5, ext: "jpg" },
+      "MUX4_TXT": { w: 784, h: 318, mode: "exact", maxMB: 0.6, ext: "png" },
+      "SMARTPHONE_MUX_FONDO": { w: 1440, h: 2986, mode: "exact", maxMB: 1.5, ext: "jpg" },
+      "SMARTPHONE_MUX_TXT": { w: 1440, h: 466, mode: "exact", maxMB: 0.6, ext: "png" },
+      "TITULO_FICHA": { w: 724, h: 100, mode: "exact", maxMB: 0.6, ext: "png" },
+      "CARTEL_COM_H": { w: 3840, h: 2160, mode: "exact", maxMB: 100, ext: "jpg" },
+      "CARTEL_COM_V": { w: 2160, h: 3240, mode: "exact", maxMB: 100, ext: "jpg" },
+      "CARATULA_V": { w: 1200, h: 1800, mode: "exact", maxMB: 10, ext: "jpg" },
+      "CARATULA_V_TXT": { w: 1200, h: 1800, mode: "exact", maxMB: 10, ext: "png" },
+      "CARATULA_H": { w: 1920, h: 1080, mode: "exact", maxMB: 10, ext: "jpg" },
+      "CARATULA_H_TXT": { w: 1920, h: 1080, mode: "exact", maxMB: 10, ext: "png" },
+      "WEB": { w: 2000, h: 465, mode: "exact", maxMB: 1, ext: "jpg" },
+      "WOW": { w: 1280, h: 258, mode: "exact", maxMB: 0.25, ext: "jpg" },
+      "XIAOMI": { w: 1280, h: 360, mode: "exact", maxMB: 10, ext: "jpg" },
+      "AMAZON_BG": { w: 1920, h: 720, mode: "exact", maxMB: 0.45, ext: "jpg" },
+      "AMAZON_LOGO": { w: 640, h: 260, mode: "exact", maxMB: 0.45, ext: "png" },
+      "_PERFIL": { w: 425, h: 479, mode: "exact", maxMB: 10, ext: "png" },
+      "_SONY": { w: 204, h: 306, mode: "exact", maxMB: 10, ext: "png" },
+      "DESTACADO_DOBLE1": { w: 1636, h: 548, mode: "exact", maxMB: 0.60, ext: "jpg" },
+      "DESTACADO_DOBLE1_SIL": { w: 1636, h: 630, mode: "exact", maxMB: 1, ext: "png" },
+      "DESTACADO_DOBLE2": { w: 803, h: 548, mode: "exact", maxMB: 1, ext: "jpg" },
+      "DESTACADO_DOBLE2_SIL": { w: 803, h: 630, mode: "exact", maxMB: 1, ext: "png" },
       "DESTACADO_DOBLE4_SIL": {
         options: [
           { w: 386, h: 630 },
           { w: 385, h: 630 }
         ],
         mode: "list",
-        maxMB: 1
+        maxMB: 1,
+        ext: "png"
       },
       "DESTACADO_DOBLE4": {
         options: [
@@ -116,93 +116,154 @@
           { w: 385, h: 548 }
         ],
         mode: "list",
-        maxMB: 1
+        maxMB: 1,
+        ext: "jpg"
       },
 
     };
 
-    /* Títulos válidos */
+    /* Títulos válidos
+       - aliases:     cadenas que se buscan en el nombre del archivo
+       - category:    grupo en la modal "Cómo nombrar el archivo"
+                      ("DISPOSITIVOS" | "GRAFICA_OFICIAL" | "MODULOS_DOBLES_N" | "OTROS")
+       - displayName: nombre mostrado en la modal cuando difiere del alias técnico
+       - endOnly:     (heredado) sin efecto desde que la regla "formato al final"
+                      es universal; se mantiene como anotación
+    */
     const AN = [
-  { key: "MOD_DESTACADOS1_SIL", aliases: ["MOD_DESTACADOS1_SIL"] },
-  { key: "MOD_DESTACADOS2_SIL", aliases: ["MOD_DESTACADOS2_SIL"] },
-  { key: "MOD_DESTACADOS3_SIL", aliases: ["MOD_DESTACADOS3_SIL"] },
-  { key: "MOD_DESTACADOS4_SIL", aliases: ["MOD_DESTACADOS4_SIL"] },
-  { key: "MOD_N_SIL", aliases: ["MOD_N_SIL"] },
+  /* === MÓDULOS DESTACADOS (DISPOSITIVOS) === */
+  { key: "MOD_DESTACADOS1_SIL", aliases: ["MOD_DESTACADO1_SIL"], category: "DISPOSITIVOS" },
+  { key: "MOD_DESTACADOS2_SIL", aliases: ["MOD_DESTACADO2_SIL"], category: "DISPOSITIVOS" },
+  { key: "MOD_DESTACADOS3_SIL", aliases: ["MOD_DESTACADO3_SIL"], category: "DISPOSITIVOS" },
+  { key: "MOD_DESTACADOS1", aliases: ["MOD_DESTACADO1"], category: "DISPOSITIVOS" },
+  { key: "MOD_DESTACADOS2", aliases: ["MOD_DESTACADO2"], category: "DISPOSITIVOS" },
+  { key: "MOD_DESTACADOS3", aliases: ["MOD_DESTACADO3"], category: "DISPOSITIVOS" },
 
-  // Variantes sin "S": MOD_DESTACADO1/2/3/4
-  { key: "MOD_DESTACADOS1", aliases: ["MOD_DESTACADOS1", "MOD_DESTACADO1"] },
-  { key: "MOD_DESTACADOS2", aliases: ["MOD_DESTACADOS2", "MOD_DESTACADO2"] },
-  { key: "MOD_DESTACADOS3", aliases: ["MOD_DESTACADOS3", "MOD_DESTACADO3"] },
-  { key: "MOD_DESTACADOS4", aliases: ["MOD_DESTACADOS4", "MOD_DESTACADO4"] },
-  { key: "MOD_N", aliases: ["MOD_N", "MODULO_N"] },
+  /* === MÓDULOS N + DOBLES (MODULOS_DOBLES_N) === */
+  { key: "MOD_N_SIL", aliases: ["MOD_N_SIL"], category: "MODULOS_DOBLES_N" },
+  { key: "MOD_N", aliases: ["MOD_N", "MODULO_N"], category: "MODULOS_DOBLES_N" },
 
-  { key: "APPLETV", aliases: ["APPLETV"] },
-  { key: "199", aliases: ["199_PUBLI"] },
-  { key: "FANART_DESTACADO", aliases: ["FANART_DESTACADO"] },
-  { key: "FANART_COLECCION", aliases: ["FANART_COLECCION"] },
-  { key: "FANART", aliases: ["FANART"] },
-  { key: "FANART_MOVIL", aliases: ["FANART_MOVIL"] },
-  { key: "IPLUS", aliases: ["IPLUS_PUBLI"] },
-  { key: "AD_PAUSE", aliases: ["AD_PAUSE"] },
-  { key: "MUX4_FONDO", aliases: ["MUX4_FONDO"] },
-  { key: "MUX4_TXT", aliases: ["MUX4_TXT"] },
-  { key: "SMARTPHONE_MUX_FONDO", aliases: ["SMARTPHONE_MUX_FONDO"] },
-  { key: "SMARTPHONE_MUX_TXT", aliases: ["SMARTPHONE_MUX_TXT"] },
-  { key: "TITULO_FICHA", aliases: ["TITULO_FICHA"] },
-  { key: "CARTEL_COM_H", aliases: ["CC_H"] },
-  { key: "CARTEL_COM_V", aliases: ["CC_V"] },
-  { key: "CARATULA_V", aliases: ["CARATULA_V"] },
-  { key: "CARATULA_H", aliases: ["CARATULA_H"] },
-  { key: "WEB", aliases: ["WEB_PUBLI"] },
-  { key: "WOW", aliases: ["WOW_PUBLI"] },
-  { key: "XIAOMI", aliases: ["XIAOMI"] },
-  { key: "AMAZON_BG", aliases: ["AMAZON_BG"] },
-  { key: "AMAZON_LOGO", aliases: ["AMAZON_LOGO"] },
-  { key: "_PERFIL", aliases: ["_PERFIL"] },
-  { key: "_SONY", aliases: ["_SONY", "SONY"] },
-  { key: "DESTACADO_DOBLE1", aliases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
-  { key: "DESTACADO_DOBLE1_SIL", aliases: ["DESTACADO_DOBLE1_SIL", "DESTACADO_DOBLE_SIL_1"] },
-  { key: "DESTACADO_DOBLE2", aliases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
-  { key: "DESTACADO_DOBLE2_SIL", aliases: ["DESTACADO_DOBLE2_SIL", "DESTACADO_DOBLE_SIL_2", "DESTACADO2_DOBLE_SIL"] },
-  { key: "DESTACADO_DOBLE4_SIL", aliases: ["DESTACADO_DOBLE4_SIL", "DESTACADO_DOBLE_SIL_4"] },
-  { key: "DESTACADO_DOBLE4", aliases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] }
+  /* === DISPOSITIVOS === */
+  { key: "APPLETV", aliases: ["APPLETV"], category: "DISPOSITIVOS" },
+  { key: "199", aliases: ["199_PUBLI"], category: "DISPOSITIVOS" },
+  { key: "FANART_DESTACADO", aliases: ["FANART_DESTACADO"], category: "DISPOSITIVOS" },
+  { key: "IPLUS", aliases: ["IPLUS_PUBLI"], category: "DISPOSITIVOS" },
+  { key: "AD_PAUSE", aliases: ["AD_PAUSE"], category: "DISPOSITIVOS" },
+  { key: "MUX4_FONDO", aliases: ["MUX4_FONDO_PUBLI"], category: "DISPOSITIVOS" },
+  { key: "MUX4_TXT", aliases: ["MUX4_TXT_PUBLI"], category: "DISPOSITIVOS" },
+  { key: "SMARTPHONE_MUX_FONDO", aliases: ["SMARTPHONE_MUX_FONDO_PUBLI"], category: "DISPOSITIVOS" },
+  { key: "SMARTPHONE_MUX_TXT", aliases: ["SMARTPHONE_MUX_TXT_PUBLI"], category: "DISPOSITIVOS" },
+  { key: "TITULO_FICHA", aliases: ["TITULO_FICHA"], category: "DISPOSITIVOS" },
+  { key: "WEB", aliases: ["WEB_PUBLI"], category: "DISPOSITIVOS" },
+  { key: "WOW", aliases: ["WOW_PUBLI"], category: "DISPOSITIVOS" },
+
+  /* === GRÁFICA OFICIAL === */
+  { key: "FANART", aliases: ["FANART"], endOnly: true, category: "GRAFICA_OFICIAL" },
+  { key: "FANART_MOVIL", aliases: ["FANART_MOVIL"], endOnly: true, category: "GRAFICA_OFICIAL" },
+  { key: "CARTEL_COM_H", aliases: ["CC_H"], endOnly: true, category: "GRAFICA_OFICIAL" },
+  { key: "CARTEL_COM_V", aliases: ["CC_V"], endOnly: true, category: "GRAFICA_OFICIAL" },
+  { key: "CARATULA_V", aliases: ["CARATULA_V"], endOnly: true, category: "GRAFICA_OFICIAL" },
+  { key: "CARATULA_H", aliases: ["CARATULA_H"], endOnly: true, category: "GRAFICA_OFICIAL" },
+
+  /* === FANART_COLECCION (MÓDULOS DOBLES + N en la modal) === */
+  { key: "FANART_COLECCION", aliases: ["FANART_COLECCION"], endOnly: true, category: "MODULOS_DOBLES_N" },
+
+  /* === OTROS === */
+  { key: "XIAOMI", aliases: ["XIAOMI_BANNER"], category: "OTROS" },
+  { key: "AMAZON_BG", aliases: ["AMAZON_BG"], category: "OTROS" },
+  { key: "AMAZON_LOGO", aliases: ["AMAZON_LOGO"], category: "OTROS" },
+  { key: "_PERFIL", aliases: ["_PERFIL"], displayName: "PERFIL", category: "OTROS" },
+  { key: "_SONY", aliases: ["_SONY", "SONY"], displayName: "SONY", category: "OTROS" },
+
+  /* === DESTACADOS DOBLES (MODULOS_DOBLES_N) === */
+  { key: "DESTACADO_DOBLE1", aliases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"], category: "MODULOS_DOBLES_N" },
+  { key: "DESTACADO_DOBLE1_SIL", aliases: ["DESTACADO_DOBLE1_SIL", "DESTACADO_DOBLE_SIL_1"], category: "MODULOS_DOBLES_N" },
+  { key: "DESTACADO_DOBLE2", aliases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"], category: "MODULOS_DOBLES_N" },
+  { key: "DESTACADO_DOBLE2_SIL", aliases: ["DESTACADO_DOBLE2_SIL", "DESTACADO_DOBLE_SIL_2", "DESTACADO2_DOBLE_SIL"], category: "MODULOS_DOBLES_N" },
+  { key: "DESTACADO_DOBLE4_SIL", aliases: ["DESTACADO_DOBLE4_SIL", "DESTACADO_DOBLE_SIL_4"], category: "MODULOS_DOBLES_N" },
+  { key: "DESTACADO_DOBLE4", aliases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"], category: "MODULOS_DOBLES_N" }
 ];
 
-    /* Transformación AN → búsqueda indexada (longest-first) */
+    /* Transformación AN → búsqueda indexada */
     const AI = AN
-      .flatMap(({ key: k, aliases: a }) => a.map(t => ({ k, t })))
+      .flatMap(({ key: k, aliases: a, endOnly: e }) => a.map(t => ({ k, t, e })))
       .sort((a, b) => b.t.length - a.t.length);
 
-    /* Bases con variante _SIL: si el nombre contiene "_SIL" además de la base,
-       se promociona a la variante _SIL aunque no estén pegadas. */
-    const SIL_PROMOTABLE = {
-      "MOD_DESTACADOS1": "MOD_DESTACADOS1_SIL",
-      "MOD_DESTACADOS2": "MOD_DESTACADOS2_SIL",
-      "MOD_DESTACADOS3": "MOD_DESTACADOS3_SIL",
-      "MOD_DESTACADOS4": "MOD_DESTACADOS4_SIL",
-      "MOD_N": "MOD_N_SIL",
-      "DESTACADO_DOBLE1": "DESTACADO_DOBLE1_SIL",
-      "DESTACADO_DOBLE2": "DESTACADO_DOBLE2_SIL",
-      "DESTACADO_DOBLE4": "DESTACADO_DOBLE4_SIL"
+    /* Caracteres permitidos alrededor del patrón */
+    const AB = new Set(["", "_", "-", " ", "."]);
+
+    const endsWithSil = s => {
+      const idx = s.lastIndexOf("_SIL");
+      if (idx === -1) return false;
+
+      const tail = s.slice(idx + 4);
+      return /^(\.[A-Z0-9]+)?(?:[?#].*)?$/i.test(tail);
     };
 
     function checkName(n) {
   const u = String(n || "").toUpperCase();
 
-  // Búsqueda por substring: si un alias aparece en el nombre, devolvemos su key.
-  // _PERFIL se deja como fallback al final.
-  for (const { k, t } of AI) {
-    if (k === "_PERFIL") continue;
-    if (u.includes(t)) {
-      // Si la key tiene variante _SIL y el nombre contiene "_SIL", promovemos
-      if (SIL_PROMOTABLE[k] && u.includes("_SIL")) return SIL_PROMOTABLE[k];
-      return k;
+  // 1) Caso especial *_SIL*
+  if (u.includes("_SIL")) {
+    if (!endsWithSil(u)) return null;
+
+    const BASES = [
+  { key: "MOD_DESTACADOS1_SIL", bases: ["MOD_DESTACADOS1", "MOD_DESTACADO1"] },
+  { key: "MOD_DESTACADOS2_SIL", bases: ["MOD_DESTACADOS2", "MOD_DESTACADO2"] },
+  { key: "MOD_DESTACADOS3_SIL", bases: ["MOD_DESTACADOS3", "MOD_DESTACADO3"] },
+  { key: "MOD_DESTACADOS4_SIL", bases: ["MOD_DESTACADOS4", "MOD_DESTACADO4"] },
+  { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
+  { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
+  { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] },
+  { key: "MOD_N_SIL", bases: ["MOD_N", "MODULO_N"] }
+];
+
+    for (const item of BASES) {
+      for (const b of item.bases) {
+        if (u.includes(b)) {
+          // Si hay _SIL y el nombre base encaja, devolvemos la clave SIL
+          return item.key;
+        }
+      }
+    }
+
+    // Tiene _SIL pero no corresponde a ningún MOD válido
+    return null;
+  }
+
+  // 2) Lógica general: probamos TODOS los formatos salvo _PERFIL
+  const dot = u.lastIndexOf(".");
+  const b = dot > 0 ? u.slice(0, dot) : u;
+
+  for (const { k, t, e } of AI) {
+    if (k === "_PERFIL") continue; // _PERFIL se resuelve al final
+
+    let i = -1;
+    while ((i = b.indexOf(t, i + 1)) !== -1) {
+      const prev = i === 0 ? "" : b[i - 1];
+      const next = i + t.length >= b.length ? "" : b[i + t.length];
+
+      // Evitamos cosas raras con signos +
+      if (prev === "+" || next === "+") continue;
+
+      // Solo aceptamos si está separado por _ - espacio . o inicio/fin
+      if (AB.has(prev) && AB.has(next)) {
+        // El formato SIEMPRE debe estar al final del nombre base
+        // (nombre_de_contenido + FORMATO + .ext)
+        if (next !== "") continue;
+        return k; // devolvemos el formato encontrado
+      }
     }
   }
 
-  // Fallback PERFIL (acepta "PERFIL" con o sin guion bajo delante)
-  if (u.includes("PERFIL")) return "_PERFIL";
+  // 3) Fallback PERFIL:
+  // solo si el nombre contiene exactamente "_PERFIL"
+  // (así "EL_PERFIL_DEL_DEMONIO" NO pasa, pero "NOMBRE_PERFIL.png" SÍ)
+  if (u.includes("_PERFIL")) {
+    return "_PERFIL";
+  }
 
+  // 4) Sin coincidencias
   return null;
 }
 
@@ -241,5 +302,32 @@
         msg: ok
           ? `Max: ${r.maxMB} MB (${humanMB(b)} MB)`
           : `${humanMB(b)} MB (> ${r.maxMB} MB)`
+      };
+    }
+
+    /* Normaliza una extensión a "jpg"/"png" (jpeg → jpg). */
+    function normalizeExt(s) {
+      const e = String(s || "").toLowerCase().replace(/^\./, "");
+      return e === "jpeg" ? "jpg" : e;
+    }
+
+    /* Comprueba que la extensión del archivo coincide con la requerida por el formato.
+       Devuelve { status: "ok"|"err"|"warn", msg } igual que checkDims / checkWeight.
+    */
+    function checkExt(filename, r) {
+      const dot = String(filename || "").lastIndexOf(".");
+      const ext = dot > 0 ? normalizeExt(filename.slice(dot + 1)) : "";
+
+      if (!r || !r.ext) {
+        return { status: "warn", msg: ext ? ext.toUpperCase() : "—" };
+      }
+
+      const req = normalizeExt(r.ext);
+      const ok = ext === req;
+      return {
+        status: ok ? "ok" : "err",
+        msg: ok
+          ? req.toUpperCase()
+          : `${ext ? ext.toUpperCase() : "?"} (req. ${req.toUpperCase()})`
       };
     }

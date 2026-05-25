@@ -219,6 +219,8 @@ const logoToggle = qs("logoToggle");
           lines.push(`- Dimensiones incorrectas (${res.dimsInfo.msg}).`);
         if (res.weightInfo?.status === "err")
           lines.push(`- Peso excesivo (${res.weightInfo.msg}).`);
+        if (res.extInfo?.status === "err")
+          lines.push(`- Formato incorrecto (${res.extInfo.msg}).`);
 
         if (!lines.length) return;
 
@@ -251,9 +253,13 @@ const logoToggle = qs("logoToggle");
       function renderValidations(r) {
         if (!r) return;
 
+        const nomenclaturaInner = r.nameOk
+          ? `✔ Nomenclatura`
+          : `✖ Nomenclatura <button type="button" class="nm-help" title="¿Cómo nombrar el archivo?" aria-label="Ayuda nomenclatura">?</button>`;
+
         validationsEl.innerHTML =
           `<span class="${r.nameOk ? "ok" : "err"}">
-             ${r.nameOk ? "✔" : "✖"} Nomenclatura
+             ${nomenclaturaInner}
            </span>
            <span class="sep"> | </span>
            <span class="${
@@ -277,6 +283,18 @@ const logoToggle = qs("logoToggle");
            }">
               ${r.weightInfo?.status === "ok" ? "✔" : "●"} Peso: ${
             r.weightInfo?.msg
+          }
+           </span>
+           <span class="sep"> | </span>
+           <span class="${
+             r.extInfo?.status === "ok"
+               ? "ok"
+               : r.extInfo?.status === "err"
+               ? "err"
+               : "warn"
+           }">
+              ${r.extInfo?.status === "ok" ? "✔" : "●"} Formato: ${
+            r.extInfo?.msg ?? "—"
           }
            </span>`;
       }
@@ -577,6 +595,8 @@ preview.classList.remove("sph-zona-off");
           m.push(`Dimensiones: ${r.dimsInfo.msg}.`);
         if (r.weightInfo?.status === "err")
           m.push(`Peso: ${r.weightInfo.msg}.`);
+        if (r.extInfo?.status === "err")
+          m.push(`Formato: ${r.extInfo.msg}.`);
 
         return m.join("\n");
       }
@@ -811,16 +831,19 @@ const shouldShowLogoSwitch = k =>
             rule
           );
           const weightInfo = checkWeight(file.size, rule);
+          const extInfo = checkExt(file.name, rule);
           const hasError =
             !nameOk ||
             dimsInfo.status === "err" ||
-            weightInfo.status === "err";
+            weightInfo.status === "err" ||
+            extInfo.status === "err";
 
           cb({
             matched,
             nameOk,
             dimsInfo,
             weightInfo,
+            extInfo,
             hasError
           });
         };
@@ -1463,6 +1486,75 @@ if (shouldShowLogoSwitch(key || "")) {
         ) {
           e.currentTarget.classList.remove("open");
         }
+      });
+
+      /* ==========================================
+         MODAL NOMENCLATURA — ayuda al usuario cuando
+         el nombre del archivo no se reconoce.
+      ========================================== */
+      // Etiquetas de las categorías y orden en el que aparecen
+      const NM_CATEGORIES = [
+        { id: "DISPOSITIVOS",     label: "DISPOSITIVOS" },
+        { id: "GRAFICA_OFICIAL",  label: "GRÁFICA OFICIAL" },
+        { id: "MODULOS_DOBLES_N", label: "MÓDULOS DOBLES + N" },
+        { id: "OTROS",            label: "OTROS" }
+      ];
+
+      function populateNomenclaturaFormats() {
+        const root = document.getElementById("nmCategories");
+        if (!root || typeof AN === "undefined") return;
+
+        // Agrupar por category, una entrada por key
+        const seen = new Set();
+        const groups = Object.create(null);
+        for (const entry of AN) {
+          if (seen.has(entry.key)) continue;
+          seen.add(entry.key);
+          const cat = entry.category || "OTROS";
+          if (!groups[cat]) groups[cat] = [];
+          // displayName si existe, si no, alias principal
+          groups[cat].push(entry.displayName || entry.aliases[0]);
+        }
+
+        root.innerHTML = NM_CATEGORIES.map(c => {
+          const items = (groups[c.id] || []).slice().sort((a, b) => a.localeCompare(b));
+          const li = items.map(name => `<li>${name}</li>`).join("");
+          return `
+            <div class="nm-cat">
+              <div class="nm-cat-badge">${c.label}</div>
+              <ul class="nm-cat-list">${li}</ul>
+            </div>`;
+        }).join("");
+      }
+
+      function openNomenclaturaModal() {
+        populateNomenclaturaFormats();
+        document.getElementById("nomenclaturaModal").classList.add("open");
+      }
+
+      // Delegación: clic en el "?" inyectado dentro de #validations
+      validationsEl.addEventListener("click", e => {
+        const t = e.target;
+        if (t && t.classList && t.classList.contains("nm-help")) {
+          e.preventDefault();
+          openNomenclaturaModal();
+        }
+      });
+
+      document.getElementById("nomenclaturaModal").addEventListener("click", e => {
+        if (
+          e.target.classList.contains("cm-backdrop") ||
+          e.target.id === "nmClose"
+        ) {
+          e.currentTarget.classList.remove("open");
+        }
+      });
+
+      // ESC cierra cualquiera de las dos modales abiertas
+      document.addEventListener("keydown", e => {
+        if (e.key !== "Escape") return;
+        document.getElementById("nomenclaturaModal")?.classList.remove("open");
+        document.getElementById("commentsModal")?.classList.remove("open");
       });
 
       window.addEventListener("resize", () => {
