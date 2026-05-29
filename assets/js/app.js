@@ -213,8 +213,13 @@ const logoToggle = qs("logoToggle");
         if (!file || !res || wasInjected(file)) return;
 
         const lines = [];
-        if (!res.nameOk)
-          lines.push("- Nomenclatura incorrecta.");
+        if (!res.nameOk) {
+          if (res.nameSuggestion) {
+            lines.push(`- Nomenclatura incorrecta: El nombre correcto tiene que ser "${res.nameSuggestion}".`);
+          } else {
+            lines.push("- Nomenclatura incorrecta.");
+          }
+        }
         if (res.dimsInfo?.status === "err")
           lines.push(`- Dimensiones incorrectas (${res.dimsInfo.msg}).`);
         if (res.weightInfo?.status === "err")
@@ -253,9 +258,13 @@ const logoToggle = qs("logoToggle");
       function renderValidations(r) {
         if (!r) return;
 
+        const nomenclaturaInner = r.nameOk
+          ? `✔ Nomenclatura`
+          : `✖ Nomenclatura`;
+
         validationsEl.innerHTML =
           `<span class="${r.nameOk ? "ok" : "err"}">
-             ${r.nameOk ? "✔" : "✖"} Nomenclatura
+             ${nomenclaturaInner}
            </span>
            <span class="sep"> | </span>
            <span class="${
@@ -585,8 +594,13 @@ preview.classList.remove("sph-zona-off");
       function buildErrorReason(n, r) {
         const m = [];
 
-        if (!r.nameOk)
-          m.push(`Nomenclatura: no válida para “${n}”.`);
+        if (!r.nameOk) {
+          if (r.nameSuggestion) {
+            m.push(`Nomenclatura incorrecta: El nombre correcto tiene que ser "${r.nameSuggestion}".`);
+          } else {
+            m.push(`Nomenclatura incorrecta.`);
+          }
+        }
         if (r.dimsInfo?.status === "err")
           m.push(`Dimensiones: ${r.dimsInfo.msg}.`);
         if (r.weightInfo?.status === "err")
@@ -816,8 +830,24 @@ const shouldShowLogoSwitch = k =>
       ========================================== */
       function validateFileMeta(file, dataUrl, cb) {
         const matched = checkName(file.name);
-        const rule = matched ? RU[matched] : null;
-        const nameOk = !!matched;
+        const inferredKey = matched ? null : inferKey(file.name);
+        const effectiveKey = matched || inferredKey;
+        const rule = effectiveKey ? RU[effectiveKey] : null;
+        const nameCharsInfo = checkNameChars(file.name);
+        const nameOk = !!matched && nameCharsInfo.status === "ok";
+
+        // Construcción del nombre sugerido único:
+        //  - si matched OK pero caracteres/ext mal → normalizar y corregir extensión
+        //  - si checkName falla pero hay key inferida → reordenar vía diagnoseName
+        //  - si no podemos deducir nada → null
+        let nameSuggestion = null;
+        if (!nameOk) {
+          if (matched) {
+            nameSuggestion = cleanSuggestion(file.name, matched);
+          } else if (inferredKey) {
+            nameSuggestion = diagnoseName(file.name);
+          }
+        }
 
         const probe = new Image();
         probe.onload = () => {
@@ -836,7 +866,10 @@ const shouldShowLogoSwitch = k =>
 
           cb({
             matched,
+            inferredKey,
             nameOk,
+            nameCharsInfo,
+            nameSuggestion,
             dimsInfo,
             weightInfo,
             extInfo,
@@ -858,9 +891,9 @@ const shouldShowLogoSwitch = k =>
         timg.classList.add("selected");
 
         const key =
-          (res && res.matched) ||
+          (res && (res.matched || res.inferredKey)) ||
           timg._earlyKey ||
-          checkName(file?.name || "");
+          inferKey(file?.name || "");
 		  currentKey = key || "";
 // AMAZON_BG: modo especial de alineación (imagen pegada arriba)
         const isAmazon = (key || "").toUpperCase() === "AMAZON_BG";
@@ -1069,7 +1102,7 @@ if (shouldShowLogoSwitch(key || "")) {
               src: d
             });
 
-            const early = checkName(file.name);
+            const early = inferKey(file.name);
             timg._earlyKey = early;
 
             lab.textContent = DL[early] || early || file.name;
@@ -1482,6 +1515,12 @@ if (shouldShowLogoSwitch(key || "")) {
         ) {
           e.currentTarget.classList.remove("open");
         }
+      });
+
+      // ESC cierra la modal de comentarios si está abierta
+      document.addEventListener("keydown", e => {
+        if (e.key !== "Escape") return;
+        document.getElementById("commentsModal")?.classList.remove("open");
       });
 
       window.addEventListener("resize", () => {

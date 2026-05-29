@@ -15,6 +15,8 @@
       "MOD_DESTACADOS2_SIL": "MOD DES. 2 SIL",
       "MOD_DESTACADOS3": "MOD DES. 3",
       "MOD_DESTACADOS3_SIL": "MOD DES. 3 SIL",
+      "MOD_DESTACADOS4": "MOD DES. 4",
+      "MOD_DESTACADOS4_SIL": "MOD DES. 4 SIL",
       "MOD_N_SIL": "MOD N SIL",
       "MOD_N": "MOD N",
       "MUX4_FONDO": "MUX 4 FONDO",
@@ -122,150 +124,439 @@
 
     };
 
-    /* Títulos válidos
-       - aliases:     cadenas que se buscan en el nombre del archivo
-       - category:    grupo en la modal "Cómo nombrar el archivo"
-                      ("DISPOSITIVOS" | "GRAFICA_OFICIAL" | "MODULOS_DOBLES_N" | "OTROS")
-       - displayName: nombre mostrado en la modal cuando difiere del alias técnico
-       - endOnly:     (heredado) sin efecto desde que la regla "formato al final"
-                      es universal; se mantiene como anotación
-    */
+    /* Títulos válidos */
     const AN = [
-  /* === MÓDULOS DESTACADOS (DISPOSITIVOS) === */
-  { key: "MOD_DESTACADOS1_SIL", aliases: ["MOD_DESTACADO1_SIL"], category: "DISPOSITIVOS" },
-  { key: "MOD_DESTACADOS2_SIL", aliases: ["MOD_DESTACADO2_SIL"], category: "DISPOSITIVOS" },
-  { key: "MOD_DESTACADOS3_SIL", aliases: ["MOD_DESTACADO3_SIL"], category: "DISPOSITIVOS" },
-  { key: "MOD_DESTACADOS1", aliases: ["MOD_DESTACADO1"], category: "DISPOSITIVOS" },
-  { key: "MOD_DESTACADOS2", aliases: ["MOD_DESTACADO2"], category: "DISPOSITIVOS" },
-  { key: "MOD_DESTACADOS3", aliases: ["MOD_DESTACADO3"], category: "DISPOSITIVOS" },
+  { key: "MOD_DESTACADOS1_SIL", aliases: ["MOD_DESTACADO1_SIL"] },
+  { key: "MOD_DESTACADOS2_SIL", aliases: ["MOD_DESTACADO2_SIL"] },
+  { key: "MOD_DESTACADOS3_SIL", aliases: ["MOD_DESTACADO3_SIL"] },
+  { key: "MOD_DESTACADOS4_SIL", aliases: ["MOD_DESTACADO4_SIL"] },
+  { key: "MOD_N_SIL", aliases: ["MOD_N_SIL", "MODULO_N_SIL"] },
 
-  /* === MÓDULOS N + DOBLES (MODULOS_DOBLES_N) === */
-  { key: "MOD_N_SIL", aliases: ["MOD_N_SIL"], category: "MODULOS_DOBLES_N" },
-  { key: "MOD_N", aliases: ["MOD_N", "MODULO_N"], category: "MODULOS_DOBLES_N" },
+  // Solo forma sin "S": MOD_DESTACADO1/2/3/4
+  { key: "MOD_DESTACADOS1", aliases: ["MOD_DESTACADO1"] },
+  { key: "MOD_DESTACADOS2", aliases: ["MOD_DESTACADO2"] },
+  { key: "MOD_DESTACADOS3", aliases: ["MOD_DESTACADO3"] },
+  { key: "MOD_DESTACADOS4", aliases: ["MOD_DESTACADO4"] },
+  { key: "MOD_N", aliases: ["MOD_N", "MODULO_N"] },
 
-  /* === DISPOSITIVOS === */
-  { key: "APPLETV", aliases: ["APPLETV"], category: "DISPOSITIVOS" },
-  { key: "199", aliases: ["199_PUBLI"], category: "DISPOSITIVOS" },
-  { key: "FANART_DESTACADO", aliases: ["FANART_DESTACADO"], category: "DISPOSITIVOS" },
-  { key: "IPLUS", aliases: ["IPLUS_PUBLI"], category: "DISPOSITIVOS" },
-  { key: "AD_PAUSE", aliases: ["AD_PAUSE"], category: "DISPOSITIVOS" },
-  { key: "MUX4_FONDO", aliases: ["MUX4_FONDO_PUBLI"], category: "DISPOSITIVOS" },
-  { key: "MUX4_TXT", aliases: ["MUX4_TXT_PUBLI"], category: "DISPOSITIVOS" },
-  { key: "SMARTPHONE_MUX_FONDO", aliases: ["SMARTPHONE_MUX_FONDO_PUBLI"], category: "DISPOSITIVOS" },
-  { key: "SMARTPHONE_MUX_TXT", aliases: ["SMARTPHONE_MUX_TXT_PUBLI"], category: "DISPOSITIVOS" },
-  { key: "TITULO_FICHA", aliases: ["TITULO_FICHA"], category: "DISPOSITIVOS" },
-  { key: "WEB", aliases: ["WEB_PUBLI"], category: "DISPOSITIVOS" },
-  { key: "WOW", aliases: ["WOW_PUBLI"], category: "DISPOSITIVOS" },
-
-  /* === GRÁFICA OFICIAL === */
-  { key: "FANART", aliases: ["FANART"], endOnly: true, category: "GRAFICA_OFICIAL" },
-  { key: "FANART_MOVIL", aliases: ["FANART_MOVIL"], endOnly: true, category: "GRAFICA_OFICIAL" },
-  { key: "CARTEL_COM_H", aliases: ["CC_H"], endOnly: true, category: "GRAFICA_OFICIAL" },
-  { key: "CARTEL_COM_V", aliases: ["CC_V"], endOnly: true, category: "GRAFICA_OFICIAL" },
-  { key: "CARATULA_V", aliases: ["CARATULA_V"], endOnly: true, category: "GRAFICA_OFICIAL" },
-  { key: "CARATULA_H", aliases: ["CARATULA_H"], endOnly: true, category: "GRAFICA_OFICIAL" },
-
-  /* === FANART_COLECCION (MÓDULOS DOBLES + N en la modal) === */
-  { key: "FANART_COLECCION", aliases: ["FANART_COLECCION"], endOnly: true, category: "MODULOS_DOBLES_N" },
-
-  /* === OTROS === */
-  { key: "XIAOMI", aliases: ["XIAOMI_BANNER"], category: "OTROS" },
-  { key: "AMAZON_BG", aliases: ["AMAZON_BG"], category: "OTROS" },
-  { key: "AMAZON_LOGO", aliases: ["AMAZON_LOGO"], category: "OTROS" },
-  { key: "_PERFIL", aliases: ["_PERFIL"], displayName: "PERFIL", category: "OTROS" },
-  { key: "_SONY", aliases: ["_SONY", "SONY"], displayName: "SONY", category: "OTROS" },
-
-  /* === DESTACADOS DOBLES (MODULOS_DOBLES_N) === */
-  { key: "DESTACADO_DOBLE1", aliases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"], category: "MODULOS_DOBLES_N" },
-  { key: "DESTACADO_DOBLE1_SIL", aliases: ["DESTACADO_DOBLE1_SIL", "DESTACADO_DOBLE_SIL_1"], category: "MODULOS_DOBLES_N" },
-  { key: "DESTACADO_DOBLE2", aliases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"], category: "MODULOS_DOBLES_N" },
-  { key: "DESTACADO_DOBLE2_SIL", aliases: ["DESTACADO_DOBLE2_SIL", "DESTACADO_DOBLE_SIL_2", "DESTACADO2_DOBLE_SIL"], category: "MODULOS_DOBLES_N" },
-  { key: "DESTACADO_DOBLE4_SIL", aliases: ["DESTACADO_DOBLE4_SIL", "DESTACADO_DOBLE_SIL_4"], category: "MODULOS_DOBLES_N" },
-  { key: "DESTACADO_DOBLE4", aliases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"], category: "MODULOS_DOBLES_N" }
+  { key: "APPLETV", aliases: ["APPLETV"] },
+  { key: "199", aliases: ["199"] },
+  { key: "FANART_DESTACADO", aliases: ["FANART_DESTACADO"] },
+  { key: "FANART_COLECCION", aliases: ["FANART_COLECCION"] },
+  { key: "FANART", aliases: ["FANART"] },
+  { key: "FANART_MOVIL", aliases: ["FANART_MOVIL"] },
+  { key: "IPLUS", aliases: ["IPLUS"] },
+  { key: "AD_PAUSE", aliases: ["AD_PAUSE"] },
+  { key: "MUX4_FONDO", aliases: ["MUX4_FONDO"] },
+  { key: "MUX4_TXT", aliases: ["MUX4_TXT"] },
+  { key: "SMARTPHONE_MUX_FONDO", aliases: ["SMARTPHONE_MUX_FONDO"] },
+  { key: "SMARTPHONE_MUX_TXT", aliases: ["SMARTPHONE_MUX_TXT"] },
+  { key: "TITULO_FICHA", aliases: ["TITULO_FICHA"] },
+  { key: "CARTEL_COM_H", aliases: ["CC_H"] },
+  { key: "CARTEL_COM_V", aliases: ["CC_V"] },
+  { key: "CARATULA_V", aliases: ["CARATULA_V"] },
+  { key: "CARATULA_H", aliases: ["CARATULA_H"] },
+  { key: "WEB", aliases: ["WEB"] },
+  { key: "WOW", aliases: ["WOW"] },
+  { key: "XIAOMI", aliases: ["XIAOMI"] },
+  { key: "AMAZON_BG", aliases: ["AMAZON_BG"] },
+  { key: "AMAZON_LOGO", aliases: ["AMAZON_LOGO"] },
+  { key: "_PERFIL", aliases: ["_PERFIL"] },
+  { key: "_SONY", aliases: ["_SONY", "SONY"] },
+  { key: "DESTACADO_DOBLE1", aliases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
+  { key: "DESTACADO_DOBLE1_SIL", aliases: ["DESTACADO_DOBLE1_SIL", "DESTACADO_DOBLE_SIL_1"] },
+  { key: "DESTACADO_DOBLE2", aliases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
+  { key: "DESTACADO_DOBLE2_SIL", aliases: ["DESTACADO_DOBLE2_SIL", "DESTACADO_DOBLE_SIL_2", "DESTACADO2_DOBLE_SIL"] },
+  { key: "DESTACADO_DOBLE4_SIL", aliases: ["DESTACADO_DOBLE4_SIL", "DESTACADO_DOBLE_SIL_4"] },
+  { key: "DESTACADO_DOBLE4", aliases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] }
 ];
 
-    /* Transformación AN → búsqueda indexada */
+    /* Transformación AN → búsqueda indexada (longest-first) */
     const AI = AN
-      .flatMap(({ key: k, aliases: a, endOnly: e }) => a.map(t => ({ k, t, e })))
+      .flatMap(({ key: k, aliases: a }) => a.map(t => ({ k, t })))
       .sort((a, b) => b.t.length - a.t.length);
 
-    /* Caracteres permitidos alrededor del patrón */
-    const AB = new Set(["", "_", "-", " ", "."]);
+    /* AN ampliado SOLO para inferencia tolerante (inferKey/diagnoseName).
+       Añade las formas con "S" final (MOD_DESTACADOS*) que la regla
+       estricta no acepta, para poder detectar la intención del usuario
+       cuando comete ese typo. checkName sigue usando AN, no AN_INFERENCE. */
+    const AN_INFERENCE = [
+      ...AN,
+      { key: "MOD_DESTACADOS1",     aliases: ["MOD_DESTACADOS1"] },
+      { key: "MOD_DESTACADOS2",     aliases: ["MOD_DESTACADOS2"] },
+      { key: "MOD_DESTACADOS3",     aliases: ["MOD_DESTACADOS3"] },
+      { key: "MOD_DESTACADOS4",     aliases: ["MOD_DESTACADOS4"] },
+      { key: "MOD_DESTACADOS1_SIL", aliases: ["MOD_DESTACADOS1_SIL"] },
+      { key: "MOD_DESTACADOS2_SIL", aliases: ["MOD_DESTACADOS2_SIL"] },
+      { key: "MOD_DESTACADOS3_SIL", aliases: ["MOD_DESTACADOS3_SIL"] },
+      { key: "MOD_DESTACADOS4_SIL", aliases: ["MOD_DESTACADOS4_SIL"] }
+    ];
+    const AI_INFERENCE = AN_INFERENCE
+      .flatMap(({ key: k, aliases: a }) => a.map(t => ({ k, t })))
+      .sort((a, b) => b.t.length - a.t.length);
 
-    const endsWithSil = s => {
-      const idx = s.lastIndexOf("_SIL");
-      if (idx === -1) return false;
+    /* Alias canónico (primer alias declarado en AN) para cada key.
+       Lo usa diagnoseName al construir la sugerencia, para que el
+       nombre propuesto use siempre la forma sin "S" aunque el usuario
+       haya escrito MOD_DESTACADOS*. */
+    const CANONICAL_ALIAS = new Map();
+    for (const entry of AN) {
+      CANONICAL_ALIAS.set(entry.key, entry.aliases[0]);
+    }
+    const canonicalAlias = k => CANONICAL_ALIAS.get(k) || k;
 
-      const tail = s.slice(idx + 4);
-      return /^(\.[A-Z0-9]+)?(?:[?#].*)?$/i.test(tail);
-    };
-
-    function checkName(n) {
-  const u = String(n || "").toUpperCase();
-
-  // 1) Caso especial *_SIL*
-  if (u.includes("_SIL")) {
-    if (!endsWithSil(u)) return null;
-
-    const BASES = [
-  { key: "MOD_DESTACADOS1_SIL", bases: ["MOD_DESTACADOS1", "MOD_DESTACADO1"] },
-  { key: "MOD_DESTACADOS2_SIL", bases: ["MOD_DESTACADOS2", "MOD_DESTACADO2"] },
-  { key: "MOD_DESTACADOS3_SIL", bases: ["MOD_DESTACADOS3", "MOD_DESTACADO3"] },
-  { key: "MOD_DESTACADOS4_SIL", bases: ["MOD_DESTACADOS4", "MOD_DESTACADO4"] },
-  { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
-  { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
-  { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] },
-  { key: "MOD_N_SIL", bases: ["MOD_N", "MODULO_N"] }
-];
-
-    for (const item of BASES) {
-      for (const b of item.bases) {
-        if (u.includes(b)) {
-          // Si hay _SIL y el nombre base encaja, devolvemos la clave SIL
-          return item.key;
-        }
-      }
+    /* Normalización tolerante para la detección del formato:
+       - NFD + quita diacríticos → "FANÁRT" → "FANART", "ñ" → "n", "ç" → "c"
+       - toUpperCase
+       - todo lo no permitido (espacios, símbolos, guiones) → "_"
+         (los aliases usan "_" como separador, así que tratamos "-" igual)
+       Conserva "." para que la separación de extensión siga funcionando.
+       NO sustituye a checkNameChars: la validación de caracteres es independiente.
+    */
+    function normalizeForMatch(s) {
+      return String(s || "")
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9_.]/g, "_")
+        // Colapsar "_" consecutivos para que p.ej. "AD+_PAUSE" → "AD__PAUSE" → "AD_PAUSE"
+        .replace(/_+/g, "_");
     }
 
-    // Tiene _SIL pero no corresponde a ningún MOD válido
-    return null;
+    function checkName(n) {
+  const u = normalizeForMatch(n);
+  const dot = u.lastIndexOf(".");
+  let base = dot > 0 ? u.slice(0, dot) : u;
+
+  // Sufijo "_PUBLI" opcional: si está, se elimina antes de buscar el formato.
+  // Así "MI_PELI_199_PUBLI" → "MI_PELI_199" → match "199",
+  // "MI_PELI_MUX4_FONDO_PUBLI" → "MI_PELI_MUX4_FONDO" → match "MUX4_FONDO", etc.
+  if (base.endsWith("_PUBLI")) {
+    base = base.slice(0, -6);
   }
 
-  // 2) Lógica general: probamos TODOS los formatos salvo _PERFIL
-  const dot = u.lastIndexOf(".");
-  const b = dot > 0 ? u.slice(0, dot) : u;
-
-  for (const { k, t, e } of AI) {
+  // Regla única para todos los formatos (incluidos los _SIL):
+  // el alias del formato debe aparecer COMPLETO y CONTIGUO al final del
+  // nombre base, precedido de "_" y con al menos un carácter de contenido
+  // antes de ese "_".
+  // Estructura exigida: "NOMBRE_DE_CONTENIDO" + "_FORMATO" + ".ext"
+  for (const { k, t } of AI) {
     if (k === "_PERFIL") continue; // _PERFIL se resuelve al final
 
     let i = -1;
-    while ((i = b.indexOf(t, i + 1)) !== -1) {
-      const prev = i === 0 ? "" : b[i - 1];
-      const next = i + t.length >= b.length ? "" : b[i + t.length];
+    while ((i = base.indexOf(t, i + 1)) !== -1) {
+      const next = i + t.length >= base.length ? "" : base[i + t.length];
 
-      // Evitamos cosas raras con signos +
-      if (prev === "+" || next === "+") continue;
+      if (next !== "") continue;          // debe terminar el nombre base
+      if (i < 2) continue;                 // al menos un carácter antes del "_"
+      if (base[i - 1] !== "_") continue;   // separador previo obligatorio
 
-      // Solo aceptamos si está separado por _ - espacio . o inicio/fin
-      if (AB.has(prev) && AB.has(next)) {
-        // El formato SIEMPRE debe estar al final del nombre base
-        // (nombre_de_contenido + FORMATO + .ext)
-        if (next !== "") continue;
-        return k; // devolvemos el formato encontrado
-      }
+      return k;
     }
   }
 
-  // 3) Fallback PERFIL:
-  // solo si el nombre contiene exactamente "_PERFIL"
-  // (así "EL_PERFIL_DEL_DEMONIO" NO pasa, pero "NOMBRE_PERFIL.png" SÍ)
-  if (u.includes("_PERFIL")) {
-    return "_PERFIL";
-  }
+  // Fallback _PERFIL: al final del nombre base y con contenido antes
+  const PERFIL = "_PERFIL";
+  if (base.endsWith(PERFIL) && base.length - PERFIL.length >= 1) return "_PERFIL";
 
-  // 4) Sin coincidencias
   return null;
 }
+
+    /* ==========================================
+       NOMBRE SUGERIDO PARA FORMATOS QUE SÍ ENCAJAN (matched OK).
+       Cuando checkName ha detectado el formato pero el nombre tiene
+       caracteres prohibidos o extensión incorrecta, devolvemos el
+       nombre ya normalizado (sin tildes/espacios/símbolos) con la
+       extensión apropiada según RU[key].ext.
+    ========================================== */
+    function cleanSuggestion(filename, key) {
+      const u = normalizeForMatch(filename);
+      const dot = u.lastIndexOf(".");
+      const base = dot > 0 ? u.slice(0, dot) : u;
+      const origExtRaw = dot > 0 ? u.slice(dot + 1).toLowerCase() : "";
+      const origExt = origExtRaw === "jpeg" ? "jpg" : origExtRaw;
+      const rule = (typeof RU !== "undefined") ? RU[key] : null;
+      const ext = (rule && rule.ext)
+        ? String(rule.ext).toLowerCase()
+        : origExt;
+      return ext ? `${base}.${ext}` : base;
+    }
+
+    /* ==========================================
+       DIAGNÓSTICO DE NOMENCLATURA
+       Cuando checkName() falla, intenta inferir cómo debería haberse
+       escrito el nombre y devuelve el nombre completo sugerido (string),
+       o null si no se puede deducir nada.
+    ========================================== */
+    function diagnoseName(filename) {
+      const u = normalizeForMatch(filename);
+      const dot = u.lastIndexOf(".");
+      let base = dot > 0 ? u.slice(0, dot) : u;
+      const origExtRaw = dot > 0 ? u.slice(dot + 1).toLowerCase() : "";
+      const origExt = origExtRaw === "jpeg" ? "jpg" : origExtRaw;
+
+      // El "_PUBLI" al final del nombre es un sufijo OPCIONAL del formato.
+      // Lo quitamos para el análisis y lo recordamos para volver a engancharlo
+      // detrás del formato en la sugerencia.
+      let hadPubli = false;
+      if (base.endsWith("_PUBLI")) {
+        base = base.slice(0, -6);
+        hadPubli = true;
+      }
+      if (!base) return null;
+
+      // Helper: construye el nombre sugerido con la extensión del formato
+      // (RU[key].ext si existe) y, opcionalmente, el sufijo "_PUBLI".
+      const buildSuggestion = (suggBase, key, withPubli) => {
+        const rule = (typeof RU !== "undefined") ? RU[key] : null;
+        const ext = (rule && rule.ext)
+          ? String(rule.ext).toLowerCase()
+          : origExt;
+        const fullBase = withPubli ? `${suggBase}_PUBLI` : suggBase;
+        return ext ? `${fullBase}.${ext}` : fullBase;
+      };
+
+      // Marcadores de versión/fase tipo "V1", "A1", "T10"... (1 letra + dígitos)
+      const VERSION_RE = /^[A-Z]\d+$/;
+      // Marcadores extra del dominio: abreviaturas posicionales, etc.
+      const KNOWN_EXTRAS = new Set([
+        "DCHA", "IZDA", "DER", "IZQ",
+        "DERECHA", "IZQUIERDA",
+        "ARR", "ABJ", "ARRIBA", "ABAJO"
+      ]);
+      const isExtra = seg => KNOWN_EXTRAS.has(seg) || VERSION_RE.test(seg);
+
+      // 1) Patrón SIL en CUALQUIER parte de la base.
+      //    Buscamos <silbase>(_<lo-que-sea>)?_SIL con contenido a la
+      //    izquierda del silbase o a la derecha del _SIL (o ambos).
+      //    Ej.: MOD_DESTACADO1_A1_SIL_TEST_VALIDATOR.png
+      //    → "TEST_VALIDATOR_A1_MOD_DESTACADO1_SIL.png".
+      //    Ej.: TEST_VALIDATOR_MOD_DESTACADO1_A1_SIL.png (caso ya existente)
+      //    → "TEST_VALIDATOR_A1_MOD_DESTACADO1_SIL.png".
+      {
+        const SIL_MAP = [
+          { key: "MOD_DESTACADOS1_SIL",  silAlias: "MOD_DESTACADO1_SIL",  bases: ["MOD_DESTACADO1", "MOD_DESTACADOS1"] },
+          { key: "MOD_DESTACADOS2_SIL",  silAlias: "MOD_DESTACADO2_SIL",  bases: ["MOD_DESTACADO2", "MOD_DESTACADOS2"] },
+          { key: "MOD_DESTACADOS3_SIL",  silAlias: "MOD_DESTACADO3_SIL",  bases: ["MOD_DESTACADO3", "MOD_DESTACADOS3"] },
+          { key: "MOD_DESTACADOS4_SIL",  silAlias: "MOD_DESTACADO4_SIL",  bases: ["MOD_DESTACADO4", "MOD_DESTACADOS4"] },
+          { key: "DESTACADO_DOBLE1_SIL", silAlias: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
+          { key: "DESTACADO_DOBLE2_SIL", silAlias: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
+          { key: "DESTACADO_DOBLE4_SIL", silAlias: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] },
+          { key: "MOD_N_SIL",            silAlias: "MOD_N_SIL",            bases: ["MOD_N", "MODULO_N"] }
+        ];
+
+        for (const item of SIL_MAP) {
+          for (const baseAlias of item.bases) {
+            let pos = -1;
+            while ((pos = base.indexOf(baseAlias, pos + 1)) !== -1) {
+              const prevChar = pos === 0 ? "" : base[pos - 1];
+              if (prevChar !== "" && prevChar !== "_") continue;
+              const baseEnd = pos + baseAlias.length;
+              let silPos = baseEnd;
+              let resolved = null;
+              while ((silPos = base.indexOf("_SIL", silPos)) !== -1) {
+                if (silPos < baseEnd) { silPos++; continue; }
+                const silEndChar = silPos + 4 >= base.length ? "" : base[silPos + 4];
+                if (silEndChar !== "" && silEndChar !== "_") { silPos++; continue; }
+                const contentBefore = pos > 1 ? base.slice(0, pos - 1) : "";
+                const between = base.slice(baseEnd, silPos); // "" o "_<lo-que-sea>"
+                const after = base.slice(silPos + 4).replace(/^_+/, "");
+                if (!contentBefore && !after) { silPos++; continue; }
+
+                let content = "";
+                if (contentBefore && after) content = `${contentBefore}_${after}`;
+                else if (contentBefore) content = contentBefore;
+                else if (after) content = after;
+
+                const suggBase = `${content}${between}_${item.silAlias}`;
+                resolved = buildSuggestion(suggBase, item.key, hadPubli);
+                break;
+              }
+              if (resolved) return resolved;
+            }
+          }
+        }
+      }
+
+      // 2) Buscar el alias más probable (longest-first como en AI_INFERENCE,
+      //    que incluye también las formas con "S" final del MOD_DESTACADO*)
+      for (const { k, t } of AI_INFERENCE) {
+        if (k === "_PERFIL") continue;
+
+        let pos = -1;
+        let found = null;
+        while ((pos = base.indexOf(t, pos + 1)) !== -1) {
+          const prev = pos === 0 ? "" : base[pos - 1];
+          const next = pos + t.length >= base.length ? "" : base[pos + t.length];
+          if (prev !== "" && prev !== "_") continue;
+          if (next !== "" && next !== "_") continue;
+          found = { pos, prev, next };
+          break;
+        }
+        if (!found) continue;
+
+        const fPos = found.pos;
+        const fNext = found.next;
+
+        // Para la sugerencia siempre usamos el alias canónico (forma sin "S").
+        const aliasCanon = canonicalAlias(k);
+
+        // a) Formato al final pero sin nombre de contenido antes:
+        //    no podemos reconstruir un nombre completo.
+        if (fNext === "" && (fPos < 2 || base[fPos - 1] !== "_")) {
+          return null;
+        }
+
+        // b) Formato al principio (con o sin "_" delante)
+        if (fPos === 0 || (fPos === 1 && base[0] === "_")) {
+          let after = base.slice(fPos + t.length).replace(/^_+/, "");
+
+          // ¿"_PUBLI" justo después del alias? Lo tratamos como sufijo del formato.
+          let localPubli = false;
+          if (after === "PUBLI") { localPubli = true; after = ""; }
+          else if (after.startsWith("PUBLI_")) { localPubli = true; after = after.slice(6); }
+
+          // Extraemos los segmentos consecutivos al principio que parezcan
+          // marcadores extra (versión tipo V1/A1 o abreviatura tipo DCHA/IZDA).
+          // Esos marcadores van JUSTO DELANTE del formato; el resto es contenido.
+          const segs = after.split("_").filter(Boolean);
+          const extras = [];
+          let i = 0;
+          while (i < segs.length - 1 && isExtra(segs[i])) {
+            extras.push(segs[i]);
+            i++;
+          }
+          const content = segs.slice(i).join("_");
+          const extrasStr = extras.join("_");
+
+          const parts = [];
+          if (content) parts.push(content);
+          if (extrasStr) parts.push(extrasStr);
+          parts.push(aliasCanon);
+          const suggBase = parts.join("_");
+          return buildSuggestion(suggBase, k, hadPubli || localPubli);
+        }
+
+        // c) Hay caracteres detrás del formato
+        if (fNext === "_") {
+          let trailing = base.slice(fPos + t.length);
+
+          // ¿"_PUBLI" pegado al alias en la cola? Lo extraemos como sufijo del formato.
+          let localPubli = false;
+          if (trailing === "_PUBLI") { localPubli = true; trailing = ""; }
+          else if (trailing.startsWith("_PUBLI_")) { localPubli = true; trailing = trailing.slice(6); }
+
+          const contentBefore = base.slice(0, fPos - 1); // sin el "_" separador
+          const suggBase = `${contentBefore}${trailing}_${aliasCanon}`;
+          return buildSuggestion(suggBase, k, hadPubli || localPubli);
+        }
+
+        // d) Formato al final con contenido delante (el caso típico es
+        //    un typo del alias: p.ej. MOD_DESTACADOS2 con "S"). Reescribimos
+        //    con el alias canónico.
+        if (fNext === "" && fPos >= 2 && base[fPos - 1] === "_") {
+          const contentBefore = base.slice(0, fPos - 1);
+          const suggBase = `${contentBefore}_${aliasCanon}`;
+          return buildSuggestion(suggBase, k, hadPubli);
+        }
+      }
+
+      // 3) Caso _PERFIL análogo
+      const perfilIdx = base.indexOf("_PERFIL");
+      if (perfilIdx !== -1) {
+        const perfilEnd = perfilIdx + 7;
+
+        if (perfilEnd < base.length) {
+          if (perfilIdx === 0) {
+            const after = base.slice(perfilEnd).replace(/^_+/, "");
+            const suggBase = after ? `${after}_PERFIL` : "_PERFIL";
+            return buildSuggestion(suggBase, "_PERFIL", hadPubli);
+          }
+          const trailing = base.slice(perfilEnd);
+          const contentBefore = base.slice(0, perfilIdx);
+          const suggBase = `${contentBefore}${trailing}_PERFIL`;
+          return buildSuggestion(suggBase, "_PERFIL", hadPubli);
+        }
+
+        // _PERFIL al final pero sin contenido antes: no reconstruible
+        if (perfilIdx === 0) {
+          return null;
+        }
+      }
+
+      return null;
+    }
+
+    /* ==========================================
+       INFERENCIA TOLERANTE DEL FORMATO
+       Devuelve el resultado estricto de checkName() o, si falla,
+       el formato más probable (mismo análisis que diagnoseName pero
+       sin generar mensajes). Lo usan dims/peso/extensión y los overlays
+       para seguir funcionando aunque el nombre incumpla la regla.
+    ========================================== */
+    function inferKey(filename) {
+      const strict = checkName(filename);
+      if (strict) return strict;
+
+      const u = normalizeForMatch(filename);
+      const dot = u.lastIndexOf(".");
+      let base = dot > 0 ? u.slice(0, dot) : u;
+      if (base.endsWith("_PUBLI")) base = base.slice(0, -6);
+      if (!base) return null;
+
+      // Patrón SIL en CUALQUIER parte de la base.
+      // Buscamos <silbase>(_<lo-que-sea>)?_SIL siempre que haya algo de
+      // contenido a la izquierda del silbase o a la derecha del _SIL.
+      const SIL_MAP = [
+        { key: "MOD_DESTACADOS1_SIL",  bases: ["MOD_DESTACADO1", "MOD_DESTACADOS1"] },
+        { key: "MOD_DESTACADOS2_SIL",  bases: ["MOD_DESTACADO2", "MOD_DESTACADOS2"] },
+        { key: "MOD_DESTACADOS3_SIL",  bases: ["MOD_DESTACADO3", "MOD_DESTACADOS3"] },
+        { key: "MOD_DESTACADOS4_SIL",  bases: ["MOD_DESTACADO4", "MOD_DESTACADOS4"] },
+        { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
+        { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
+        { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] },
+        { key: "MOD_N_SIL",            bases: ["MOD_N", "MODULO_N"] }
+      ];
+      for (const item of SIL_MAP) {
+        for (const baseAlias of item.bases) {
+          let pos = -1;
+          while ((pos = base.indexOf(baseAlias, pos + 1)) !== -1) {
+            const prevChar = pos === 0 ? "" : base[pos - 1];
+            if (prevChar !== "" && prevChar !== "_") continue;
+            const baseEnd = pos + baseAlias.length;
+            let silPos = baseEnd;
+            while ((silPos = base.indexOf("_SIL", silPos)) !== -1) {
+              if (silPos < baseEnd) { silPos++; continue; }
+              const silEndChar = silPos + 4 >= base.length ? "" : base[silPos + 4];
+              if (silEndChar !== "" && silEndChar !== "_") { silPos++; continue; }
+              const contentBefore = pos > 1 ? base.slice(0, pos - 1) : "";
+              const after = base.slice(silPos + 4).replace(/^_+/, "");
+              if (!contentBefore && !after) { silPos++; continue; }
+              return item.key;
+            }
+          }
+        }
+      }
+
+      // Loop general (longest-first, usando AI_INFERENCE que incluye
+      // las formas con "S" final para detectar la intención del usuario)
+      for (const { k, t } of AI_INFERENCE) {
+        if (k === "_PERFIL") continue;
+        let pos = -1;
+        while ((pos = base.indexOf(t, pos + 1)) !== -1) {
+          const prev = pos === 0 ? "" : base[pos - 1];
+          const next = pos + t.length >= base.length ? "" : base[pos + t.length];
+          if (prev !== "" && prev !== "_") continue;
+          if (next !== "" && next !== "_") continue;
+          return k;
+        }
+      }
+
+      // _PERFIL aparece en cualquier parte
+      if (base.indexOf("_PERFIL") !== -1) return "_PERFIL";
+
+      return null;
+    }
 
     const humanMB = b => (b / 1048576).toFixed(2);
 
@@ -330,4 +621,78 @@
           ? req.toUpperCase()
           : `${ext ? ext.toUpperCase() : "?"} (req. ${req.toUpperCase()})`
       };
+    }
+
+    /* ==========================================
+       VALIDACIÓN DE CARACTERES DEL NOMBRE
+       Allowlist en la base: A-Z a-z 0-9 _ -
+       Extensión: A-Z a-z 0-9
+       Solo un punto, separando la extensión.
+       Rechaza tildes, ñ, ç, espacios, símbolos, control chars,
+       nombres reservados de Windows, etc.
+       Devuelve { status: "ok"|"err", issues: [string, ...] }
+    ========================================== */
+    function checkNameChars(filename) {
+      const s = String(filename || "");
+      const issues = [];
+
+      if (!s) {
+        return { status: "err", issues: ["nombre vacío"] };
+      }
+
+      const lastDot = s.lastIndexOf(".");
+      const base = lastDot > 0 ? s.slice(0, lastDot) : s;
+      const ext  = lastDot > 0 ? s.slice(lastDot + 1) : "";
+
+      // Más de un punto (el último ya separa la extensión)
+      if (base.includes(".")) {
+        issues.push("solo se permite un punto separador para la extensión");
+      }
+
+      // Inicio/fin con punto o espacio
+      if (/^[.\s]/.test(s)) {
+        issues.push("el nombre no puede empezar por punto o espacio");
+      }
+      if (/[\s.]$/.test(base)) {
+        issues.push("el nombre no puede acabar en punto o espacio");
+      }
+
+      // Caracteres no permitidos en la base
+      const badBase = new Set();
+      for (const ch of base) {
+        if (!/[A-Za-z0-9_\-]/.test(ch)) badBase.add(ch);
+      }
+      if (badBase.size) {
+        const labels = [...badBase].map(c => {
+          const code = c.charCodeAt(0);
+          if (c === " ")  return '" " (espacio)';
+          if (c === "\t") return '"\\t" (tabulador)';
+          if (code < 0x20 || code === 0x7F) {
+            return `"\\x${code.toString(16).padStart(2,"0")}" (carácter de control)`;
+          }
+          return `"${c}"`;
+        });
+        issues.push(`caracteres no permitidos: ${labels.join(", ")}`);
+      }
+
+      // Extensión: solo letras y dígitos
+      if (ext) {
+        const badExt = new Set();
+        for (const ch of ext) {
+          if (!/[A-Za-z0-9]/.test(ch)) badExt.add(ch);
+        }
+        if (badExt.size) {
+          issues.push(
+            `extensión con caracteres inválidos: ${[...badExt].map(c => `"${c}"`).join(", ")}`
+          );
+        }
+      }
+
+      // Nombres reservados de Windows
+      const baseUp = base.toUpperCase();
+      if (/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/.test(baseUp)) {
+        issues.push("nombre reservado del sistema (CON/PRN/AUX/NUL/COM*/LPT*)");
+      }
+
+      return { status: issues.length ? "err" : "ok", issues };
     }
