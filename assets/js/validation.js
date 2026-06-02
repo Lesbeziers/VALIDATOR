@@ -163,12 +163,12 @@
   { key: "AMAZON_LOGO", aliases: ["AMAZON_LOGO"] },
   { key: "_PERFIL", aliases: ["_PERFIL"] },
   { key: "_SONY", aliases: ["_SONY", "SONY"] },
-  { key: "DESTACADO_DOBLE1", aliases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
-  { key: "DESTACADO_DOBLE1_SIL", aliases: ["DESTACADO_DOBLE1_SIL", "DESTACADO_DOBLE_SIL_1"] },
-  { key: "DESTACADO_DOBLE2", aliases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
-  { key: "DESTACADO_DOBLE2_SIL", aliases: ["DESTACADO_DOBLE2_SIL", "DESTACADO_DOBLE_SIL_2", "DESTACADO2_DOBLE_SIL"] },
-  { key: "DESTACADO_DOBLE4_SIL", aliases: ["DESTACADO_DOBLE4_SIL", "DESTACADO_DOBLE_SIL_4"] },
-  { key: "DESTACADO_DOBLE4", aliases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] }
+  { key: "DESTACADO_DOBLE1", aliases: ["DESTACADO_DOBLE1"] },
+  { key: "DESTACADO_DOBLE1_SIL", aliases: ["DESTACADO_DOBLE1_SIL"] },
+  { key: "DESTACADO_DOBLE2", aliases: ["DESTACADO_DOBLE2"] },
+  { key: "DESTACADO_DOBLE2_SIL", aliases: ["DESTACADO_DOBLE2_SIL"] },
+  { key: "DESTACADO_DOBLE4_SIL", aliases: ["DESTACADO_DOBLE4_SIL"] },
+  { key: "DESTACADO_DOBLE4", aliases: ["DESTACADO_DOBLE4"] }
 ];
 
     /* Transformación AN → búsqueda indexada (longest-first) */
@@ -339,9 +339,9 @@
           { key: "MOD_DESTACADOS2_SIL",  silAlias: "MOD_DESTACADO2_SIL",  bases: ["MOD_DESTACADO2", "MOD_DESTACADOS2"] },
           { key: "MOD_DESTACADOS3_SIL",  silAlias: "MOD_DESTACADO3_SIL",  bases: ["MOD_DESTACADO3", "MOD_DESTACADOS3"] },
           { key: "MOD_DESTACADOS4_SIL",  silAlias: "MOD_DESTACADO4_SIL",  bases: ["MOD_DESTACADO4", "MOD_DESTACADOS4"] },
-          { key: "DESTACADO_DOBLE1_SIL", silAlias: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
-          { key: "DESTACADO_DOBLE2_SIL", silAlias: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
-          { key: "DESTACADO_DOBLE4_SIL", silAlias: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] },
+          { key: "DESTACADO_DOBLE1_SIL", silAlias: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1"] },
+          { key: "DESTACADO_DOBLE2_SIL", silAlias: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2"] },
+          { key: "DESTACADO_DOBLE4_SIL", silAlias: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4"] },
           { key: "MOD_N_SIL",            silAlias: "MOD_N_SIL",            bases: ["MOD_N", "MODULO_N"] }
         ];
 
@@ -512,9 +512,9 @@
         { key: "MOD_DESTACADOS2_SIL",  bases: ["MOD_DESTACADO2", "MOD_DESTACADOS2"] },
         { key: "MOD_DESTACADOS3_SIL",  bases: ["MOD_DESTACADO3", "MOD_DESTACADOS3"] },
         { key: "MOD_DESTACADOS4_SIL",  bases: ["MOD_DESTACADO4", "MOD_DESTACADOS4"] },
-        { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1", "DESTACADO_DOBLE_1"] },
-        { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2", "DESTACADO_DOBLE_2"] },
-        { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4", "DESTACADO_DOBLE_4"] },
+        { key: "DESTACADO_DOBLE1_SIL", bases: ["DESTACADO_DOBLE1"] },
+        { key: "DESTACADO_DOBLE2_SIL", bases: ["DESTACADO_DOBLE2"] },
+        { key: "DESTACADO_DOBLE4_SIL", bases: ["DESTACADO_DOBLE4"] },
         { key: "MOD_N_SIL",            bases: ["MOD_N", "MODULO_N"] }
       ];
       for (const item of SIL_MAP) {
