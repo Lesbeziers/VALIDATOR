@@ -78,7 +78,7 @@
         ],
         mode: "list",
         maxMB: 0.6,
-        ext: "png"
+        ext: "jpg"
       },
       "MOD_N_SIL": { w: 449, h: 300, mode: "exact", maxMB: 0.6, ext: "png" },
       "MUX4_FONDO": { w: 1920, h: 1080, mode: "exact", maxMB: 1.5, ext: "jpg" },
@@ -115,7 +115,9 @@
       "DESTACADO_DOBLE4": {
         options: [
           { w: 386, h: 548 },
-          { w: 385, h: 548 }
+          { w: 385, h: 548 },
+          { w: 386, h: 630 },
+          { w: 385, h: 630 }
         ],
         mode: "list",
         maxMB: 1,
