@@ -1545,6 +1545,47 @@ if (shouldShowLogoSwitch(key || "")) {
          Cada formato define dimensiones de salida y
          array de capas (de fondo a primer plano).
       ========================================== */
+/* ==========================================
+   HELPERS FANART_DESTACADO (captura de los MOD_DESTACADOS2)
+   ========================================== */
+/* ¿Se debe dibujar este overlay de módulo en la captura?
+   Debe existir, tener src y no estar oculto (ni por style ni por
+   la clase #preview.mockup-off que oculta base + los dos módulos). */
+function fanartModVisible(selector) {
+  const el = preview.querySelector(selector);
+  return (
+    !preview.classList.contains("mockup-off") &&
+    !!el &&
+    el.style.display !== "none" &&
+    !!el.getAttribute("src")
+  );
+}
+
+/* Lee la posición/tamaño renderizados del overlay de módulo (relativos a
+   la imagen principal) y los reescala al canvas de salida (cfg.w × cfg.h).
+   Invierte el mismo cálculo que fitFanartDestSlot() en overlays.js, por lo
+   que funciona igual para el módulo normal y para la variante SILUETA sin
+   duplicar coordenadas. */
+function drawFanartModFromDOM(ctx, img, cfg, selector) {
+  const mainImg = window.__v19_getMainPreviewImg?.();
+  const ov = preview.querySelector(selector);
+  if (!mainImg || !ov) return;
+
+  const mr = mainImg.getBoundingClientRect();
+  const orr = ov.getBoundingClientRect();
+  if (!mr.width || !mr.height) return;
+
+  const sx = cfg.w / mr.width;
+  const sy = cfg.h / mr.height;
+
+  const x = (orr.left - mr.left) * sx;
+  const y = (orr.top  - mr.top)  * sy;
+  const w = orr.width  * sx;
+  const h = orr.height * sy;
+
+  ctx.drawImage(img, x, y, w, h);
+}
+
 const EXPORT_CONFIG = {
         MUX4_FONDO: {
           w: 1920,
@@ -1795,6 +1836,68 @@ AMAZON_BG: {
                 const w = img.naturalWidth * s;
                 const h = img.naturalHeight * s;
                 ctx.drawImage(img, 104 * s, 65 * s, w, h);
+              }
+            }
+          ]
+        },
+        /* ==========================================
+           FANART_DESTACADO
+           - Capa 0: imagen principal (fondo 1920x1080)
+           - Capa 1: mockup limpio (role-base)
+           - Capas 2 y 3: los dos MOD_DESTACADOS2 inyectados
+             (role-fanart-mod-l / role-fanart-mod-r).
+             Su posición/tamaño se leen del DOM y se reescalan
+             al canvas, de modo que la captura sale idéntica a la
+             pantalla tanto en modo normal como SILUETA.
+           - Con MOCKUP OFF se ocultan base + los dos módulos
+             (igual que la CSS #preview.mockup-off).
+        ========================================== */
+        FANART_DESTACADO: {
+          w: 1920,
+          h: 1080,
+          filenameTag: "COMPOSICION",
+          layers: [
+            /* Capa 0 – imagen principal (fondo) */
+            {
+              id: "main",
+              visible: () => true,
+              getSrc: () =>
+                window.__v19_getMainPreviewImg?.()?.src ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 1 – mockup limpio (role-base) */
+            {
+              id: "base",
+              visible: () => !preview.classList.contains("mockup-off"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-base")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                ctx.drawImage(img, 0, 0, cfg.w, cfg.h);
+              }
+            },
+            /* Capa 2 – MOD_DESTACADOS2 hueco izquierdo (role-fanart-mod-l) */
+            {
+              id: "fanart-mod-l",
+              visible: () => fanartModVisible(".v19-overlay.role-fanart-mod-l"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-fanart-mod-l")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                drawFanartModFromDOM(ctx, img, cfg, ".v19-overlay.role-fanart-mod-l");
+              }
+            },
+            /* Capa 3 – MOD_DESTACADOS2 hueco derecho (role-fanart-mod-r) */
+            {
+              id: "fanart-mod-r",
+              visible: () => fanartModVisible(".v19-overlay.role-fanart-mod-r"),
+              getSrc: () =>
+                preview.querySelector(".v19-overlay.role-fanart-mod-r")
+                  ?.getAttribute("src") ?? null,
+              draw(ctx, img, cfg) {
+                drawFanartModFromDOM(ctx, img, cfg, ".v19-overlay.role-fanart-mod-r");
               }
             }
           ]
