@@ -81,8 +81,10 @@
     overlay.className = "contrast-overlay";
     overlay.innerHTML = `
       <div class="contrast-top">
-        <button type="button" class="contrast-tab is-active" data-step="fg">SELECCIONA TEXTO</button>
-        <button type="button" class="contrast-tab" data-step="bg">SELECCIONA FONDO</button>
+        <div class="contrast-tabs">
+          <button type="button" class="contrast-tab is-active" data-step="fg">SELECCIONA TEXTO</button>
+          <button type="button" class="contrast-tab" data-step="bg">SELECCIONA FONDO</button>
+        </div>
       </div>
 
       <div class="contrast-body">
@@ -110,14 +112,23 @@
           </div>
 
           <div class="contrast-result-title">Resultado WCAG 2.2</div>
-          <div class="contrast-ratio">—</div>
+          <div class="contrast-hint">Selecciona el color del <b>texto</b> y del <b>fondo</b> sobre la imagen.</div>
+          <div class="contrast-ratio" style="display:none">—</div>
           <div class="contrast-badges"></div>
 
-          <div class="contrast-hint">Selecciona el color del <b>texto</b> y del <b>fondo</b> sobre la imagen.</div>
-
           <div class="contrast-actions">
-            <button type="button" class="contrast-btn" data-act="add">Añadir a Comentarios</button>
-            <button type="button" class="contrast-btn" data-act="export">Exportar</button>
+            <button type="button" class="contrast-btn" data-act="add">
+              <span class="contrast-btn-label">Añadir a Comentarios</span>
+            </button>
+            <button type="button" class="contrast-btn" data-act="export">
+              <span class="contrast-btn-label">Exportar</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </button>
           </div>
         </aside>
       </div>
@@ -161,6 +172,89 @@
   }
 
   /* ----------------------------------------------------------------------
+     COMPOSICIÓN A RESOLUCIÓN NATURAL
+     Dibuja la imagen principal + sus overlays de CONTENIDO (mockup, TXT…)
+     en su posición real, EXCLUYENDO los overlays de SEGURIDAD (zonas de
+     seguridad). El muestreo y la imagen mostrada usan esta composición.
+     ---------------------------------------------------------------------- */
+  function isSafetyOverlay(ov, key) {
+    const c = ov.className || "";
+    // Zona de seguridad del smartphone
+    if (c.indexOf("role-sph-zona") !== -1) return true;
+    // En AMAZON_BG, el overlay "role-sib" es el checker de zona de seguridad
+    // (en MUX4/SPH ese mismo rol es el TXT, que SÍ va).
+    if (c.indexOf("role-sib") !== -1 && key === "AMAZON_BG") return true;
+    return false;
+  }
+
+  function drawComposition(mainImg) {
+    natCtx.drawImage(mainImg, 0, 0, natW, natH);
+
+    const key = (window.__v19_getCurrentKey?.() || "").toUpperCase();
+
+    // AD_PAUSE: solo la imagen, sin overlays. El texto (si lo hay) va quemado
+    // en el JPG y el contraste con el fondo/mockup está garantizado por diseño.
+    if (key === "AD_PAUSE") return;
+
+    const mr = mainImg.getBoundingClientRect();
+    if (!mr.width || !mr.height) return;
+
+    const sx = natW / mr.width, sy = natH / mr.height;
+    const preview = mainImg.parentElement;
+    const ovs = preview ? [...preview.querySelectorAll("img.v19-overlay")] : [];
+
+    // Dibujar en orden de apilado (z-index ascendente) para respetar capas
+    ovs
+      .filter(ov =>
+        ov.getAttribute("src") &&
+        getComputedStyle(ov).display !== "none" &&
+        !isSafetyOverlay(ov, key)
+      )
+      .sort((a, b) =>
+        (parseInt(getComputedStyle(a).zIndex, 10) || 0) -
+        (parseInt(getComputedStyle(b).zIndex, 10) || 0)
+      )
+      .forEach(ov => {
+        const r = ov.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        try {
+          natCtx.drawImage(
+            ov,
+            (r.left - mr.left) * sx,
+            (r.top  - mr.top)  * sy,
+            r.width  * sx,
+            r.height * sy
+          );
+        } catch (e) { /* overlay problemático: se ignora */ }
+      });
+  }
+
+  function buildNaturalCanvas(mainImg) {
+    natW = mainImg.naturalWidth  || mainImg.width;
+    natH = mainImg.naturalHeight || mainImg.height;
+    natCanvas = document.createElement("canvas");
+    natCanvas.width = natW;
+    natCanvas.height = natH;
+    natCtx = natCanvas.getContext("2d", { willReadFrequently: true });
+
+    drawComposition(mainImg);
+
+    /* Comprobar que el canvas es legible (no "tainted"). Si algún overlay
+       lo protege (p.ej. abierto por file://), recomponer con SOLO la imagen
+       principal, que es un data URL y siempre se puede muestrear. */
+    try {
+      natCtx.getImageData(0, 0, 1, 1);
+    } catch (e) {
+      console.warn("[Contraste] Overlays no componibles; uso solo la imagen base.", e);
+      natCanvas = document.createElement("canvas");
+      natCanvas.width = natW;
+      natCanvas.height = natH;
+      natCtx = natCanvas.getContext("2d", { willReadFrequently: true });
+      natCtx.drawImage(mainImg, 0, 0, natW, natH);
+    }
+  }
+
+  /* ----------------------------------------------------------------------
      ENTRAR / SALIR DEL MODO CONTRASTE
      ---------------------------------------------------------------------- */
   function enter() {
@@ -169,35 +263,26 @@
 
     build();
 
-    /* Canvas a resolución NATURAL (la clave de la precisión):
-       el muestreo siempre se hace sobre este bitmap, nunca sobre
-       la imagen escalada en pantalla. */
-    natW = src.naturalWidth  || src.width;
-    natH = src.naturalHeight || src.height;
-    natCanvas = document.createElement("canvas");
-    natCanvas.width = natW;
-    natCanvas.height = natH;
-    natCtx = natCanvas.getContext("2d", { willReadFrequently: true });
-    try {
-      natCtx.drawImage(src, 0, 0, natW, natH);
-    } catch (e) {
-      console.warn("[Contraste] No se pudo preparar el muestreo:", e);
-      return;
-    }
+    /* Composición a resolución NATURAL (imagen + overlays de contenido).
+       El muestreo se hace SIEMPRE sobre este bitmap, nunca sobre la
+       imagen escalada en pantalla. */
+    buildNaturalCanvas(src);
+    if (!natCanvas) return;
 
-    imgEl.src = src.src;
+    try {
+      imgEl.src = natCanvas.toDataURL("image/png");
+    } catch (e) {
+      imgEl.src = src.src;   // fallback defensivo
+    }
 
     /* Reset de estado */
     fg = null; bg = null;
     swFgBox.style.background = "transparent"; swFgHex.textContent = "—";
     swBgBox.style.background = "transparent"; swBgHex.textContent = "—";
-    ratioEl.textContent = "—";
-    ratioEl.className = "contrast-ratio";
-    badgesEl.innerHTML = "";
-    hintEl.style.display = "";
     markersLayer.innerHTML = "";
     loupe.style.display = "none";
     setStep("fg");
+    render();   // estado inicial: sin resultado, ayuda visible, botones atenuados
 
     active = true;
     document.getElementById("myModal")?.classList.add("contrast-active");
@@ -341,14 +426,23 @@
      RENDER DEL RESULTADO
      ---------------------------------------------------------------------- */
   function render() {
-    if (!fg || !bg) {
-      ratioEl.textContent = "—";
+    const ready = !!(fg && bg);
+
+    /* Botones activos solo cuando hay resultado */
+    btnAdd.disabled = !ready;
+    btnExport.disabled = !ready;
+
+    if (!ready) {
+      /* Estado inicial: sin número, ayuda visible bajo el título */
+      ratioEl.style.display = "none";
       ratioEl.className = "contrast-ratio";
       badgesEl.innerHTML = "";
       hintEl.style.display = "";
       return;
     }
+
     hintEl.style.display = "none";
+    ratioEl.style.display = "";
 
     const ratio = contrastRatio(fg.rgb, bg.rgb);
     const pass = ratio >= BASE_MIN;
@@ -372,22 +466,28 @@
   /* ----------------------------------------------------------------------
      ACCIONES
      ---------------------------------------------------------------------- */
+  function setBtnLabel(btn, text) {
+    const l = btn.querySelector(".contrast-btn-label");
+    if (l) l.textContent = text;
+  }
+
   function onAddComment() {
     if (!fg || !bg) return;
     const ratio = contrastRatio(fg.rgb, bg.rgb);
-    const text =
-      "Revisar el contraste entre texto e imagen. El valor es " +
-      fmtRatio(ratio) + " y debería ser " + fmtMin(BASE_MIN) + " (mínimo AA).";
+    const text = ratio >= BASE_MIN
+      ? "- El contraste es correcto."
+      : "- Revisar el contraste entre texto e imagen. El valor es " +
+        fmtRatio(ratio) + " y debería ser " + fmtMin(BASE_MIN) + " (mínimo AA).";
     const added = window.__v19_addComment?.(text);
-    btnAdd.textContent = added === false ? "Ya añadido" : "✓ Añadido";
-    setTimeout(() => { btnAdd.textContent = "Añadir a Comentarios"; }, 1600);
+    setBtnLabel(btnAdd, added === false ? "Ya añadido" : "✓ Añadido");
+    setTimeout(() => { setBtnLabel(btnAdd, "Añadir a Comentarios"); }, 1600);
   }
 
   function onExport() {
     /* Etapa siguiente: imagen del informe con los círculos ①②.
        De momento avisamos para no dar una exportación a medias. */
-    btnExport.textContent = "Próximamente";
-    setTimeout(() => { btnExport.textContent = "Exportar"; }, 1600);
+    setBtnLabel(btnExport, "Próximamente");
+    setTimeout(() => { setBtnLabel(btnExport, "Exportar"); }, 1600);
   }
 
   /* ----------------------------------------------------------------------
