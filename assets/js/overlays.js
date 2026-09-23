@@ -566,6 +566,19 @@ function fitOverlayRect(ov, img, placement, txtRuleKey) {
         return null;
       }
 
+      // Devuelve el item cargado SOLO si hay exactamente uno de ese formato.
+      // Se usa como respaldo tolerante cuando el emparejamiento por nombre
+      // (findSibling) falla pero el usuario sí ha cargado el TXT (aunque el
+      // nombre base no coincida al 100%). Si hay 0 o varios, devuelve null
+      // para no arriesgar un emparejamiento erróneo.
+      function findSingleLoadedByKey(targetKey) {
+        const matches = (window.LOADED_ITEMS || []).filter(it => {
+          try { return typeof inferKey === "function" && inferKey(it.name) === targetKey; }
+          catch (e) { return false; }
+        });
+        return matches.length === 1 ? matches[0] : null;
+      }
+
       function findSibling(byNeedle, baseName) {
         const U = String(baseName || "").toUpperCase();
         const ix = U.indexOf(byNeedle);
@@ -979,17 +992,16 @@ const OFFSET_Y = 65;    // arriba/abajo
             baseOv.style.display = "";
           }
 
-          const sib = findSibling("MUX4_FONDO", mainImg.alt || "");
-          let srcS = null;
+          /* TXT que se superpone:
+             1) Emparejamiento por nombre (hermano con mismo tallo).
+             2) Tolerante: si falla pero hay UN único MUX4_TXT cargado, se usa.
+             3) Si no hay TXT real cargado → fondo limpio (NUNCA el checker de
+                márgenes magenta, que confundía). */
+          const sib = findSibling("MUX4_FONDO", mainImg.alt || "")
+                   || findSingleLoadedByKey("MUX4_TXT");
 
           if (sib && sib.src) {
-            srcS = sib.src;
-          } else {
-            const sibFile = KEY_TO_OVERLAY.get("MUX4_TXT");
-            if (sibFile) srcS = `${OVERLAY_BASE}/${sibFile}`;
-          }
-
-          if (srcS) {
+            const srcS = sib.src;
             const placement = getMux4Placement();
 
             sibOv.onerror = () => {
@@ -1019,6 +1031,9 @@ const OFFSET_Y = 65;    // arriba/abajo
             );
 
             sibOv.style.display = "";
+          } else {
+            sibOv.removeAttribute("src");
+            sibOv.style.display = "none";
           }
 
           disconnectObservers();
@@ -1104,21 +1119,16 @@ const OFFSET_Y = 65;    // arriba/abajo
           }
 
           // --- Overlay TXT (sibOv) ---
+          /* Tolerante, igual que MUX4_FONDO: emparejamiento por nombre y,
+             si falla, único SMARTPHONE_MUX_TXT cargado. Sin TXT real →
+             fondo limpio (nunca el checker de márgenes magenta). */
           const smSib = findSibling(
             "SMARTPHONE_MUX_FONDO",
             mainImg.alt || ""
-          );
-
-          let srcS = null;
+          ) || findSingleLoadedByKey("SMARTPHONE_MUX_TXT");
 
           if (smSib && smSib.src) {
-            srcS = smSib.src;
-          } else {
-            const f = KEY_TO_OVERLAY.get("SMARTPHONE_MUX_TXT");
-            if (f) srcS = `${OVERLAY_BASE}/${f}`;
-          }
-
-          if (srcS) {
+            const srcS = smSib.src;
             const placement =
               PLACE_SMARTPHONE.SMARTPHONE_MUX_FONDO;
 
@@ -1150,6 +1160,9 @@ const OFFSET_Y = 65;    // arriba/abajo
 
             sibOv.style.display = "";
             sibOv.style.zIndex = "5"; // TXT arriba del todo
+          } else {
+            sibOv.removeAttribute("src");
+            sibOv.style.display = "none";
           }
 
           // --- Mostrar switches: MOCKUP, ZONA DE SEGURIDAD, TXT ---
