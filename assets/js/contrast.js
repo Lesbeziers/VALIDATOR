@@ -483,11 +483,155 @@
     setTimeout(() => { setBtnLabel(btnAdd, "Añadir a Comentarios"); }, 1600);
   }
 
-  function onExport() {
-    /* Etapa siguiente: imagen del informe con los círculos ①②.
-       De momento avisamos para no dar una exportación a medias. */
-    setBtnLabel(btnExport, "Próximamente");
-    setTimeout(() => { setBtnLabel(btnExport, "Exportar"); }, 1600);
+  /* ----------------------------------------------------------------------
+     EXPORTAR INFORME DE CONTRASTE
+     Genera una imagen (JPG) con: composición + marcadores ①②, par de
+     color y resultado WCAG 2.2. Sirve como "prueba" compartible que zanja
+     la discusión: dato + normativa + los puntos exactos analizados.
+     ---------------------------------------------------------------------- */
+  function roundRect(ctx, x, y, w, h, r) {
+    if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); return; }
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function renderReport() {
+    const PAD = 48, GAP = 40, PANEL_W = 480, HEADER_H = 92;
+    const IMG_COL_W = 1040;
+
+    const scale = Math.min(IMG_COL_W / natW, 820 / natH);
+    const IMG_W = Math.round(natW * scale);
+    const IMG_H = Math.round(natH * scale);
+
+    const badgeH = 78, badgeGap = 14, badgeRows = 3;
+    const badgesH = badgeRows * badgeH + (badgeRows - 1) * badgeGap;
+    const panelH = 78 + 24 + 30 + 8 + 74 + 20 + badgesH;
+
+    const bodyH = Math.max(IMG_H, panelH);
+    const W = PAD + IMG_COL_W + GAP + PANEL_W + PAD;
+    const H = HEADER_H + bodyH + PAD;
+
+    const c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    const x = c.getContext("2d");
+
+    x.fillStyle = "#1a1a1a";
+    x.fillRect(0, 0, W, H);
+
+    /* Cabecera */
+    const fname = window.__v19_getMainPreviewImg?.()?.alt || "";
+    x.textAlign = "left"; x.textBaseline = "alphabetic";
+    x.fillStyle = "#ffba00";
+    x.font = '30px "Apercu Black"';
+    x.fillText(fname, PAD, 46);
+    x.fillStyle = "#9a9a9a";
+    x.font = '18px "Apercu Regular"';
+    x.fillText("Análisis de contraste · WCAG 2.2", PAD, 74);
+
+    /* Imagen + marcadores */
+    const imgX = PAD + (IMG_COL_W - IMG_W) / 2;
+    const imgY = HEADER_H;
+    x.drawImage(natCanvas, imgX, imgY, IMG_W, IMG_H);
+    x.strokeStyle = "#333"; x.lineWidth = 1;
+    x.strokeRect(imgX + .5, imgY + .5, IMG_W - 1, IMG_H - 1);
+
+    const marker = (s, fill) => {
+      const mx = imgX + s.nx * scale, my = imgY + s.ny * scale;
+      x.beginPath(); x.arc(mx, my, 6, 0, Math.PI * 2);
+      x.fillStyle = fill; x.fill();
+    };
+    marker(fg, "#2ecc71");   // texto (verde)
+    marker(bg, "#ff5a5a");   // fondo (rojo)
+
+    /* Panel */
+    const px = PAD + IMG_COL_W + GAP;
+    let py = HEADER_H;
+
+    const swW = (PANEL_W - 20) / 2;
+    const swatch = (sx, label, hex) => {
+      x.fillStyle = "#9a9a9a"; x.font = '14px "Apercu Bold"';
+      x.fillText(label, sx, py + 12);
+      x.fillStyle = hex;
+      roundRect(x, sx, py + 24, 34, 34, 6); x.fill();
+      x.strokeStyle = "#444"; x.lineWidth = 1; x.stroke();
+      x.fillStyle = "#fff"; x.font = '18px "Apercu Bold"';
+      x.fillText(hex, sx + 46, py + 47);
+    };
+    swatch(px, "TEXTO", fg.hex);
+    swatch(px + swW + 20, "FONDO", bg.hex);
+    py += 78 + 24;
+
+    x.fillStyle = "#ffba00"; x.font = '26px "Apercu Light"';
+    x.fillText("Resultado WCAG 2.2", px, py + 24);
+    py += 30 + 8;
+
+    const ratio = contrastRatio(fg.rgb, bg.rgb);
+    const pass = ratio >= BASE_MIN;
+    x.fillStyle = pass ? "#7fe39a" : "#ff6b6b";
+    x.font = '64px "Apercu Black"';
+    x.fillText(fmtRatio(ratio), px, py + 58);
+    py += 74 + 20;
+
+    const bW = (PANEL_W - 14) / 2;
+    CRITERIA.forEach((cr, i) => {
+      const col = i % 2, row = Math.floor(i / 2);
+      const isLast = (i === CRITERIA.length - 1) && (CRITERIA.length % 2 === 1);
+      const bx = px + col * (bW + 14);
+      const by = py + row * (badgeH + badgeGap);
+      const w = isLast ? PANEL_W : bW;
+      const ok = ratio >= cr.min;
+
+      x.fillStyle = ok ? "#e7f6ec" : "#fbe7e7";
+      roundRect(x, bx, by, w, badgeH, 10); x.fill();
+      x.fillStyle = "#222"; x.font = '15px "Apercu Bold"';
+      x.fillText(cr.label, bx + 14, by + 24);
+      x.fillStyle = ok ? "#1f9d57" : "#e05252";
+      x.font = '17px "Apercu Black"';
+      x.fillText(ok ? "CORRECTO" : "INCORRECTO", bx + 14, by + 45);
+      x.fillStyle = "#555"; x.font = '13px "Apercu Regular"';
+      x.fillText("Necesita " + fmtMin(cr.min), bx + 14, by + 64);
+    });
+
+    return c;
+  }
+
+  async function onExport() {
+    if (!fg || !bg) return;
+    setBtnLabel(btnExport, "Generando…");
+    btnExport.disabled = true;
+    try {
+      if (document.fonts && document.fonts.ready) {
+        try { await document.fonts.ready; } catch (e) { /* seguimos */ }
+      }
+      const canvas = renderReport();
+      const baseName = (window.__v19_getMainPreviewImg?.()?.alt || "contraste")
+        .replace(/\.[^.]+$/, "")
+        .replace(/[^\w\-]/g, "_");
+      const filename = baseName + "_CONTRASTE.jpg";
+
+      canvas.toBlob(blob => {
+        if (!blob) return;
+        if (typeof window.saveAs === "function") {
+          window.saveAs(blob, filename);
+        } else {
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        }
+      }, "image/jpeg", 0.92);
+    } catch (e) {
+      console.error("[Contraste] Error exportando informe:", e);
+    } finally {
+      btnExport.disabled = false;
+      setBtnLabel(btnExport, "Exportar");
+    }
   }
 
   /* ----------------------------------------------------------------------
