@@ -513,6 +513,7 @@
   }
 
   function renderReport() {
+    const SS = 2;   // supermuestreo: dobla la resolución real (texto nítido)
     const PAD = 48, GAP = 40, PANEL_W = 480, HEADER_H = 92;
     const IMG_COL_W = 1040;
 
@@ -529,8 +530,11 @@
     const H = HEADER_H + bodyH + PAD;
 
     const c = document.createElement("canvas");
-    c.width = W; c.height = H;
+    c.width = W * SS; c.height = H * SS;
     const x = c.getContext("2d");
+    x.scale(SS, SS);                       // todo el layout se dibuja en unidades de diseño
+    x.imageSmoothingEnabled = true;
+    x.imageSmoothingQuality = "high";      // remuestreo de la imagen de mayor calidad
 
     x.fillStyle = "#1a1a1a";
     x.fillRect(0, 0, W, H);
@@ -624,7 +628,7 @@
       const baseName = (window.__v19_getMainPreviewImg?.()?.alt || "contraste")
         .replace(/\.[^.]+$/, "")
         .replace(/[^\w\-]/g, "_");
-      const filename = baseName + "_CONTRASTE.jpg";
+      const filename = baseName + "_CONTRASTE.png";
 
       canvas.toBlob(blob => {
         if (!blob) return;
@@ -637,7 +641,7 @@
           a.click();
           setTimeout(() => URL.revokeObjectURL(a.href), 2000);
         }
-      }, "image/jpeg", 0.92);
+      }, "image/png");
     } catch (e) {
       console.error("[Contraste] Error exportando informe:", e);
     } finally {
