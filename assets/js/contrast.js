@@ -177,24 +177,31 @@
      en su posición real, EXCLUYENDO los overlays de SEGURIDAD (zonas de
      seguridad). El muestreo y la imagen mostrada usan esta composición.
      ---------------------------------------------------------------------- */
-  function isSafetyOverlay(ov, key) {
-    const c = ov.className || "";
-    // Zona de seguridad del smartphone
-    if (c.indexOf("role-sph-zona") !== -1) return true;
-    // En AMAZON_BG, el overlay "role-sib" es el checker de zona de seguridad
-    // (en MUX4/SPH ese mismo rol es el TXT, que SÍ va).
-    if (c.indexOf("role-sib") !== -1 && key === "AMAZON_BG") return true;
-    return false;
-  }
+  /* Overlays de CONTENIDO (mockup real + texto) que se conservan en modo
+     contraste, por formato. Enfoque de LISTA BLANCA: solo los roles listados
+     por formato se pintan; todo lo demás (márgenes/zonas de seguridad rosas,
+     checkers) NO se pinta → la zona de seguridad desaparece SIEMPRE.
+
+     - Se mantiene el mockup contextual donde existe (MUX4, SPH, AMAZON,
+       FANART_DESTACADO), excluyendo su zona de seguridad interna.
+     - AD_PAUSE y WEB llevan el mockup por fuera/por debajo (no aporta al
+       contraste): NO se listan → se miden sobre el asset limpio.
+     - El resto de formatos solo tienen checker de márgenes → asset limpio. */
+  const CONTENT_OVERLAYS = {
+    MUX4_FONDO:           ["role-base", "role-sib"],   // mockup UI + TXT
+    SMARTPHONE_MUX_FONDO: ["role-base", "role-sib"],   // mockup + TXT (sph-zona excluida)
+    AMAZON_BG:            ["role-base", "role-logo"],  // mockup Fire TV + logo (seguridad excluida)
+    FANART_DESTACADO:     ["role-base", "role-fanart-mod-l", "role-fanart-mod-r"] // mockup + módulos
+  };
 
   function drawComposition(mainImg) {
     natCtx.drawImage(mainImg, 0, 0, natW, natH);
 
     const key = (window.__v19_getCurrentKey?.() || "").toUpperCase();
-
-    // AD_PAUSE: solo la imagen, sin overlays. El texto (si lo hay) va quemado
-    // en el JPG y el contraste con el fondo/mockup está garantizado por diseño.
-    if (key === "AD_PAUSE") return;
+    const allowed = CONTENT_OVERLAYS[key];
+    // Sin overlays de contenido definidos → asset limpio (nunca zona de
+    // seguridad). Cubre AD_PAUSE y todos los formatos de solo-checker.
+    if (!allowed) return;
 
     const mr = mainImg.getBoundingClientRect();
     if (!mr.width || !mr.height) return;
@@ -208,7 +215,7 @@
       .filter(ov =>
         ov.getAttribute("src") &&
         getComputedStyle(ov).display !== "none" &&
-        !isSafetyOverlay(ov, key)
+        allowed.some(role => ov.classList.contains(role))
       )
       .sort((a, b) =>
         (parseInt(getComputedStyle(a).zIndex, 10) || 0) -
