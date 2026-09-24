@@ -2039,4 +2039,29 @@ AMAZON_BG: {
         );
         return imgs.length ? imgs[0] : null;
       };
+
+      /* ==========================================
+         HOOK PARA MÓDULO CONTRASTE
+         Permite a contrast.js añadir una línea al bloque
+         de comentarios reutilizando el sistema existente
+         (mismo antiduplicado y persistencia que los presets).
+      ========================================== */
+      window.__v19_addComment = function (text) {
+        if (!text) return false;
+        let txt = commentArea.value || "";
+        if (typeof lineAlreadyExists === "function" && lineAlreadyExists(txt, text)) {
+          return false;
+        }
+        txt = txt ? txt.trimEnd() + "\n" + text : text;
+        commentArea.value = txt;
+        const fname = getCurrentFileName();
+        if (fname) saveCommentsFor(fname, txt);
+        if (typeof applyHasCommentBadges === "function") applyHasCommentBadges();
+        if (typeof recalcCommentsLayout === "function") recalcCommentsLayout();
+        return true;
+      };
+
+      /* Estado actual del visor para el módulo de contraste:
+         clave de formato + acceso a la imagen. */
+      window.__v19_getCurrentKey = function () { return currentKey || ""; };
     });
