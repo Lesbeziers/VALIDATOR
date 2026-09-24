@@ -191,7 +191,12 @@
     MUX4_FONDO:           ["role-base", "role-sib"],   // mockup UI + TXT
     SMARTPHONE_MUX_FONDO: ["role-base", "role-sib"],   // mockup + TXT (sph-zona excluida)
     AMAZON_BG:            ["role-base", "role-logo"],  // mockup Fire TV + logo (seguridad excluida)
-    FANART_DESTACADO:     ["role-base", "role-fanart-mod-l", "role-fanart-mod-r"] // mockup + módulos
+    FANART_DESTACADO:     ["role-base", "role-fanart-mod-l", "role-fanart-mod-r"], // mockup + módulos
+    FANART:               ["role-base"],   // mockup ficha Cine
+    FANART_MOVIL:         ["role-base"],   // mockup ficha móvil
+    FANART_COLECCION:     ["role-base"],   // mockup colección
+    CARATULA_V:           ["role-base"],   // marcas dinámicas (logo M+ + pastilla promo)
+    CARATULA_H:           ["role-base"]    // marcas dinámicas
   };
 
   function drawComposition(mainImg) {
