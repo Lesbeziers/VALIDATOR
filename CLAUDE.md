@@ -211,8 +211,11 @@ curl -s https://lesbeziers.github.io/VALIDATOR/assets/js/app.js | grep <símbolo
 
 ## 5. Problemas conocidos, trucos y cosas que no funcionaron
 
-- **No hacer `git add -A` / `git add .`.** Borraría `.gitignore` y `robots.txt` (están en el
-  remoto pero no en local) y commitearía basura de macOS. Añadir archivo por archivo.
+- **Añade al stage solo los archivos que tocaste** (buena práctica, no obligación técnica).
+  El `.gitignore` del repo ya ignora la basura de macOS (`._*`, `.DS_Store`), los `*.zip` y
+  `.claude/`, así que no se cuela sola. (Histórico: hubo un momento en que `.gitignore` y
+  `robots.txt` figuraban como *borrados* en local y, al no existir `.gitignore`, Git no
+  ignoraba nada; quedó **restaurado el 2026-11-17** y el árbol está limpio.)
 - **Verificar despliegue por CONTENIDO, no por status.** GitHub Pages puede devolver HTTP 200
   con contenido **cacheado/viejo** durante 1–3 min. Hacer `grep` de un símbolo nuevo en el
   archivo servido, no fiarse del 200.
@@ -243,16 +246,16 @@ curl -s https://lesbeziers.github.io/VALIDATOR/assets/js/app.js | grep <símbolo
   backlog **2+ años** (su única respuesta hasta entonces era "usad estas dos webs externas").
 - Últimos commits (rama `main`):
   ```
+  5b2921a docs: añade CLAUDE.md de traspaso para retomar el proyecto
   a5f4988 fix(contraste): informe de exportación en alta calidad (supermuestreo x2 + PNG)
   50c6c69 fix(contraste): conservar mockup en FANART/FANART_MOVIL/FANART_COLECCION y marcas en CARÁTULA
   e507b70 fix(contraste): la zona de seguridad desaparece siempre en modo contraste
   aac4286 Merge feature/contraste: herramienta de contraste WCAG 2.2 + fix MUX
-  a1850c0 feat(contraste): Etapa final — exportar informe de contraste
   ```
-- El **árbol de trabajo tiene cambios locales sin commitear** (según `git status` de arranque):
-  `.gitignore` y `robots.txt` aparecen como borrados (son los archivos solo-remoto — NO
-  commitees ese borrado) y hay mucha basura `._*`/`.DS_Store` untracked (ignorar). Este
-  `CLAUDE.md` es nuevo.
+- **Árbol de trabajo LIMPIO y sincronizado con `origin/main`.** (Preparado para la migración el
+  2026-11-17: se restauraron `.gitignore` y `robots.txt`, que antes figuraban como borrados en
+  local, y la basura de macOS queda ignorada por el `.gitignore`.) `git status` no muestra nada
+  pendiente.
 
 ### Tareas pendientes / ideas abiertas
 - **"Chuleta anti-farol" prometida:** una explicación en lenguaje llano (≈4 líneas) de qué
